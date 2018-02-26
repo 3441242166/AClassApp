@@ -15,7 +15,7 @@ public class Course {
     private String parent;
     @SerializedName("count")
     private String num;
-
+    @SerializedName("picture")
     private String imgUrl;
 
     public String getName() {

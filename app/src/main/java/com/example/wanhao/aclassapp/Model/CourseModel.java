@@ -44,7 +44,7 @@ public class CourseModel implements ICourseModel{
                 .subscribe(new Consumer<Response<ResponseBody>>() {
                     @Override
                     public void accept(Response<ResponseBody> responseBodyResponse) throws Exception {
-
+                        //Log.i(TAG, "accept: "+responseBodyResponse.body().string());
                         CourseResult result = new Gson().fromJson(responseBodyResponse.body().string(),CourseResult.class);
 
                         if(result.getStatus().equals(ApiConstant.RETURN_SUCCESS)){

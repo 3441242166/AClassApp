@@ -1,12 +1,14 @@
 package com.example.wanhao.aclassapp.activity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -15,15 +17,18 @@ import android.widget.Toast;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
 import com.example.wanhao.aclassapp.bean.User;
+import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.UserMessagePresenter;
+import com.example.wanhao.aclassapp.util.FileConvertUtil;
 import com.example.wanhao.aclassapp.view.IUserMessageView;
 
 import butterknife.BindView;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserMessageActivity extends TopBarBaseActivity implements IUserMessageView{
     @BindView(R.id.ac_user_head)
-    ImageView imageView;
+    CircleImageView imageView;
     @BindView(R.id.ac_user_name)
     TextView name;
     @BindView(R.id.ac_user_signature)
@@ -57,7 +62,9 @@ public class UserMessageActivity extends TopBarBaseActivity implements IUserMess
         pDialog.setCancelable(false);
 
         initEvent();
+        presenter.getHeadImage();
         presenter.getUserMessage();
+
     }
 
     private void initEvent(){
@@ -109,7 +116,7 @@ public class UserMessageActivity extends TopBarBaseActivity implements IUserMess
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                presenter.openSelectAvatarDialog();
             }
         });
     }
@@ -167,6 +174,43 @@ public class UserMessageActivity extends TopBarBaseActivity implements IUserMess
             btWomen.setChecked(true);
         }else{
             btMen.setChecked(true);
+        }
+    }
+
+    @Override
+    public void showImage(Bitmap bitmap) {
+        imageView.setImageBitmap(bitmap);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case ApiConstant.CAMERA_CODE:
+                //用户点击了取消
+                if (data == null) {
+                    return;
+                } else {
+                    Bundle extras = data.getExtras();
+                    if (extras != null) {
+                        //获得拍的照片
+                        Bitmap bitmap = extras.getParcelable("data");
+                        imageView.setImageBitmap(bitmap);
+                        Uri uri = FileConvertUtil.saveBitmap(bitmap, ApiConstant.AVATAR_IMG_PATH, ApiConstant.USER_AVATAR_NAME);
+                        presenter.onSelectImage(uri);
+                    }
+                }
+                break;
+            case ApiConstant.GALLERY_CODE:
+                if (data == null) {
+                    return;
+                } else {
+                    //获取到用户所选图片的Uri
+                    Uri uri = data.getData();
+                    presenter.onSelectImage(uri);
+                }
+                break;
+            default:
+                break;
         }
     }
 }

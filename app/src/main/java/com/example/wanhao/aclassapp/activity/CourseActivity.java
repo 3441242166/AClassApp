@@ -15,8 +15,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.fragment.CourseFragment;
@@ -31,8 +29,6 @@ public class CourseActivity extends AppCompatActivity implements NavigationView.
     @BindView(R.id.ac_course_toolbar) Toolbar toolbar;
     @BindView(R.id.ac_course_drawer_layout) DrawerLayout drawer;
     @BindView(R.id.ac_course_nav_view) NavigationView navigationView;
-    @BindView(R.id.ac_course_imageview) ImageView imageView;
-    @BindView(R.id.ac_course_textview) TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +45,7 @@ public class CourseActivity extends AppCompatActivity implements NavigationView.
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
-        toggle.syncState(); 
+        toggle.syncState();
         fab.setOnClickListener(this);
         navigationView.setNavigationItemSelectedListener(this);
     }

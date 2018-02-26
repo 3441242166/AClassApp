@@ -18,4 +18,11 @@ public class ApiConstant {
 
     public static final int ADD_SUCCESS = 1;
     public static final int ADD_ERROR = 0;
+    /**********************ActivityForResult的请求码************************/
+    public static final int CAMERA_CODE = 1;
+    public static final int GALLERY_CODE = 2;
+
+    /**********************用户上传的头像的名称************************/
+    public static final String USER_AVATAR_NAME = "avatar.jpg";
+    public static final String AVATAR_IMG_PATH = "classroom";
 }
