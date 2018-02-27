@@ -13,6 +13,7 @@ public class ApiConstant {
     public static final String USER_ROLE = "role";
     public static final String COUNT = "count";
     public static final String PASSWORD = "password";
+    public static final String USER_NAME = "user_name";
     /*********************文件命名相关********************************/
     public static final String  FILE_NAME = "fckt";
 

@@ -1,6 +1,7 @@
 package com.example.wanhao.aclassapp.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -10,17 +11,23 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.fragment.CourseFragment;
+import com.example.wanhao.aclassapp.util.FileConvertUtil;
+import com.example.wanhao.aclassapp.util.SaveDataUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CourseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener ,View.OnClickListener{
     private static final String TAG = "CourseActivity";
@@ -29,6 +36,9 @@ public class CourseActivity extends AppCompatActivity implements NavigationView.
     @BindView(R.id.ac_course_toolbar) Toolbar toolbar;
     @BindView(R.id.ac_course_drawer_layout) DrawerLayout drawer;
     @BindView(R.id.ac_course_nav_view) NavigationView navigationView;
+
+    private CircleImageView headImage;
+    private TextView nameText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,10 +58,23 @@ public class CourseActivity extends AppCompatActivity implements NavigationView.
         toggle.syncState();
         fab.setOnClickListener(this);
         navigationView.setNavigationItemSelectedListener(this);
+
+        View view = navigationView.getHeaderView(0);
+        headImage = view.findViewById(R.id.ac_course_headimage);
+        nameText = view.findViewById(R.id.ac_course_name);
+
     }
 
     private void initEvent(){
+        Bitmap bitmap = FileConvertUtil.getBitmapFromLocal(ApiConstant.USER_AVATAR_NAME);
+        if(bitmap!=null){
+            headImage.setImageBitmap(bitmap);
+        }
 
+        String name = SaveDataUtil.getValueFromSharedPreferences(this, ApiConstant.USER_NAME);
+        if(!TextUtils.isEmpty(name)){
+            nameText.setText(name);
+        }
     }
 
     @Override
@@ -87,6 +110,7 @@ public class CourseActivity extends AppCompatActivity implements NavigationView.
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
+            SaveDataUtil.saveToSharedPreferences(this,ApiConstant.USER_TOKEN,"");
             startActivity(new Intent(this,LodingActivity.class));
             finish();
         }
@@ -131,6 +155,5 @@ public class CourseActivity extends AppCompatActivity implements NavigationView.
         Log.i(TAG, "onActivityResult: ");
         if(data!=null)
             fragment.onActivityResult(requestCode, resultCode, data);
-
     }
 }
