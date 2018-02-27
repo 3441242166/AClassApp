@@ -25,4 +25,7 @@ public class ApiConstant {
     /**********************用户上传的头像的名称************************/
     public static final String USER_AVATAR_NAME = "avatar.jpg";
     public static final String AVATAR_IMG_PATH = "classroom";
+
+    /**********************储存token的时间************************/
+    public static final String TOKEN_TIME = "token_time";
 }

@@ -27,7 +27,7 @@ public class CoursePresenter {
         model = new CourseModel(context);
     }
 
-    public void getList(){
+    public void upDateList(){
         IBaseRequestCallBack<List<Course>> callBack = new IBaseRequestCallBack<List<Course>>() {
             @Override
             public void beforeRequest() {
@@ -53,6 +53,34 @@ public class CoursePresenter {
         };
 
         model.getListDataByInternet(callBack);
+    }
+
+    public void getList(){
+        IBaseRequestCallBack<List<Course>> callBack = new IBaseRequestCallBack<List<Course>>() {
+            @Override
+            public void beforeRequest() {
+                view.showProgress();
+            }
+
+            @Override
+            public void requestError(Throwable throwable) {
+                view.disimissProgress();
+                view.loadDataError(throwable.toString());
+            }
+
+            @Override
+            public void requestComplete() {
+                view.disimissProgress();
+            }
+
+            @Override
+            public void requestSuccess(List<Course> callBack) {
+                view.disimissProgress();
+                view.loadDataSuccess(callBack);
+            }
+        };
+
+        model.getListDataByDB(callBack);
     }
 
     public void delete(String coursID){

@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.activity.MainActivity;
 import com.example.wanhao.aclassapp.adapter.CourseAdapter;
 import com.example.wanhao.aclassapp.base.LazyLoadFragment;
 import com.example.wanhao.aclassapp.bean.Course;
@@ -38,6 +39,8 @@ public class CourseFragment extends LazyLoadFragment implements ICoureseView{
     private CourseAdapter adapter;
     private StaggeredGridLayoutManager mLayoutManager;
 
+    private int deletePos = -1;
+
     @Override
     protected int setContentView() {
         return R.layout.fragment_course;
@@ -66,7 +69,7 @@ public class CourseFragment extends LazyLoadFragment implements ICoureseView{
         adapter.setOnItemClickListener(new CourseAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, final int position) {
-
+                startActivity(new Intent(getActivity(), MainActivity.class));
             }
 
         });
@@ -82,6 +85,7 @@ public class CourseFragment extends LazyLoadFragment implements ICoureseView{
                         .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                             @Override
                             public void onClick(SweetAlertDialog sDialog) {
+                                deletePos = position;
                                 sDialog.cancel();
                                 presenter.delete(courseList.get(position).getId());
                             }
@@ -96,7 +100,7 @@ public class CourseFragment extends LazyLoadFragment implements ICoureseView{
                 refreshView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        presenter.getList();
+                        presenter.upDateList();
                     }
                 }, 2000);
             }
@@ -129,7 +133,7 @@ public class CourseFragment extends LazyLoadFragment implements ICoureseView{
         super.onActivityResult(requestCode, resultCode, data);
         Log.i(TAG, "onActivityResult: ");
         if (data.getIntExtra("result", ApiConstant.ADD_ERROR)==ApiConstant.ADD_SUCCESS) {
-            presenter.getList();
+            presenter.upDateList();
         }
     }
 
@@ -144,6 +148,7 @@ public class CourseFragment extends LazyLoadFragment implements ICoureseView{
                 .setCancelClickListener(null)
                 .setConfirmClickListener(null)
                 .show();
-        presenter.getList();
+        courseList.remove(deletePos);
+        adapter.notifyDataSetChanged();
     }
 }

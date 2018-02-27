@@ -54,7 +54,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.Holder> im
 
         holder.name.setText(course.getName());
         holder.parent.setText(course.getParent());
-        holder.number.setText(course.getNum());
+        holder.number.setText("一共有 "+course.getNum()+" 人");
         Glide.with(context).load(course.getImgUrl()+"?token="+ SaveDataUtil.getValueFromSharedPreferences(context, ApiConstant.USER_TOKEN)).into(holder.bck);
 
         holder.itemView.setTag(position);

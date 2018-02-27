@@ -3,6 +3,7 @@ package com.example.wanhao.aclassapp.Model;
 import android.content.Context;
 
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.SQLite.CourseDao;
 import com.example.wanhao.aclassapp.base.IBaseRequestCallBack;
 import com.example.wanhao.aclassapp.bean.Course;
 import com.example.wanhao.aclassapp.bean.CourseResult;
@@ -29,9 +30,20 @@ public class CourseModel implements ICourseModel{
     private static final String TAG = "CourseModel";
 
     private Context context;
+    private CourseDao dao;
 
     public CourseModel(Context context){
         this.context = context;
+        dao = new CourseDao(context);
+    }
+
+    @Override
+    public void getListDataByDB(final IBaseRequestCallBack<List<Course>> callBack){
+        List<Course> list = dao.alterAllCoursse();
+        if(list==null || list.size()==0){
+            getListDataByInternet(callBack);
+        }
+        callBack.requestSuccess(list);
     }
 
     @Override
@@ -46,9 +58,9 @@ public class CourseModel implements ICourseModel{
                     public void accept(Response<ResponseBody> responseBodyResponse) throws Exception {
                         //Log.i(TAG, "accept: "+responseBodyResponse.body().string());
                         CourseResult result = new Gson().fromJson(responseBodyResponse.body().string(),CourseResult.class);
-
                         if(result.getStatus().equals(ApiConstant.RETURN_SUCCESS)){
                             List<Course> list = result.getCourses();
+                            dao.addCourseList(list);
                             callBack.requestSuccess(list);
                         }else{
                             callBack.requestError(new Throwable("error"));
@@ -63,12 +75,7 @@ public class CourseModel implements ICourseModel{
     }
 
     @Override
-    public void getListDataBySD(IBaseRequestCallBack<List<Course>> callBack) {
-
-    }
-
-    @Override
-    public void deleteCourse(String id,final IBaseRequestCallBack callBack){
+    public void deleteCourse(final String id, final IBaseRequestCallBack callBack){
         callBack.beforeRequest();
         CourseService service = RetrofitHelper.get(CourseService.class);
         service.deleteCourse(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_TOKEN),Integer.valueOf(id))
@@ -79,9 +86,9 @@ public class CourseModel implements ICourseModel{
                     public void accept(Response<ResponseBody> responseBodyResponse) throws Exception {
                         //Log.i(TAG, "deleteCourse: "+responseBodyResponse.body().string());
                         NoDataResponse result = new Gson().fromJson(responseBodyResponse.body().string(),NoDataResponse.class);
-
                         if(result.getStatus().equals(ApiConstant.RETURN_SUCCESS)){
                             callBack.requestSuccess("");
+                            dao.deleteCourse(id);
                         }else{
                             callBack.requestError(new Throwable(context.getResources().getString(R.string.internet_error)));
                         }
@@ -98,7 +105,7 @@ public class CourseModel implements ICourseModel{
 interface ICourseModel{
     void getListDataByInternet(IBaseRequestCallBack<List<Course>> callBack);
 
-    void getListDataBySD(IBaseRequestCallBack<List<Course>> callBack);
+    void getListDataByDB(IBaseRequestCallBack<List<Course>> callBack);
 
     public void deleteCourse(String id,IBaseRequestCallBack callBack);
 }
