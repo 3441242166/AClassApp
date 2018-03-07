@@ -1,5 +1,12 @@
 package com.example.wanhao.aclassapp.service;
 
+import io.reactivex.Observable;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Response;
+import retrofit2.http.Body;
+import retrofit2.http.POST;
+
 /**
  * Created by szh on 2017/5/13.
  */
@@ -22,9 +29,7 @@ public interface RegisterService {
 //                                       @Field(ApiConstant.MOBILE) String mobile,
 //                                       @Field(ApiConstant.CODE) String code);
 //
-//    @FormUrlEncoded
-//    @POST("user/register")
-//    Call<HttpResult<String>> register(@Field(ApiConstant.USERNAME) String username,
-//                                      @Field(ApiConstant.TEL_NUM) String telNum,
-//                                      @Field(ApiConstant.PASSWORD) String password);
+
+    @POST("register")
+    Observable<Response<ResponseBody>> register(@Body RequestBody body);
 }

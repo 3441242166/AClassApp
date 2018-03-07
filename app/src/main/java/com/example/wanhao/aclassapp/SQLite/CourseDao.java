@@ -21,13 +21,14 @@ public class CourseDao {
         mMyDBHelper=new DatabaseHelper(context);
     }
     // 增加的方法吗，返回的的是一个long值
-    public void addCourseList(List<Course> list){
+    public void addCourseList(String user,List<Course> list){
 
         SQLiteDatabase sqLiteDatabase =  mMyDBHelper.getWritableDatabase();
 
         for(int x=0;x<list.size();x++) {
             Course course = list.get(x);
             ContentValues contentValues = new ContentValues();
+            contentValues.put("USER", user);
             contentValues.put("ID", course.getId());
             contentValues.put("PICTURE", course.getImgUrl());
             contentValues.put("NAME", course.getName());
@@ -40,18 +41,18 @@ public class CourseDao {
     }
 
     // 删除方法，返回值是int
-    public int deleteCourse(String id){
+    public int deleteCourse(String user,String id){
         SQLiteDatabase sqLiteDatabase = mMyDBHelper.getWritableDatabase();
-        int deleteResult = sqLiteDatabase.delete("COURSE","ID=?", new String[]{id});
+        int deleteResult = sqLiteDatabase.delete("COURSE","ID=?,USER=?", new String[]{id,user});
         sqLiteDatabase.close();
         return deleteResult;
     }
 
-    public List<Course> alterAllCoursse(){
+    public List<Course> alterAllCoursse(String user){
 
         SQLiteDatabase readableDatabase = mMyDBHelper.getReadableDatabase();
         // 查询比较特别,涉及到 cursor
-        Cursor cursor = readableDatabase.rawQuery("select * from COURSE ", null);
+        Cursor cursor = readableDatabase.rawQuery("select * from COURSE WHERE USER=?", new String[]{user});
 
         List<Course> list =new ArrayList<Course>();
 

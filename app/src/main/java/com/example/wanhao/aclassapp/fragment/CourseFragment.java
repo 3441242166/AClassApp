@@ -13,8 +13,8 @@ import com.example.wanhao.aclassapp.adapter.CourseAdapter;
 import com.example.wanhao.aclassapp.base.LazyLoadFragment;
 import com.example.wanhao.aclassapp.bean.Course;
 import com.example.wanhao.aclassapp.config.ApiConstant;
-import com.example.wanhao.aclassapp.presenter.CoursePresenter;
-import com.example.wanhao.aclassapp.view.ICoureseView;
+import com.example.wanhao.aclassapp.presenter.CourseFgPresenter;
+import com.example.wanhao.aclassapp.view.ICourseFgView;
 import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.List;
@@ -26,7 +26,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
  * Created by wanhao on 2018/2/23.
  */
 
-public class CourseFragment extends LazyLoadFragment implements ICoureseView{
+public class CourseFragment extends LazyLoadFragment implements ICourseFgView {
 
     @BindView(R.id.fg_course_recycler)
     RecyclerView recyclerView;
@@ -34,7 +34,7 @@ public class CourseFragment extends LazyLoadFragment implements ICoureseView{
     @BindView(R.id.fg_course_refresh)
     PullToRefreshView refreshView;
 
-    private CoursePresenter presenter;
+    private CourseFgPresenter presenter;
     private List<Course> courseList;
     private CourseAdapter adapter;
     private StaggeredGridLayoutManager mLayoutManager;
@@ -54,7 +54,7 @@ public class CourseFragment extends LazyLoadFragment implements ICoureseView{
     }
 
     private void init(){
-        presenter = new CoursePresenter(getActivity(),this);
+        presenter = new CourseFgPresenter(getActivity(),this);
         mLayoutManager = new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL);
 
         recyclerView.setLayoutManager(mLayoutManager);

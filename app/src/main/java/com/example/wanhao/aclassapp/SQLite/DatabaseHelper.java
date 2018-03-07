@@ -17,12 +17,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        db.execSQL("create table COURSE (ID text primary key" +
+        db.execSQL("create table COURSE (" +
+                "ID text" +
+                ", USER text" +
                 ", NAME text" +
                 ",MAJOR text" +
                 ",COUNT text" +
                 ",PICTURE text)");
-
 
     }
 

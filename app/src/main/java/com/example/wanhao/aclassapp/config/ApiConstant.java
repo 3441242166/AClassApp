@@ -13,12 +13,13 @@ public class ApiConstant {
     public static final String USER_ROLE = "role";
     public static final String COUNT = "count";
     public static final String PASSWORD = "password";
-    public static final String USER_NAME = "user_name";
+    public static final String USER_NAME = "username";
     /*********************文件命名相关********************************/
     public static final String  FILE_NAME = "fckt";
 
     public static final int ADD_SUCCESS = 1;
     public static final int ADD_ERROR = 0;
+    public static final int MESSAGE_CHANGE = 2;
     /**********************ActivityForResult的请求码************************/
     public static final int CAMERA_CODE = 1;
     public static final int GALLERY_CODE = 2;

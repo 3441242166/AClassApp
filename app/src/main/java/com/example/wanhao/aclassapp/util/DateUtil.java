@@ -14,8 +14,8 @@ import java.util.StringTokenizer;
  * Created by wanhao on 2017/8/10.
  */
 
-public class MyDate {
-    private static final String TAG = "MyDate";
+public class DateUtil {
+    private static final String TAG = "DateUtil";
 
     public static String getNowDateTimeString() {
         Date currentTime = new Date();

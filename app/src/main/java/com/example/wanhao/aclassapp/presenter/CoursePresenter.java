@@ -1,111 +1,96 @@
 package com.example.wanhao.aclassapp.presenter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.text.TextUtils;
+import android.util.Log;
 
-import com.example.wanhao.aclassapp.Model.CourseModel;
-import com.example.wanhao.aclassapp.base.IBaseRequestCallBack;
-import com.example.wanhao.aclassapp.bean.Course;
-import com.example.wanhao.aclassapp.view.ICoureseView;
+import com.example.wanhao.aclassapp.bean.User;
+import com.example.wanhao.aclassapp.config.ApiConstant;
+import com.example.wanhao.aclassapp.service.UserMessageService;
+import com.example.wanhao.aclassapp.util.FileConvertUtil;
+import com.example.wanhao.aclassapp.util.RetrofitHelper;
+import com.example.wanhao.aclassapp.util.SaveDataUtil;
+import com.example.wanhao.aclassapp.view.ICourseView;
+import com.google.gson.Gson;
 
-import java.util.List;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
+import retrofit2.Response;
 
 /**
- * Created by wanhao on 2018/2/23.
+ * Created by wanhao on 2018/3/5.
  */
 
 public class CoursePresenter {
     private static final String TAG = "CoursePresenter";
 
-    private Context context;
-    private ICoureseView view;
-    private CourseModel model;
 
+    private ICourseView iCourseView;
+    private Context mContext;
 
-    public CoursePresenter(Context context, ICoureseView view){
-        this.context = context;
-        this.view = view;
-        model = new CourseModel(context);
+    public CoursePresenter(ICourseView iCourseView, Context context) {
+        this.iCourseView = iCourseView;
+        this.mContext = context;
     }
 
-    public void upDateList(){
-        IBaseRequestCallBack<List<Course>> callBack = new IBaseRequestCallBack<List<Course>>() {
-            @Override
-            public void beforeRequest() {
-                view.showProgress();
-            }
+    public void getData(){
 
-            @Override
-            public void requestError(Throwable throwable) {
-                view.disimissProgress();
-                view.loadDataError(throwable.toString());
-            }
+        Bitmap bitmap = FileConvertUtil.getBitmapFromLocal(ApiConstant.USER_AVATAR_NAME);
+        String name = SaveDataUtil.getValueFromSharedPreferences(mContext, ApiConstant.USER_NAME);
 
-            @Override
-            public void requestComplete() {
-                view.disimissProgress();
-            }
+        if(bitmap!=null &&!TextUtils.isEmpty(name) ){
+            iCourseView.setData(bitmap,name);
+            return;
+        }
 
-            @Override
-            public void requestSuccess(List<Course> callBack) {
-                view.disimissProgress();
-                view.loadDataSuccess(callBack);
-            }
-        };
-
-        model.getListDataByInternet(callBack);
+        getHeadImage();
+        getUserMessage();
     }
 
-    public void getList(){
-        IBaseRequestCallBack<List<Course>> callBack = new IBaseRequestCallBack<List<Course>>() {
-            @Override
-            public void beforeRequest() {
-                view.showProgress();
-            }
+    public void getHeadImage(){
+        UserMessageService service = RetrofitHelper.get(UserMessageService.class);
 
-            @Override
-            public void requestError(Throwable throwable) {
-                view.disimissProgress();
-                view.loadDataError(throwable.toString());
-            }
-
-            @Override
-            public void requestComplete() {
-                view.disimissProgress();
-            }
-
-            @Override
-            public void requestSuccess(List<Course> callBack) {
-                view.disimissProgress();
-                view.loadDataSuccess(callBack);
-            }
-        };
-
-        model.getListDataByDB(callBack);
+        service.getAvatar(SaveDataUtil.getValueFromSharedPreferences(mContext,ApiConstant.USER_TOKEN))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new io.reactivex.functions.Consumer<Response<ResponseBody>>() {
+                    @Override
+                    public void accept(Response<ResponseBody> responseBodyResponse) throws Exception {
+                        Bitmap bitmap = BitmapFactory.decodeStream(responseBodyResponse.body().byteStream());
+                        FileConvertUtil.saveBitmapToLocal(ApiConstant.USER_AVATAR_NAME,bitmap);
+                        iCourseView.setHead(bitmap);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Log.i(TAG, "accept: "+throwable);
+                    }
+                });
     }
 
-    public void delete(String coursID){
-        IBaseRequestCallBack callBack = new IBaseRequestCallBack() {
-            @Override
-            public void beforeRequest() {
+    public void getUserMessage(){
+        UserMessageService service = RetrofitHelper.get(UserMessageService.class);
 
-            }
+        service.getProfile(SaveDataUtil.getValueFromSharedPreferences(mContext, ApiConstant.USER_TOKEN))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new io.reactivex.functions.Consumer<Response<ResponseBody>>() {
+                    @Override
+                    public void accept(Response<ResponseBody> responseBodyResponse) throws Exception {
+                        User result = new Gson().fromJson(responseBodyResponse.body().string(),User.class);
+                        SaveDataUtil.saveToSharedPreferences(mContext,ApiConstant.USER_NAME,result.getNickName());
+                        iCourseView.setName(result.getNickName());
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
 
-            @Override
-            public void requestError(Throwable throwable) {
-                view.loadDataError(throwable.toString());
-            }
+                    }
+                });
 
-            @Override
-            public void requestComplete() {
-
-            }
-
-            @Override
-            public void requestSuccess(Object callBack) {
-                view.deleteSucess();
-            }
-        };
-        model.deleteCourse(coursID,callBack);
     }
-
 }

@@ -1,5 +1,6 @@
 package com.example.wanhao.aclassapp.activity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.design.widget.FloatingActionButton;
@@ -18,6 +19,7 @@ import com.example.wanhao.aclassapp.view.IRegisterView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener,IRegisterView {
     private static final String TAG = "RegisterActivity";
@@ -31,6 +33,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @BindView(R.id.ac_register_cardview)CardView cardView;
 
     RegisterPresenter registerPresenter;
+
+    SweetAlertDialog pDialog;
 
     CountDownTimer timer = new CountDownTimer(60000, 1000) {
         @Override
@@ -62,6 +66,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         btGo.setOnClickListener(this);
         fab.setOnClickListener(this);
         tvCode.setOnClickListener(this);
+
+        pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        pDialog.setTitleText("Loding...");
+        pDialog.setCancelable(false);
     }
 
     private void InitEvent() {
@@ -72,11 +81,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.ac_register_loding:
-//                SweetAlertDialog pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
-//                pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
-//                pDialog.setTitleText("Loading");
-//                pDialog.setCancelable(true);
-//                pDialog.show();
+                registerPresenter.register(etUsername.getText().toString()
+                ,etPassword.getText().toString()
+                ,etCode.getText().toString());
                 break;
             case R.id.ac_register_getcode:
                 registerPresenter.getVerificationCode(etUsername.getText().toString(), tvCode, timer);
@@ -89,17 +96,17 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void showProgress() {
-
+        pDialog.show();
     }
 
     @Override
     public void disimissProgress() {
-
+        pDialog.hide();
     }
 
     @Override
     public void loadDataSuccess(Object tData) {
-
+        Toast.makeText(this,"注册成功", Toast.LENGTH_SHORT).show();
     }
 
     @Override

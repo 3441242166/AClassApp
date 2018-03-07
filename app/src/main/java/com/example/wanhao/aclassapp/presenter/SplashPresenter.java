@@ -7,7 +7,7 @@ import android.util.Log;
 import com.example.wanhao.aclassapp.bean.NoDataResponse;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.TokenService;
-import com.example.wanhao.aclassapp.util.MyDate;
+import com.example.wanhao.aclassapp.util.DateUtil;
 import com.example.wanhao.aclassapp.util.RetrofitHelper;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.ISplashView;
@@ -46,7 +46,7 @@ public class SplashPresenter {
             return;
         }
         //   token离线时间5天以上 从新验证
-        if(MyDate.differentDay(MyDate.getNowDateString(),time) > 4){
+        if(DateUtil.differentDay(DateUtil.getNowDateString(),time) > 4){
             TokenService service = RetrofitHelper.get(TokenService.class);
             service.check(token).enqueue(new Callback<ResponseBody>() {
                 @Override
@@ -59,7 +59,7 @@ public class SplashPresenter {
                         view.goLoding();
                     }
                     if(result.getStatus().equals(ApiConstant.RETURN_SUCCESS)){
-                        SaveDataUtil.saveToSharedPreferences(context, ApiConstant.TOKEN_TIME, MyDate.getNowDateString());
+                        SaveDataUtil.saveToSharedPreferences(context, ApiConstant.TOKEN_TIME, DateUtil.getNowDateString());
                         view.goCourse();
                     }else{
                         view.goLoding();

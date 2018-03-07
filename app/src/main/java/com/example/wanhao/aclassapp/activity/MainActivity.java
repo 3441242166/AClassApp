@@ -6,6 +6,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.wanhao.aclassapp.R;
@@ -93,4 +94,58 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        // 动态设置ToolBar状态
+        switch (viewPager.getCurrentItem()) {
+            case 0:
+                menu.findItem(R.id.main_toolbar_one).setVisible(true);
+                menu.findItem(R.id.main_toolbar_two).setVisible(false);
+                menu.findItem(R.id.main_toolbar_three).setVisible(false);
+                break;
+            case 1:
+                menu.findItem(R.id.main_toolbar_one).setVisible(false);
+                menu.findItem(R.id.main_toolbar_two).setVisible(true);
+                menu.findItem(R.id.main_toolbar_three).setVisible(false);
+                break;
+            case 2:
+                menu.findItem(R.id.main_toolbar_one).setVisible(false);
+                menu.findItem(R.id.main_toolbar_two).setVisible(false);
+                menu.findItem(R.id.main_toolbar_three).setVisible(true);
+                break;
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.main_toolbar_one) {
+            return true;
+        }
+        if (id == R.id.main_toolbar_two) {
+
+            return true;
+        }
+        if (id == R.id.main_toolbar_three) {
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
 }

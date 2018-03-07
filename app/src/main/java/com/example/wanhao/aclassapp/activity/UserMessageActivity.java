@@ -167,6 +167,7 @@ public class UserMessageActivity extends TopBarBaseActivity implements IUserMess
 
     @Override
     public void changeUserSucess() {
+
         Toast.makeText(this,"修改成功",Toast.LENGTH_SHORT).show();
         name.setText(user.getNickName());
         signature.setText(user.getSignature());
@@ -195,7 +196,7 @@ public class UserMessageActivity extends TopBarBaseActivity implements IUserMess
                         //获得拍的照片
                         Bitmap bitmap = extras.getParcelable("data");
                         imageView.setImageBitmap(bitmap);
-                        Uri uri = FileConvertUtil.saveBitmap(bitmap, ApiConstant.AVATAR_IMG_PATH, ApiConstant.USER_AVATAR_NAME);
+                        Uri uri = FileConvertUtil.saveBitmapToLocal(ApiConstant.USER_AVATAR_NAME,bitmap);
                         presenter.onSelectImage(uri);
                     }
                 }
@@ -213,4 +214,5 @@ public class UserMessageActivity extends TopBarBaseActivity implements IUserMess
                 break;
         }
     }
+
 }

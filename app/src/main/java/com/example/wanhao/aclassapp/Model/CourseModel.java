@@ -39,7 +39,7 @@ public class CourseModel implements ICourseModel{
 
     @Override
     public void getListDataByDB(final IBaseRequestCallBack<List<Course>> callBack){
-        List<Course> list = dao.alterAllCoursse();
+        List<Course> list = dao.alterAllCoursse(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_NAME));
         if(list==null || list.size()==0){
             getListDataByInternet(callBack);
         }
@@ -60,7 +60,7 @@ public class CourseModel implements ICourseModel{
                         CourseResult result = new Gson().fromJson(responseBodyResponse.body().string(),CourseResult.class);
                         if(result.getStatus().equals(ApiConstant.RETURN_SUCCESS)){
                             List<Course> list = result.getCourses();
-                            dao.addCourseList(list);
+                            dao.addCourseList(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_NAME),list);
                             callBack.requestSuccess(list);
                         }else{
                             callBack.requestError(new Throwable("error"));
@@ -88,7 +88,7 @@ public class CourseModel implements ICourseModel{
                         NoDataResponse result = new Gson().fromJson(responseBodyResponse.body().string(),NoDataResponse.class);
                         if(result.getStatus().equals(ApiConstant.RETURN_SUCCESS)){
                             callBack.requestSuccess("");
-                            dao.deleteCourse(id);
+                            dao.deleteCourse(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_NAME),id);
                         }else{
                             callBack.requestError(new Throwable(context.getResources().getString(R.string.internet_error)));
                         }

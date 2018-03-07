@@ -7,7 +7,7 @@ import android.util.Log;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.LodingService;
-import com.example.wanhao.aclassapp.util.MyDate;
+import com.example.wanhao.aclassapp.util.DateUtil;
 import com.example.wanhao.aclassapp.util.RetrofitHelper;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.ILodingView;
@@ -76,11 +76,12 @@ public class LodingPresenter implements ILoginPresenter{
                                 String token = object.optString(ApiConstant.USER_TOKEN);
                                 String role = object.optString(ApiConstant.USER_ROLE);
                                 Log.i(TAG, "accept: " + token + "  " + role);
+                                SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.USER_NAME, phoneNum);
                                 SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.USER_TOKEN, token);
                                 SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.USER_ROLE, role);
                                 SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.COUNT, phoneNum);
                                 SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.PASSWORD, password);
-                                SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.TOKEN_TIME, MyDate.getNowDateString());
+                                SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.TOKEN_TIME, DateUtil.getNowDateString());
                                 iLoginView.disimissProgress();
                                 iLoginView.loadDataSuccess(null);
                             }else{

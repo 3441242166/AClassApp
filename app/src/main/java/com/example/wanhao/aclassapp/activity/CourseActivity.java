@@ -11,8 +11,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,14 +20,15 @@ import android.widget.TextView;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.fragment.CourseFragment;
-import com.example.wanhao.aclassapp.util.FileConvertUtil;
+import com.example.wanhao.aclassapp.presenter.CoursePresenter;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
+import com.example.wanhao.aclassapp.view.ICourseView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class CourseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener ,View.OnClickListener{
+public class CourseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener ,View.OnClickListener,ICourseView {
     private static final String TAG = "CourseActivity";
 
     @BindView(R.id.ac_course_fab) FloatingActionButton fab;
@@ -40,16 +39,20 @@ public class CourseActivity extends AppCompatActivity implements NavigationView.
     private CircleImageView headImage;
     private TextView nameText;
 
+    private CoursePresenter presenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course);
         ButterKnife.bind(this);
         init();
-        initEvent();
+        presenter.getData();
     }
 
     private void init(){
+        presenter = new CoursePresenter(this,this);
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -63,18 +66,12 @@ public class CourseActivity extends AppCompatActivity implements NavigationView.
         headImage = view.findViewById(R.id.ac_course_headimage);
         nameText = view.findViewById(R.id.ac_course_name);
 
-    }
-
-    private void initEvent(){
-        Bitmap bitmap = FileConvertUtil.getBitmapFromLocal(ApiConstant.USER_AVATAR_NAME);
-        if(bitmap!=null){
-            headImage.setImageBitmap(bitmap);
-        }
-
-        String name = SaveDataUtil.getValueFromSharedPreferences(this, ApiConstant.USER_NAME);
-        if(!TextUtils.isEmpty(name)){
-            nameText.setText(name);
-        }
+        headImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(CourseActivity.this,UserMessageActivity.class));
+            }
+        });
     }
 
     @Override
@@ -102,7 +99,7 @@ public class CourseActivity extends AppCompatActivity implements NavigationView.
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            startActivity(new Intent(this,UserMessageActivity.class));
+            startActivityForResult(new Intent(this,UserMessageActivity.class),0);
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_manage) {
@@ -149,11 +146,40 @@ public class CourseActivity extends AppCompatActivity implements NavigationView.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        android.support.v4.app.FragmentManager manager = getSupportFragmentManager();
-        CourseFragment fragment = (CourseFragment) manager.findFragmentById(R.id.ac_course_fragment);
-        //通过id或者tag可以从manager获取fragment对象，
-        Log.i(TAG, "onActivityResult: ");
-        if(data!=null)
-            fragment.onActivityResult(requestCode, resultCode, data);
+        switch (resultCode){
+            case ApiConstant.ADD_SUCCESS:
+                android.support.v4.app.FragmentManager manager = getSupportFragmentManager();
+                CourseFragment fragment = (CourseFragment) manager.findFragmentById(R.id.ac_course_fragment);
+                //通过id或者tag可以从manager获取fragment对象，
+                if(data!=null)
+                    fragment.onActivityResult(requestCode, resultCode, data);
+            case ApiConstant.MESSAGE_CHANGE:
+                presenter.getData();
+        }
+
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        presenter.getData();
+    }
+
+
+
+    @Override
+    public void setData(Bitmap bitmap, String name) {
+        headImage.setImageBitmap(bitmap);
+        nameText.setText(name);
+    }
+
+    @Override
+    public void setHead(Bitmap bitmap) {
+        headImage.setImageBitmap(bitmap);
+    }
+
+    @Override
+    public void setName(String name) {
+        nameText.setText(name);
     }
 }
