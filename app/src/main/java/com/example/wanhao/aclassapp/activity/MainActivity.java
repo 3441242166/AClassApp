@@ -6,8 +6,10 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.support.v7.widget.Toolbar;
 
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.customizeview.NoScrollViewPager;
@@ -28,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     BottomNavigationView navigation;
     @BindView(R.id.ac_main_viewpager)
     NoScrollViewPager viewPager;
+    @BindView(R.id.fg_other_toolbar)
+    Toolbar toolbar;
 
 
     private OtherFragment otherFragment;
@@ -46,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        setSupportActionBar(toolbar);
 
         fragmentList = new ArrayList<>();
         mainFragment = new MainFragment();
@@ -72,12 +77,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     private void initEvent() {
         viewPager.setNoScroll(true);
         viewPager.setOverScrollMode(viewPager.OVER_SCROLL_NEVER);
         navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                invalidateOptionsMenu();
                 switch (item.getItemId()) {
                     case R.id.main_menu_home:
                         viewPager.setCurrentItem(0);
@@ -97,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-
+        Log.i(TAG, "onPrepareOptionsMenu: ");
         // 动态设置ToolBar状态
         switch (viewPager.getCurrentItem()) {
             case 0:
@@ -127,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         //noinspection SimplifiableIfStatement
         if (id == R.id.main_toolbar_one) {
+
             return true;
         }
         if (id == R.id.main_toolbar_two) {
@@ -146,6 +154,15 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    @Override
+    public void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        //Toolbar 必须在onCreate()之后设置标题文本，否则默认标签将覆盖我们的设置
+        if (toolbar != null) {
+            toolbar.setTitle(getIntent().getStringExtra("name"));
+        }
     }
 
 }

@@ -7,7 +7,8 @@
     android:orientation="vertical"
     tools:context="com.example.wanhao.aclassapp.activity.MainActivity">
 
-    <Toolbar
+    <android.support.v7.widget.Toolbar
+        app:titleTextColor="@color/colorWrite"
         android:fitsSystemWindows="true"
         android:elevation="4dp"
         android:background="@color/colorPrimary"
@@ -15,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    </Toolbar>
+    </android.support.v7.widget.Toolbar>
 
     <com.example.wanhao.aclassapp.customizeview.NoScrollViewPager
         android:id="@+id/ac_main_viewpager"

@@ -14,6 +14,7 @@ import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.AddCoursePresenter;
+import com.example.wanhao.aclassapp.util.ActivityCollector;
 import com.example.wanhao.aclassapp.view.IAddCourseView;
 
 import butterknife.BindView;
@@ -118,5 +119,13 @@ public class AddCourseActivity extends TopBarBaseActivity implements View.OnClic
     @Override
     public void loadDataError(String throwable) {
         Toast.makeText(this,throwable, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void tokenError(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        ActivityCollector.finishAll();
+        Intent intent = new Intent(this, LodingActivity.class);
+        startActivity(intent);
     }
 }

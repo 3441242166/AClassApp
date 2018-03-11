@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.util.ActivityCollector;
 
 import butterknife.ButterKnife;
 
@@ -38,6 +39,8 @@ public abstract class TopBarBaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_base_top_bar);
+
+        ActivityCollector.addActivity(this);
 
         toolbar = (Toolbar) findViewById(R.id.id_toolbar);
         viewContent = (FrameLayout) findViewById(R.id.id_viewContent);
@@ -111,6 +114,12 @@ public abstract class TopBarBaseActivity extends AppCompatActivity {
         }
 
         return true; // true 告诉系统我们自己处理了点击事件
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();2‘
+        ActivityCollector.removeActivity(this);
     }
 
 }

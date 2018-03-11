@@ -5,6 +5,10 @@
 
 
     <GridView
+        android:id="@+id/fg_other_grid"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:columnWidth="80dp"
+        android:numColumns="3"
+        android:stretchMode="spacingWidthUniform" />
 </LinearLayout>

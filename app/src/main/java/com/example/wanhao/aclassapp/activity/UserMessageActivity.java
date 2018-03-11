@@ -19,6 +19,7 @@ import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
 import com.example.wanhao.aclassapp.bean.User;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.UserMessagePresenter;
+import com.example.wanhao.aclassapp.util.ActivityCollector;
 import com.example.wanhao.aclassapp.util.FileConvertUtil;
 import com.example.wanhao.aclassapp.view.IUserMessageView;
 
@@ -213,6 +214,14 @@ public class UserMessageActivity extends TopBarBaseActivity implements IUserMess
             default:
                 break;
         }
+    }
+
+    @Override
+    public void tokenError(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        ActivityCollector.finishAll();
+        Intent intent = new Intent(this, LodingActivity.class);
+        startActivity(intent);
     }
 
 }

@@ -46,6 +46,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:layout_marginRight="10dp"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -58,5 +59,10 @@
             android:gravity="center"
             android:text="17-12-26" />
     </LinearLayout>
+
+    <View
+        android:layout_width="2dp"
+        android:layout_height="match_parent"
+        android:background="@color/buttonClickColor0"/>
 
 </LinearLayout>

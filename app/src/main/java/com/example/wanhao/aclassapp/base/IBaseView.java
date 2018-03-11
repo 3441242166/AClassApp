@@ -34,5 +34,8 @@ public interface IBaseView<T> {
      * @date 2017/2/16 11:01
      */
     void loadDataError(String throwable);
+
+    void tokenError(String msg);
+
 }
 

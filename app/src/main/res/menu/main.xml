@@ -4,7 +4,7 @@
     <item
         android:id="@+id/main_toolbar_one"
         android:orderInCategory="100"
-        android:title="NOTHING"
+        android:title="课程详情"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/main_toolbar_two"
@@ -14,6 +14,6 @@
     <item
         android:id="@+id/main_toolbar_three"
         android:orderInCategory="100"
-        android:title="NOTHING"
+        android:title="设置"
         app:showAsAction="ifRoom" />
 </menu>

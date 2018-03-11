@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.presenter.LodingPresenter;
+import com.example.wanhao.aclassapp.util.ActivityCollector;
 import com.example.wanhao.aclassapp.view.ILodingView;
 
 import butterknife.BindView;
@@ -115,5 +116,12 @@ public class LodingActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
+    @Override
+    public void tokenError(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        ActivityCollector.finishAll();
+        Intent intent = new Intent(this, LodingActivity.class);
+        startActivity(intent);
+    }
 }
 

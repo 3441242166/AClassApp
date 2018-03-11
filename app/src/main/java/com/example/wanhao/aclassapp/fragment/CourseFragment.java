@@ -8,12 +8,14 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.activity.LodingActivity;
 import com.example.wanhao.aclassapp.activity.MainActivity;
 import com.example.wanhao.aclassapp.adapter.CourseAdapter;
 import com.example.wanhao.aclassapp.base.LazyLoadFragment;
 import com.example.wanhao.aclassapp.bean.Course;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.CourseFgPresenter;
+import com.example.wanhao.aclassapp.util.ActivityCollector;
 import com.example.wanhao.aclassapp.view.ICourseFgView;
 import com.yalantis.phoenix.PullToRefreshView;
 
@@ -69,7 +71,10 @@ public class CourseFragment extends LazyLoadFragment implements ICourseFgView {
         adapter.setOnItemClickListener(new CourseAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, final int position) {
-                startActivity(new Intent(getActivity(), MainActivity.class));
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                intent.putExtra("name",courseList.get(position).getName());
+
+                startActivity(intent);
             }
 
         });
@@ -150,5 +155,13 @@ public class CourseFragment extends LazyLoadFragment implements ICourseFgView {
                 .show();
         courseList.remove(deletePos);
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void tokenError(String msg) {
+        Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+        ActivityCollector.finishAll();
+        Intent intent = new Intent(getActivity(), LodingActivity.class);
+        startActivity(intent);
     }
 }
