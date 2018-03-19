@@ -45,7 +45,7 @@ public abstract class TopBarBaseActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.id_toolbar);
         viewContent = (FrameLayout) findViewById(R.id.id_viewContent);
         tvTitle = (TextView) findViewById(R.id.id_tvTitle);
-
+        toolbar.setFitsSystemWindows(true);
         //初始化设置 Toolbar
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -56,6 +56,10 @@ public abstract class TopBarBaseActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         init(savedInstanceState);
+    }
+
+    public void setToolbarFitsSystem(boolean is){
+        toolbar.setFitsSystemWindows(is);
     }
 
     protected void setTitle(String title){
@@ -118,7 +122,7 @@ public abstract class TopBarBaseActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();2‘
+        super.onDestroy();
         ActivityCollector.removeActivity(this);
     }
 

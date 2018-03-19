@@ -36,7 +36,8 @@
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.LodingActivity" />
         <activity android:name=".activity.UserMessageActivity" />
-        <activity android:name=".activity.RemarkActivity"></activity>
+        <activity android:name=".activity.RemarkActivity" />
+        <activity android:name=".activity.DocumentActivity"></activity>
     </application>
 
 </manifest>

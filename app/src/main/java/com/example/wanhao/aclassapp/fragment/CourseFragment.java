@@ -72,8 +72,8 @@ public class CourseFragment extends LazyLoadFragment implements ICourseFgView {
             @Override
             public void onItemClick(View view, final int position) {
                 Intent intent = new Intent(getActivity(), MainActivity.class);
-                intent.putExtra("name",courseList.get(position).getName());
-
+                intent.putExtra(ApiConstant.COURSE_NAME,courseList.get(position).getName());
+                intent.putExtra(ApiConstant.COURSE_ID,courseList.get(position).getId());
                 startActivity(intent);
             }
 

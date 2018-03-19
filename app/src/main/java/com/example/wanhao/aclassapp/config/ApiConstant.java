@@ -5,7 +5,7 @@ package com.example.wanhao.aclassapp.config;
  */
 
 public class ApiConstant {
-    public static final String BASE_URL = "https://fc.xd.style/";
+    public static final String BASE_URL = "https://api.fc.xd.style/";
 
     public final static String RETURN_SUCCESS ="SUCCESS";
     //用户token
@@ -30,4 +30,8 @@ public class ApiConstant {
 
     /**********************储存token的时间************************/
     public static final String TOKEN_TIME = "token_time";
+
+    /**********************Course有关Key************************/
+    public static final String COURSE_NAME = "course_name";
+    public static final String COURSE_ID = "course_id";
 }

@@ -101,7 +101,7 @@ public class CourseActivity extends AppCompatActivity implements NavigationView.
         if (id == R.id.nav_camera) {
             startActivityForResult(new Intent(this,UserMessageActivity.class),0);
         } else if (id == R.id.nav_gallery) {
-
+            startActivity(new Intent(this,DocumentActivity.class));
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {

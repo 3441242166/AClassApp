@@ -23,7 +23,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 ", NAME text" +
                 ",MAJOR text" +
                 ",COUNT text" +
-                ",PICTURE text)");
+                ",PICTURE text" +
+                ",PRIMARY KEY(USER,ID))");
+
+
 
     }
 

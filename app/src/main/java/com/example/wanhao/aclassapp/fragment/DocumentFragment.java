@@ -9,6 +9,7 @@ import com.example.wanhao.aclassapp.base.LazyLoadFragment;
 import com.example.wanhao.aclassapp.bean.Document;
 import com.example.wanhao.aclassapp.util.DateUtil;
 import com.example.wanhao.aclassapp.util.PagingScrollHelper;
+import com.example.wanhao.aclassapp.view.IDocumentView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ import butterknife.BindView;
  * Created by wanhao on 2018/2/27.
  */
 
-public class DocumentFragment extends LazyLoadFragment{
+public class DocumentFragment extends LazyLoadFragment implements IDocumentView{
     private static final String TAG = "DocumentFragment";
 
     @BindView(R.id.fg_document_beforlist)
@@ -31,6 +32,8 @@ public class DocumentFragment extends LazyLoadFragment{
 
     private List<Document> beforClassList;
 
+    private String courseID;
+
     @Override
     protected int setContentView() {
         return R.layout.framgnet_document;
@@ -38,6 +41,7 @@ public class DocumentFragment extends LazyLoadFragment{
 
     @Override
     protected void lazyLoad() {
+        courseID = getArguments().getString("courseID");
         initView();
     }
 
@@ -60,13 +64,18 @@ public class DocumentFragment extends LazyLoadFragment{
         List<Document> documents = new ArrayList<>();
         for(int x=0;x<5;x++){
             Document document = new Document();
-            document.setTitle(""+x);
-            document.setSize("1.23MB");
+            document.setTitle("动态规划课件");
+            document.setSize("3.45MB  来自万浩老师");
             document.setTime(DateUtil.getNowDateString());
             documents.add(document);
         }
 
         adapter.setData(documents);
         documentAdapter.setData(documents);
+    }
+
+    @Override
+    public void showDocumentList(List<Document> documentList) {
+        adapter.setData(documentList);
     }
 }

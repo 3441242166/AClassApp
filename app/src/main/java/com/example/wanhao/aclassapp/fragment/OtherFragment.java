@@ -1,14 +1,17 @@
 package com.example.wanhao.aclassapp.fragment;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.activity.RemarkActivity;
 import com.example.wanhao.aclassapp.adapter.GridAdapter;
 import com.example.wanhao.aclassapp.base.LazyLoadFragment;
 import com.example.wanhao.aclassapp.bean.GridBean;
+import com.example.wanhao.aclassapp.config.ApiConstant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +28,9 @@ public class OtherFragment extends LazyLoadFragment {
     GridView gridView;
 
     private List<GridBean> dataList;
-
     private GridAdapter adapter;
+
+    private String courseID;
 
     @Override
     protected int setContentView() {
@@ -43,14 +47,21 @@ public class OtherFragment extends LazyLoadFragment {
     }
 
     private void initData() {
+        courseID = getArguments().getString(ApiConstant.COURSE_ID);
 
         dataList = new ArrayList<>();
-        for (int i = 0; i <25; i++) {
-            GridBean bean= new GridBean();
-            bean.setImgID(R.drawable.mainicon_0);
-            bean.setName("sss");
-            dataList.add(bean);
-        }
+        GridBean bean= new GridBean();
+        bean.setImgID(R.drawable.icon_other_0);
+        bean.setName("留言板");
+        dataList.add(bean);
+
+//        for (int i = 0; i <25; i++) {
+//            GridBean bean= new GridBean();
+//            bean.setImgID(R.drawable.mainicon_0);
+//            bean.setName("sss");
+//            dataList.add(bean);
+//        }
+
     }
 
     private void initView() {
@@ -65,7 +76,14 @@ public class OtherFragment extends LazyLoadFragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getActivity(),""+i+l,Toast.LENGTH_SHORT).show();
+                switch (i){
+                    case 0:
+                        Toast.makeText(getActivity(),courseID,Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getActivity(), RemarkActivity.class);
+                        intent.putExtra(ApiConstant.COURSE_ID,"");
+                        startActivity(new Intent(getActivity(), RemarkActivity.class));
+                        break;
+                }
             }
         });
 

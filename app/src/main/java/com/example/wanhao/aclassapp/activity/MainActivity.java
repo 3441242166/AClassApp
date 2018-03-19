@@ -6,12 +6,13 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.support.v7.widget.Toolbar;
 
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.customizeview.NoScrollViewPager;
 import com.example.wanhao.aclassapp.fragment.DocumentFragment;
 import com.example.wanhao.aclassapp.fragment.MainFragment;
@@ -57,10 +58,15 @@ public class MainActivity extends AppCompatActivity {
         otherFragment = new OtherFragment();
         documentFragment = new DocumentFragment();
 
+        Bundle bundle = new Bundle();
+        bundle.putString(ApiConstant.COURSE_ID,getIntent().getStringExtra(ApiConstant.COURSE_ID));//这里的values就是我们要传的值
+        mainFragment.setArguments(bundle);
+        otherFragment.setArguments(bundle);
+        documentFragment.setArguments(bundle);
+
         fragmentList.add(mainFragment);
         fragmentList.add(documentFragment);
         fragmentList.add(otherFragment);
-
 
         adapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
@@ -161,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
         super.onPostCreate(savedInstanceState);
         //Toolbar 必须在onCreate()之后设置标题文本，否则默认标签将覆盖我们的设置
         if (toolbar != null) {
-            toolbar.setTitle(getIntent().getStringExtra("name"));
+            toolbar.setTitle(getIntent().getStringExtra(ApiConstant.COURSE_NAME));
         }
     }
 

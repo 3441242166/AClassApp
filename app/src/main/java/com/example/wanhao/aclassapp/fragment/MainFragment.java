@@ -8,6 +8,9 @@ import com.example.wanhao.aclassapp.base.LazyLoadFragment;
  */
 
 public class MainFragment extends LazyLoadFragment {
+
+    private String courseID;
+
     @Override
     protected int setContentView() {
         return R.layout.framgnet_main;
@@ -15,6 +18,6 @@ public class MainFragment extends LazyLoadFragment {
 
     @Override
     protected void lazyLoad() {
-
+        courseID = getArguments().getString("courseID");
     }
 }

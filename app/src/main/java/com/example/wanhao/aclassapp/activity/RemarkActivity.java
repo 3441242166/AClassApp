@@ -16,6 +16,6 @@ public class RemarkActivity extends TopBarBaseActivity {
 
     @Override
     protected void init(Bundle savedInstanceState) {
-
+        setToolbarFitsSystem(false);
     }
 }
