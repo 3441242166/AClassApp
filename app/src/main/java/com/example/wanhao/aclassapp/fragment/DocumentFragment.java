@@ -2,16 +2,17 @@ package com.example.wanhao.aclassapp.fragment;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.adapter.DocumentAdapter;
 import com.example.wanhao.aclassapp.base.LazyLoadFragment;
 import com.example.wanhao.aclassapp.bean.Document;
-import com.example.wanhao.aclassapp.util.DateUtil;
+import com.example.wanhao.aclassapp.config.ApiConstant;
+import com.example.wanhao.aclassapp.presenter.DocumentPresenter;
 import com.example.wanhao.aclassapp.util.PagingScrollHelper;
 import com.example.wanhao.aclassapp.view.IDocumentView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -28,9 +29,13 @@ public class DocumentFragment extends LazyLoadFragment implements IDocumentView{
     @BindView(R.id.fg_document_classlist)
     RecyclerView classRv;
 
-    DocumentAdapter adapter;
+    DocumentAdapter documentAdapter;
+    DocumentAdapter previewAdapter;
 
-    private List<Document> beforClassList;
+    DocumentPresenter presenter;
+
+    private List<Document> documentList;
+    private List<Document> previewList;
 
     private String courseID;
 
@@ -41,8 +46,14 @@ public class DocumentFragment extends LazyLoadFragment implements IDocumentView{
 
     @Override
     protected void lazyLoad() {
-        courseID = getArguments().getString("courseID");
+        courseID = getArguments().getString(ApiConstant.COURSE_ID);
+        Log.i(TAG, "lazyLoad: "+courseID);
+        presenter = new DocumentPresenter(this,getActivity());
+
         initView();
+
+        presenter.getDocumentList(courseID,"edata");
+        presenter.getDocumentList(courseID,"preview");
     }
 
     private void initView() {
@@ -54,28 +65,51 @@ public class DocumentFragment extends LazyLoadFragment implements IDocumentView{
         new PagingScrollHelper().setUpRecycleView(beforRv);
         new PagingScrollHelper().setUpRecycleView(classRv);
 
-        adapter = new DocumentAdapter(getActivity());
+        documentAdapter = new DocumentAdapter(getActivity());
+        previewAdapter = new DocumentAdapter(getActivity());
 
-        DocumentAdapter documentAdapter = new DocumentAdapter(getActivity());
-
-        beforRv.setAdapter(adapter);
+        beforRv.setAdapter(this.documentAdapter);
         classRv.setAdapter(documentAdapter);
 
-        List<Document> documents = new ArrayList<>();
-        for(int x=0;x<5;x++){
-            Document document = new Document();
-            document.setTitle("动态规划课件");
-            document.setSize("3.45MB  来自万浩老师");
-            document.setTime(DateUtil.getNowDateString());
-            documents.add(document);
-        }
+//        List<Document> documents = new ArrayList<>();
+//        for(int x=0;x<5;x++){
+//            Document document = new Document();
+//            document.setTitle("动态规划课件");
+//            document.setSize("3.45MB  来自万浩老师");
+//            document.setDate(DateUtil.getNowDateString());
+//            documents.add(document);
+//        }
+//
+//        documentAdapter.setData(documents);
+//        previewAdapter.setData(documents);
+    }
 
-        adapter.setData(documents);
-        documentAdapter.setData(documents);
+
+    @Override
+    public void showProgress() {
+
     }
 
     @Override
-    public void showDocumentList(List<Document> documentList) {
-        adapter.setData(documentList);
+    public void disimissProgress() {
+
     }
+
+    @Override
+    public void loadDataSuccess(List<Document> tData,String type) {
+        if(type.equals("edata")){
+            documentList = tData;
+            documentAdapter.setData(documentList);
+        }
+        if(type.equals("preview")){
+            previewList = tData;
+            previewAdapter.setData(previewList);
+        }
+    }
+
+    @Override
+    public void loadDataError(String throwable) {
+
+    }
+
 }

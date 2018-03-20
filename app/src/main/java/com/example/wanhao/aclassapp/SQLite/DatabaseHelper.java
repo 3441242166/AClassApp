@@ -26,7 +26,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 ",PICTURE text" +
                 ",PRIMARY KEY(USER,ID))");
 
-
+        db.execSQL("create table DOCUMENT (" +
+                "ID text" +
+                ",USER text" +
+                ",NAME text" +
+                ",DATE text" +
+                ",SIZE text" +
+                ",AUTHOR text" +
+                ",PRIMARY KEY(USER,ID))");
 
     }
 

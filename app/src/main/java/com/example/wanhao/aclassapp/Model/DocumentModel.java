@@ -1,6 +1,25 @@
 package com.example.wanhao.aclassapp.Model;
 
 import android.content.Context;
+import android.util.Log;
+
+import com.example.wanhao.aclassapp.base.IBaseRequestCallBack;
+import com.example.wanhao.aclassapp.bean.Document;
+import com.example.wanhao.aclassapp.bean.DocumentResult;
+import com.example.wanhao.aclassapp.bean.Result;
+import com.example.wanhao.aclassapp.config.ApiConstant;
+import com.example.wanhao.aclassapp.service.DocumentService;
+import com.example.wanhao.aclassapp.util.RetrofitHelper;
+import com.example.wanhao.aclassapp.util.SaveDataUtil;
+import com.google.gson.Gson;
+
+import java.util.List;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
+import retrofit2.Response;
 
 /**
  * Created by wanhao on 2018/3/19.
@@ -16,7 +35,72 @@ public class DocumentModel {
 
     }
 
-    public void getDocumentList(String courseID){
+    public void getDocumentList(String courseID, final IBaseRequestCallBack callBack){
+        //----------从数据库取数据--------------------
+
+        //----------从服务器取数据--------------------
+        DocumentService service = RetrofitHelper.get(DocumentService.class);
+
+        service.getDocumentList(SaveDataUtil.getValueFromSharedPreferences(context, ApiConstant.USER_TOKEN),Integer.valueOf(courseID))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Response<ResponseBody>>() {
+                    @Override
+                    public void accept(Response<ResponseBody> responseBodyResponse) throws Exception {
+                        String accept = responseBodyResponse.body().string();
+                        Log.i(TAG, "accept: "+accept);
+                        DocumentResult result = new Gson().fromJson(accept,DocumentResult.class);
+                        if(result.getStatus().equals(ApiConstant.RETURN_SUCCESS)){
+                            List<Document> list = result.getCourses();
+                            //dao.addCourseList(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_NAME),list);
+                            callBack.requestSuccess(list);
+                        }else{
+                            callBack.requestError(new Throwable("error"));
+                        }
+                    }
+                },new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        callBack.requestError(throwable);
+                    }
+                });
+
+
+    }
+
+    public void getPreviewList(String courseID, final IBaseRequestCallBack callBack){
+        //----------从数据库取数据--------------------
+
+        //----------从服务器取数据--------------------
+        DocumentService service = RetrofitHelper.get(DocumentService.class);
+
+
+        service.getPreviewList(SaveDataUtil.getValueFromSharedPreferences(context, ApiConstant.USER_TOKEN),Integer.valueOf(courseID))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Response<ResponseBody>>() {
+                    @Override
+                    public void accept(Response<ResponseBody> responseBodyResponse) throws Exception {
+                        String accept = responseBodyResponse.body().string();
+                        Log.i(TAG, "accept: "+accept);
+                        Result<Document> result = new Gson().fromJson(responseBodyResponse.body().string(),Result.class);
+                        Log.i(TAG, "accept: listSize"+result.getData().size());
+                        if(result.getStatus().equals(ApiConstant.RETURN_SUCCESS)){
+                            List<Document> list = result.getData();
+
+
+                            //dao.addCourseList(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_NAME),list);
+                            callBack.requestSuccess(list);
+                        }else{
+                            callBack.requestError(new Throwable("error"));
+                        }
+                    }
+                },new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        callBack.requestError(throwable);
+                    }
+                });
 
     }
 

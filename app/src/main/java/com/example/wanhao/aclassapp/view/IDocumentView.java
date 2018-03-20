@@ -8,10 +8,9 @@ import java.util.List;
  * Created by wanhao on 2018/3/19.
  */
 
-public interface IDocumentView {
-
-    void showDocumentList(List<Document> documentList);
-
-
-
+public interface IDocumentView{
+    void showProgress();
+    void disimissProgress();
+    void loadDataError(String throwable);
+    void loadDataSuccess(List<Document> tData,String type);
 }

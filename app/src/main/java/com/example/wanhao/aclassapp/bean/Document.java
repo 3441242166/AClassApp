@@ -1,23 +1,29 @@
 package com.example.wanhao.aclassapp.bean;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by wanhao on 2018/3/7.
  */
 
 public class Document {
-
-    private int type;
+    @SerializedName("id")
+    private int id;
+    @SerializedName("position")
     private String title;
+    @SerializedName("size")
     private String size;
+    @SerializedName("author")
     private String user;
-    private String time;
+    @SerializedName("date")
+    private String date;
 
-    public int getType() {
-        return type;
+    public int getId() {
+        return id;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -44,11 +50,11 @@ public class Document {
         this.user = user;
     }
 
-    public String getTime() {
-        return time;
+    public String getDate() {
+        return date;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setDate(String date) {
+        this.date = date;
     }
 }

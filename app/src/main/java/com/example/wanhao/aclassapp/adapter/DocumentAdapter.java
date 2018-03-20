@@ -51,7 +51,7 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.Holder
 
         holder.name.setText(course.getTitle());
         holder.size.setText(course.getSize());
-        holder.time.setText(course.getTime());
+        holder.time.setText(course.getDate());
         //Glide.with(context).load(course.getImgUrl()+"?token="+ SaveDataUtil.getValueFromSharedPreferences(context, ApiConstant.USER_TOKEN)).into(holder.bck);
 
         holder.itemView.setTag(position);

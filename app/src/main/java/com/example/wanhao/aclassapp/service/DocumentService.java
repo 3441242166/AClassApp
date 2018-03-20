@@ -19,6 +19,7 @@ public interface DocumentService {
     @GET("course/{courseId}/data/preview")
     Observable<Response<ResponseBody>> getPreviewList(@Header("Authorization") String token, @Path("courseId") int courseId);
 
+
     @GET("course/{courseId}/data/edata/{eDataID}")
     Observable<Response<ResponseBody>> downloadDocument(@Header("Authorization") String token, @Path("courseId") int courseId, @Path("eDataID") int eDataID);
 
