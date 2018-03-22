@@ -18,6 +18,8 @@ public class Document {
     @SerializedName("date")
     private String date;
 
+    private String courseID;
+
     public int getId() {
         return id;
     }
@@ -56,5 +58,13 @@ public class Document {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getCourseID() {
+        return courseID;
+    }
+
+    public void setCourseID(String courseID) {
+        this.courseID = courseID;
     }
 }

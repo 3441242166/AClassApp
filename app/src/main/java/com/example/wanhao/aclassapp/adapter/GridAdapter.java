@@ -1,10 +1,10 @@
 package com.example.wanhao.aclassapp.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,63 +14,87 @@ import com.example.wanhao.aclassapp.bean.GridBean;
 
 import java.util.List;
 
-/**
- * Created by wanhao on 2018/3/10.
- */
+public class GridAdapter extends RecyclerView.Adapter<GridAdapter.Holder> implements View.OnClickListener,View.OnLongClickListener{
 
-public class GridAdapter extends BaseAdapter {
+    private List<GridBean> courseList;
 
-    private List<GridBean> list;
+    private com.example.wanhao.aclassapp.adapter.CourseAdapter.OnItemClickListener onItemClickListener;
+    private com.example.wanhao.aclassapp.adapter.CourseAdapter.OnLongItemClickListener onItemLongClickListener;
 
+    private View view;
     private Context context;
-    private LayoutInflater inflater;
 
-    public GridAdapter(List<GridBean> list, Context context){
-        this.list = list;
+    public GridAdapter(Context context){
         this.context = context;
-        // 布局装载器对象
-        inflater = LayoutInflater.from(context);
+    }
+
+    public void setData(List<GridBean> courseList){
+        this.courseList = courseList;
+        notifyDataSetChanged();
     }
 
     @Override
-    public int getCount() {
-        return list.size();
+    public GridAdapter.Holder onCreateViewHolder(ViewGroup parent, int viewType) {
+        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_grid, parent, false);
+        GridAdapter.Holder vh = new GridAdapter.Holder(view);
+        view.setOnClickListener(this);
+        view.setOnLongClickListener(this);
+        return vh;
     }
 
     @Override
-    public GridBean getItem(int i) {
-        return list.get(i);
+    public void onBindViewHolder(GridAdapter.Holder holder, int position) {
+        GridBean course = courseList.get(position);
+
+        holder.textView.setText(course.getName());
+        Glide.with(context).load(course.getImgID()).into(holder.imageView);
+
+        holder.itemView.setTag(position);
     }
 
     @Override
-    public long getItemId(int i) {
-        return i;
+    public int getItemCount() {
+        return courseList==null ? 0:courseList.size();
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-
-        ViewHolder holder;
-
-        if (view == null) {
-            //LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-            view = inflater.inflate(R.layout.item_grid, viewGroup, false);
-            holder = new ViewHolder();
-            holder.textView = (TextView) view.findViewById(R.id.item_grid_text);
-            holder.imageView = (ImageView) view.findViewById(R.id.item_grid_image);
-            view.setTag(holder);
-        } else {
-            holder = (ViewHolder) view.getTag();
+    public void onClick(View view) {
+        if(onItemClickListener!=null){
+            onItemClickListener.onItemClick(view,(int)view.getTag());
         }
-        GridBean item = list.get(i);
-        holder.textView.setText(item.getName());
-        Glide.with(context).load(item.getImgID()).into(holder.imageView);
-        return view;
-
     }
 
-    private class ViewHolder {
-        TextView textView;
-        ImageView imageView;
+    @Override
+    public boolean onLongClick(View view) {
+        if(onItemLongClickListener!=null){
+            onItemLongClickListener.onLongItemClick(view,(int)view.getTag());
+        }
+        return true;
+    }
+
+    public void setOnItemClickListener(com.example.wanhao.aclassapp.adapter.CourseAdapter.OnItemClickListener listener) {
+        this.onItemClickListener = listener;
+    }
+
+    public void setOnLongItemClickListener(com.example.wanhao.aclassapp.adapter.CourseAdapter.OnLongItemClickListener listener) {
+        this.onItemLongClickListener = listener;
+    }
+
+    public static class Holder extends RecyclerView.ViewHolder {
+        public TextView textView;
+        public ImageView imageView;
+        public Holder(View view) {
+            super(view);
+            textView = view.findViewById(R.id.item_grid_text);
+            imageView = view.findViewById(R.id.item_grid_image);
+        }
+    }
+
+    public interface OnLongItemClickListener {
+        void onLongItemClick(View view, int position);
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
     }
 }

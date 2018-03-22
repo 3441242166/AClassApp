@@ -30,7 +30,7 @@ public abstract class LazyLoadFragment extends Fragment {
         mUnbinder = ButterKnife.bind(this, view);
         isInit = true;
         /**初始化的时候去加载数据**/
-        isCanLoadData();
+        lazyLoad();
         return view;
     }
 
@@ -40,7 +40,7 @@ public abstract class LazyLoadFragment extends Fragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        isCanLoadData();
+        //isCanLoadData();
     }
 
     /**

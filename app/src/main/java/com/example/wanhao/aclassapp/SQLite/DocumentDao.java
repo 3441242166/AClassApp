@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.wanhao.aclassapp.bean.Course;
+import com.example.wanhao.aclassapp.bean.Document;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,48 +23,50 @@ public class DocumentDao {
         mMyDBHelper=new DatabaseHelper(context);
     }
     // 增加的方法吗，返回的的是一个long值
-    public void addCourseList(String user,List<Course> list){
+    public void addDocumentList(List<Document> list, String userID, String courseID){
 
         SQLiteDatabase sqLiteDatabase =  mMyDBHelper.getWritableDatabase();
 
         for(int x=0;x<list.size();x++) {
-            Course course = list.get(x);
+            Document course = list.get(x);
             ContentValues contentValues = new ContentValues();
-            contentValues.put("USER", user);
-            contentValues.put("ID", course.getId());
-            contentValues.put("PICTURE", course.getImgUrl());
-            contentValues.put("NAME", course.getName());
-            contentValues.put("COUNT", course.getNum());
-            contentValues.put("MAJOR", course.getParent());
+            contentValues.put("DOCUMENTID", course.getId());
+            contentValues.put("USERID", userID);
+            contentValues.put("COURSEID", courseID);
+            contentValues.put("TITLE", course.getTitle());
+            contentValues.put("DATE", course.getDate());
+            contentValues.put("SIZE", course.getSize());
+            contentValues.put("AUTHOR", course.getUser());
 
-            long rowid = sqLiteDatabase.insert("COURSE", null, contentValues);
+            long rowd = sqLiteDatabase.insert("DOCUMENT", null, contentValues);
         }
         sqLiteDatabase.close();
     }
 
     // 删除方法，返回值是int
-    public int deleteCourse(String user,String id){
+    public int deleteDocument(String documentID,String userID,String courseID){
         SQLiteDatabase sqLiteDatabase = mMyDBHelper.getWritableDatabase();
-        int deleteResult = sqLiteDatabase.delete("COURSE","ID=?,USER=?", new String[]{id,user});
+        int deleteResult = sqLiteDatabase.delete("DOCUMENT","documentID=?,userID=?,courseID=?", new String[]{documentID,userID,courseID});
         sqLiteDatabase.close();
         return deleteResult;
     }
 
-    public List<Course> alterAllCoursse(String user){
+    public List<Document> alterAllDocument(String user){
 
         SQLiteDatabase readableDatabase = mMyDBHelper.getReadableDatabase();
         // 查询比较特别,涉及到 cursor
-        Cursor cursor = readableDatabase.rawQuery("select * from COURSE WHERE USER=?", new String[]{user});
+        Cursor cursor = readableDatabase.rawQuery("select * from DOCUMENT WHERE USERID=?", new String[]{user});
 
-        List<Course> list =new ArrayList<Course>();
+        List<Document> list =new ArrayList<Document>();
 
         while (cursor.moveToNext()) {
-            Course task = new Course();
-            task.setId(cursor.getString(cursor.getColumnIndex("ID")));
-            task.setImgUrl(cursor.getString(cursor.getColumnIndex("PICTURE")));
-            task.setName(cursor.getString(cursor.getColumnIndex("NAME")));
-            task.setNum(cursor.getString(cursor.getColumnIndex("COUNT")));
-            task.setParent(cursor.getString(cursor.getColumnIndex("MAJOR")));
+            Document task = new Document();
+            task.setId(Integer.valueOf(cursor.getString(cursor.getColumnIndex("DOCUMENTID"))));
+            task.setTitle(cursor.getString(cursor.getColumnIndex("TITLE")));
+            task.setSize(cursor.getString(cursor.getColumnIndex("SIZE")));
+            task.setDate(cursor.getString(cursor.getColumnIndex("DATE")));
+            task.setUser(cursor.getString(cursor.getColumnIndex("AUTHOR")));
+            task.setCourseID(cursor.getString(cursor.getColumnIndex("COURSEID")));
 
             list.add(task);
         }

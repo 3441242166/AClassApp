@@ -3,6 +3,7 @@ package com.example.wanhao.aclassapp.Model;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.wanhao.aclassapp.SQLite.DocumentDao;
 import com.example.wanhao.aclassapp.base.IBaseRequestCallBack;
 import com.example.wanhao.aclassapp.bean.Document;
 import com.example.wanhao.aclassapp.bean.DocumentResult;
@@ -29,13 +30,14 @@ public class DocumentModel {
     private static final String TAG = "DocumentModel";
 
     private Context context;
+    private DocumentDao dao;
 
     public DocumentModel(Context context){
         this.context = context;
-
+        dao = new DocumentDao(context);
     }
 
-    public void getDocumentList(String courseID, final IBaseRequestCallBack callBack){
+    public void getDocumentList(final String courseID, final IBaseRequestCallBack callBack){
         //----------从数据库取数据--------------------
 
         //----------从服务器取数据--------------------
@@ -52,7 +54,7 @@ public class DocumentModel {
                         DocumentResult result = new Gson().fromJson(accept,DocumentResult.class);
                         if(result.getStatus().equals(ApiConstant.RETURN_SUCCESS)){
                             List<Document> list = result.getCourses();
-                            //dao.addCourseList(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_NAME),list);
+                            dao.addDocumentList(list,SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_NAME),courseID);
                             callBack.requestSuccess(list);
                         }else{
                             callBack.requestError(new Throwable("error"));

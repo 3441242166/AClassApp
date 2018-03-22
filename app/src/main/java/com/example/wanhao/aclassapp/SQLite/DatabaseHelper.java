@@ -27,13 +27,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 ",PRIMARY KEY(USER,ID))");
 
         db.execSQL("create table DOCUMENT (" +
-                "ID text" +
-                ",USER text" +
-                ",NAME text" +
+                "DOCUMENTID text" +
+                ",USERID text" +
+                ",COURSEID text" +
+                ",TITLE text" +
                 ",DATE text" +
                 ",SIZE text" +
                 ",AUTHOR text" +
-                ",PRIMARY KEY(USER,ID))");
+                ",PRIMARY KEY(USERID,DOCUMENTID,COURSEID))");
 
     }
 

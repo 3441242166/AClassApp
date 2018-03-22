@@ -3,15 +3,16 @@ package com.example.wanhao.aclassapp.fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
+import android.view.View;
 
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.adapter.DocumentAdapter;
 import com.example.wanhao.aclassapp.base.LazyLoadFragment;
 import com.example.wanhao.aclassapp.bean.Document;
 import com.example.wanhao.aclassapp.config.ApiConstant;
-import com.example.wanhao.aclassapp.presenter.DocumentPresenter;
+import com.example.wanhao.aclassapp.presenter.DocumentFgPresenter;
 import com.example.wanhao.aclassapp.util.PagingScrollHelper;
-import com.example.wanhao.aclassapp.view.IDocumentView;
+import com.example.wanhao.aclassapp.view.IDocumentFgView;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ import butterknife.BindView;
  * Created by wanhao on 2018/2/27.
  */
 
-public class DocumentFragment extends LazyLoadFragment implements IDocumentView{
+public class DocumentFragment extends LazyLoadFragment implements IDocumentFgView {
     private static final String TAG = "DocumentFragment";
 
     @BindView(R.id.fg_document_beforlist)
@@ -32,7 +33,7 @@ public class DocumentFragment extends LazyLoadFragment implements IDocumentView{
     DocumentAdapter documentAdapter;
     DocumentAdapter previewAdapter;
 
-    DocumentPresenter presenter;
+    DocumentFgPresenter presenter;
 
     private List<Document> documentList;
     private List<Document> previewList;
@@ -48,9 +49,10 @@ public class DocumentFragment extends LazyLoadFragment implements IDocumentView{
     protected void lazyLoad() {
         courseID = getArguments().getString(ApiConstant.COURSE_ID);
         Log.i(TAG, "lazyLoad: "+courseID);
-        presenter = new DocumentPresenter(this,getActivity());
+        presenter = new DocumentFgPresenter(this,getActivity());
 
         initView();
+        initEvent();
 
         presenter.getDocumentList(courseID,"edata");
         presenter.getDocumentList(courseID,"preview");
@@ -84,6 +86,35 @@ public class DocumentFragment extends LazyLoadFragment implements IDocumentView{
 //        previewAdapter.setData(documents);
     }
 
+    private void initEvent(){
+        documentAdapter.setOnItemClickListener(new DocumentAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+
+            }
+        });
+
+        previewAdapter.setOnItemClickListener(new DocumentAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+
+            }
+        });
+
+        documentAdapter.setOnLongItemClickListener(new DocumentAdapter.OnLongItemClickListener() {
+            @Override
+            public void onLongItemClick(View view, int position) {
+
+            }
+        });
+
+        previewAdapter.setOnLongItemClickListener(new DocumentAdapter.OnLongItemClickListener() {
+            @Override
+            public void onLongItemClick(View view, int position) {
+
+            }
+        });
+    }
 
     @Override
     public void showProgress() {

@@ -66,5 +66,8 @@ public class FileConvertUtil {
         return null;
     }
 
+    public static String byteToMb(int by){
+        return String.valueOf((float)(Math.round(((float)by/1024/1024)*100))/100)+"MB";
+    }
 
 }

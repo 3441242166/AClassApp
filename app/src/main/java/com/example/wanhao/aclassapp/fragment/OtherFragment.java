@@ -1,17 +1,19 @@
 package com.example.wanhao.aclassapp.fragment;
 
 import android.content.Intent;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.Toast;
 
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.activity.RemarkActivity;
+import com.example.wanhao.aclassapp.adapter.CourseAdapter;
 import com.example.wanhao.aclassapp.adapter.GridAdapter;
 import com.example.wanhao.aclassapp.base.LazyLoadFragment;
 import com.example.wanhao.aclassapp.bean.GridBean;
 import com.example.wanhao.aclassapp.config.ApiConstant;
+import com.example.wanhao.aclassapp.util.MyItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +27,7 @@ import butterknife.BindView;
 public class OtherFragment extends LazyLoadFragment {
 
     @BindView(R.id.fg_other_grid)
-    GridView gridView;
+    RecyclerView gridView;
 
     private List<GridBean> dataList;
     private GridAdapter adapter;
@@ -66,17 +68,19 @@ public class OtherFragment extends LazyLoadFragment {
 
     private void initView() {
 
-        adapter=new GridAdapter(dataList,getActivity());
-
+        adapter=new GridAdapter(getActivity());
+        adapter.setData(dataList);
+        gridView.setLayoutManager(new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL));
+        gridView.addItemDecoration(new MyItemDecoration());
         gridView.setAdapter(adapter);
     }
 
     private void initEvent() {
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        adapter.setOnItemClickListener(new CourseAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                switch (i){
+            public void onItemClick(View view, int position) {
+                switch (position){
                     case 0:
                         Toast.makeText(getActivity(),courseID,Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getActivity(), RemarkActivity.class);

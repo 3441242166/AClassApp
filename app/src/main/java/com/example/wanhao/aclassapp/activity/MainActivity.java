@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initView() {
         setSupportActionBar(toolbar);
-
+        toolbar.setNavigationIcon(R.drawable.icon_back);
         fragmentList = new ArrayList<>();
         mainFragment = new MainFragment();
         otherFragment = new OtherFragment();
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(2);
+        viewPager.setOffscreenPageLimit(5);
 
     }
 
@@ -138,6 +138,10 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
+        if (id == android.R.id.home){
+            finish();
+        }
         //noinspection SimplifiableIfStatement
         if (id == R.id.main_toolbar_one) {
 
@@ -170,5 +174,6 @@ public class MainActivity extends AppCompatActivity {
             toolbar.setTitle(getIntent().getStringExtra(ApiConstant.COURSE_NAME));
         }
     }
+
 
 }
