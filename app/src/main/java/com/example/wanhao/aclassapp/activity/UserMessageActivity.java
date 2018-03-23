@@ -21,6 +21,7 @@ import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.UserMessagePresenter;
 import com.example.wanhao.aclassapp.util.ActivityCollector;
 import com.example.wanhao.aclassapp.util.FileConvertUtil;
+import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.IUserMessageView;
 
 import butterknife.BindView;
@@ -120,6 +121,24 @@ public class UserMessageActivity extends TopBarBaseActivity implements IUserMess
                 presenter.openSelectAvatarDialog();
             }
         });
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                switch (i){
+                    case R.id.ac_user_men:
+                        user.setGender("男");
+                        break;
+                    case R.id.ac_user_women:
+                        user.setGender("女");
+                        break;
+                }
+                if(!isFirst) {
+                    presenter.sentUserMessage(user);
+                }
+                isFirst = false;
+            }
+        });
     }
 
     @Override
@@ -135,6 +154,7 @@ public class UserMessageActivity extends TopBarBaseActivity implements IUserMess
     @Override
     public void loadDataSuccess(User tData) {
         user = tData;
+        SaveDataUtil.saveToSharedPreferences(this,ApiConstant.USER_NAME,tData.getNickName());
         name.setText(tData.getNickName());
         signature.setText(tData.getSignature());
         if(tData.getGender().equals("女")){
@@ -142,28 +162,11 @@ public class UserMessageActivity extends TopBarBaseActivity implements IUserMess
         }else{
             btMen.setChecked(true);
         }
-
-        if(isFirst){
-            radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                    switch (i){
-                        case R.id.ac_user_men:
-                            user.setGender("男");
-                            break;
-                        case R.id.ac_user_women:
-                            user.setGender("女");
-                            break;
-                    }
-                    presenter.sentUserMessage(user);
-                }
-            });
-        }
     }
 
     @Override
     public void loadDataError(String throwable) {
-        Toast.makeText(this,"网络错误",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,throwable,Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -181,6 +184,7 @@ public class UserMessageActivity extends TopBarBaseActivity implements IUserMess
 
     @Override
     public void showImage(Bitmap bitmap) {
+        FileConvertUtil.saveBitmapToLocal(ApiConstant.USER_AVATAR_NAME,bitmap);
         imageView.setImageBitmap(bitmap);
     }
 

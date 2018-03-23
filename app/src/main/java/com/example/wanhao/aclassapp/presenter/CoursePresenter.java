@@ -38,6 +38,8 @@ public class CoursePresenter {
     }
 
     public void getData(){
+        getHeadImage();
+        getUserMessage();
 
         Bitmap bitmap = FileConvertUtil.getBitmapFromLocal(ApiConstant.USER_AVATAR_NAME);
         String name = SaveDataUtil.getValueFromSharedPreferences(mContext, ApiConstant.USER_NAME);
@@ -46,9 +48,6 @@ public class CoursePresenter {
             iCourseView.setData(bitmap,name);
             return;
         }
-
-        getHeadImage();
-        getUserMessage();
     }
 
     public void getHeadImage(){

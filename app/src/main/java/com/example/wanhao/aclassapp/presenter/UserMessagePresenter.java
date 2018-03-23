@@ -24,7 +24,6 @@ import com.example.wanhao.aclassapp.bean.NoDataResponse;
 import com.example.wanhao.aclassapp.bean.User;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.UserMessageService;
-import com.example.wanhao.aclassapp.util.FileConvertUtil;
 import com.example.wanhao.aclassapp.util.RetrofitHelper;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.IUserMessageView;
@@ -74,14 +73,13 @@ public class UserMessagePresenter {
                     @Override
                     public void accept(Response<ResponseBody> responseBodyResponse) throws Exception {
                         User result = new Gson().fromJson(responseBodyResponse.body().string(),User.class);
-                        SaveDataUtil.saveToSharedPreferences(context,ApiConstant.USER_NAME,result.getNickName());
                         view.loadDataSuccess(result);
                         view.disimissProgress();
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        view.loadDataError(throwable.toString());
+                        view.loadDataError("获取个人信息失败");
                         view.disimissProgress();
                     }
                 });
@@ -149,13 +147,12 @@ public class UserMessagePresenter {
                     @Override
                     public void accept(Response<ResponseBody> responseBodyResponse) throws Exception {
                         Bitmap bitmap = BitmapFactory.decodeStream(responseBodyResponse.body().byteStream());
-                        FileConvertUtil.saveBitmapToLocal(ApiConstant.USER_AVATAR_NAME,bitmap);
                         view.showImage(bitmap);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        Log.i(TAG, "accept: "+throwable);
+                        view.loadDataError("获取头像失败");
                     }
                 });
     }

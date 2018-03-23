@@ -99,7 +99,7 @@ public class CourseActivity extends AppCompatActivity implements NavigationView.
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            startActivityForResult(new Intent(this,UserMessageActivity.class),0);
+            startActivity(new Intent(this,UserMessageActivity.class));
         } else if (id == R.id.nav_gallery) {
             startActivity(new Intent(this,DocumentActivity.class));
         } else if (id == R.id.nav_manage) {
@@ -153,8 +153,6 @@ public class CourseActivity extends AppCompatActivity implements NavigationView.
                 //通过id或者tag可以从manager获取fragment对象，
                 if(data!=null)
                     fragment.onActivityResult(requestCode, resultCode, data);
-            case ApiConstant.MESSAGE_CHANGE:
-                presenter.getData();
         }
 
     }

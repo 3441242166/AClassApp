@@ -56,10 +56,11 @@ public class DocumentSectionAdapter extends SimpleSectionedAdapter<DocumentAdapt
 //            case TYPE:
 //                break;
 //        }
-        if(lists==null||lists.get(0)==null)
-            return "什么都没有呢......";
-
-        return lists.get(section).get(0).getTitle();
+        return "什么都没有呢......";
+//        if(lists==null||lists.get(0)==null||lists.get(0).get(0)==null)
+//            return "什么都没有呢......";
+//
+//        return lists.get(section).get(0).getTitle();
     }
 
     @Override
