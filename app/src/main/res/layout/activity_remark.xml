@@ -7,33 +7,20 @@
     android:orientation="vertical"
     tools:context="com.example.wanhao.aclassapp.activity.RemarkActivity">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/ac_remark_write"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_margin="10dp"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/ac_remark_et"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginRight="10dp"
-            android:layout_weight="3"
-            android:background="@drawable/edit_shape_0"
-            android:ems="10"
-            android:inputType="text" />
-
-        <Button
-            android:id="@+id/ac_remark_send"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/bt_shape"
-            android:text="发表" />
-
-    </LinearLayout>
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:gravity="right"
+        android:text="-写留言-"
+        android:textColor="#274862"
+        android:textSize="18sp" />
 
     <android.support.v7.widget.RecyclerView
+        android:layout_margin="10dp"
         android:id="@+id/ac_remark_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

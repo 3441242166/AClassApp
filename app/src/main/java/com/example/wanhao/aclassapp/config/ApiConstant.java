@@ -33,4 +33,18 @@ public class ApiConstant {
     /**********************Course有关Key************************/
     public static final String COURSE_NAME = "course_name";
     public static final String COURSE_ID = "course_id";
+
+    /**********************Document有关Key************************/
+    public static final String Document_ID = "document_id";
+
+    /**********************广播有关Key************************/
+    public static final String DOWNLOAD_STATE = "download_state";
+    public static final String DOWNLOAD_PROESS = "download_proess";
+
+    /**********************Download状态码************************/
+    public static final int DOWNLOAD_STATE_NONE = 0;
+    public static final int DOWNLOAD_STATE_STOP = 1;
+    public static final int DOWNLOAD_STATE_ING = 2;
+    public static final int DOWNLOAD_STATE_FINISH = 3;
+
 }

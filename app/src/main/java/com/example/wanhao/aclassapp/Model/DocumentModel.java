@@ -54,7 +54,7 @@ public class DocumentModel {
                         DocumentResult result = new Gson().fromJson(accept,DocumentResult.class);
                         if(result.getStatus().equals(ApiConstant.RETURN_SUCCESS)){
                             List<Document> list = result.getCourses();
-                            dao.addDocumentList(list,SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_NAME),courseID);
+                            dao.addDocumentList(list,SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT),courseID);
                             callBack.requestSuccess(list);
                         }else{
                             callBack.requestError(new Throwable("error"));

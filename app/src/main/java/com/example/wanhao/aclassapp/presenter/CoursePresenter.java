@@ -3,7 +3,6 @@ package com.example.wanhao.aclassapp.presenter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.wanhao.aclassapp.bean.User;
@@ -40,14 +39,6 @@ public class CoursePresenter {
     public void getData(){
         getHeadImage();
         getUserMessage();
-
-        Bitmap bitmap = FileConvertUtil.getBitmapFromLocal(ApiConstant.USER_AVATAR_NAME);
-        String name = SaveDataUtil.getValueFromSharedPreferences(mContext, ApiConstant.USER_NAME);
-
-        if(bitmap!=null &&!TextUtils.isEmpty(name) ){
-            iCourseView.setData(bitmap,name);
-            return;
-        }
     }
 
     public void getHeadImage(){
@@ -66,6 +57,7 @@ public class CoursePresenter {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
+                        iCourseView.setHead(FileConvertUtil.getBitmapFromLocal(ApiConstant.USER_AVATAR_NAME));
                         Log.i(TAG, "accept: "+throwable);
                     }
                 });
@@ -87,7 +79,7 @@ public class CoursePresenter {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-
+                        iCourseView.setName(SaveDataUtil.getValueFromSharedPreferences(mContext, ApiConstant.USER_NAME));
                     }
                 });
 

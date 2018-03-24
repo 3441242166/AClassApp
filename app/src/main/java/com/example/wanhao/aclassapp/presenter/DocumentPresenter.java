@@ -28,7 +28,7 @@ public class DocumentPresenter {
     }
 
     public void getListByCourse(){
-        List<Document> list =  dao.alterAllDocument(SaveDataUtil.getValueFromSharedPreferences(context, ApiConstant.USER_NAME));
+        List<Document> list =  dao.alterAllDocument(SaveDataUtil.getValueFromSharedPreferences(context, ApiConstant.COUNT));
         List<List<Document>> lists = new ArrayList<>();
         lists.add(list);
         view.loadDataSuccess(lists);

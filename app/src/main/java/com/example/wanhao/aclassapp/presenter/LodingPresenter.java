@@ -76,7 +76,6 @@ public class LodingPresenter implements ILoginPresenter{
                                 String token = object.optString(ApiConstant.USER_TOKEN);
                                 String role = object.optString(ApiConstant.USER_ROLE);
                                 Log.i(TAG, "accept: " + token + "  " + role);
-                                SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.USER_NAME, phoneNum);
                                 SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.USER_TOKEN, token);
                                 SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.USER_ROLE, role);
                                 SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.COUNT, phoneNum);

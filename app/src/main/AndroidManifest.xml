@@ -37,7 +37,18 @@
         <activity android:name=".activity.LodingActivity" />
         <activity android:name=".activity.UserMessageActivity" />
         <activity android:name=".activity.RemarkActivity" />
-        <activity android:name=".activity.DocumentActivity"></activity>
+        <activity android:name=".activity.DocumentActivity" />
+        <activity android:name=".activity.BrowseDocumentActivity" />
+
+        <service
+            android:name=".service.DownService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <receiver
+            android:name=".broadcast.DownloadReceiver"
+            android:enabled="true"
+            android:exported="true"></receiver>
     </application>
 
 </manifest>

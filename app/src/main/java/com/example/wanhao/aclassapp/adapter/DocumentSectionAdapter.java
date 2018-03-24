@@ -24,9 +24,12 @@ public class DocumentSectionAdapter extends SimpleSectionedAdapter<DocumentAdapt
     private OnItemClickListener onItemClickListener;
     private OnItemLongClickListener onItemLongClickListener;
 
+    private View mView;
+
     private List<List<Document>> lists;
 
     private SECTION now;
+
 
     public enum SECTION {
         COURSE, AUTHOR, TYPE, DATE,SIZE
@@ -79,11 +82,31 @@ public class DocumentSectionAdapter extends SimpleSectionedAdapter<DocumentAdapt
     protected DocumentAdapter.Holder onCreateItemViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.item_document, parent, false);
+        mView =view;
         return new DocumentAdapter.Holder(view);
     }
 
     @Override
-    protected void onBindItemViewHolder(DocumentAdapter.Holder holder, int section, int position) {
+    protected void onBindItemViewHolder(DocumentAdapter.Holder holder, final int section, int position) {
+        mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(onItemClickListener!=null){
+                    onItemClickListener.onItemClick(section,(int)view.getTag());
+                }
+            }
+        });
+
+        mView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if(onItemLongClickListener!=null){
+                    onItemLongClickListener.onLongItemClick(section,(int)view.getTag());
+                }
+                return true;
+            }
+        });
+
         Document course = lists.get(section).get(position);
 
         holder.name.setText(course.getTitle());
@@ -104,7 +127,7 @@ public class DocumentSectionAdapter extends SimpleSectionedAdapter<DocumentAdapt
 
 
     public interface OnItemClickListener {
-        public void onItemClick(int section, int position);
+        void onItemClick(int section, int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener on){
@@ -112,7 +135,7 @@ public class DocumentSectionAdapter extends SimpleSectionedAdapter<DocumentAdapt
     }
 
     public interface OnItemLongClickListener {
-        public void onLongItemClick(int section, int position);
+        void onLongItemClick(int section, int position);
     }
 
     public void setOnItemLongClickListener(OnItemLongClickListener on){

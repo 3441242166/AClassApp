@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -85,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void initEvent() {
-        viewPager.setNoScroll(true);
+        //viewPager.setNoScroll(true);
         viewPager.setOverScrollMode(viewPager.OVER_SCROLL_NEVER);
         navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -106,6 +107,32 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                switch (position){
+                    case 0:
+                        navigation.setSelectedItemId(R.id.main_menu_home);
+                        break;
+                    case 1:
+                        navigation.setSelectedItemId(R.id.main_menu_message);
+                        break;
+                    case 2:
+                        navigation.setSelectedItemId(R.id.main_menu_bbs);
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     @Override
