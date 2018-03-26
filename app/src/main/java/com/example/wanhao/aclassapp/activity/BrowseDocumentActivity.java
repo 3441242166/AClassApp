@@ -1,22 +1,27 @@
 package com.example.wanhao.aclassapp.activity;
 
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
+import com.example.wanhao.aclassapp.bean.Document;
 import com.example.wanhao.aclassapp.broadcast.DownloadReceiver;
 import com.example.wanhao.aclassapp.config.ApiConstant;
-import com.example.wanhao.aclassapp.service.DownService;
+import com.example.wanhao.aclassapp.presenter.BrowseDocumentPresenter;
+import com.example.wanhao.aclassapp.util.FileSizeUtil;
+import com.example.wanhao.aclassapp.view.BrowseDocumentView;
 
 import butterknife.BindView;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class BrowseDocumentActivity extends TopBarBaseActivity {
+public class BrowseDocumentActivity extends TopBarBaseActivity implements BrowseDocumentView{
     private static final String TAG = "BrowseDocumentActivity";
 
     @BindView(R.id.ac_browse_button)
@@ -27,11 +32,12 @@ public class BrowseDocumentActivity extends TopBarBaseActivity {
     TextView textView;
 
     private DownloadReceiver mBroadcastReceiver;
-
+    private BrowseDocumentPresenter presenter;
     private int documentID;
+    private Document document;
 
     public enum STATE{
-        NONE,ING,STOP,FINISH
+        NONE,ING,FINISH
     }
 
     private STATE nowState = STATE.NONE;
@@ -43,13 +49,26 @@ public class BrowseDocumentActivity extends TopBarBaseActivity {
 
     @Override
     protected void init(Bundle savedInstanceState) {
-        setTitle("文件名");
+        presenter = new BrowseDocumentPresenter(this,this);
         documentID = getIntent().getIntExtra(ApiConstant.Document_ID,-1);
+        presenter.checkDocument(String.valueOf(documentID));
+
         initView();
         initEvent();
+
     }
 
     private void initView() {
+        setTitle(document.getTitle());
+        textView.setText(document.getTitle());
+        String last = document.getTitle().substring(document.getTitle().length()-3);
+
+        if(last.equals("pdf")){
+            Glide.with(this).load(R.drawable.icon_pdf).into(imageView);
+        }
+        if(last.equals("txt")){
+            Glide.with(this).load(R.drawable.icon_txt).into(imageView);
+        }
 
     }
 
@@ -63,8 +82,7 @@ public class BrowseDocumentActivity extends TopBarBaseActivity {
 
         /**
          * NONE     启动下载
-         * ING      点击暂停
-         * STOP     点击取消
+         * ING      点击取消
          * FINISH   点击打开文件
          */
         button.setOnClickListener(new View.OnClickListener() {
@@ -72,20 +90,33 @@ public class BrowseDocumentActivity extends TopBarBaseActivity {
             public void onClick(View view) {
                 switch (nowState){
                     case NONE:
-                        Intent intent = new Intent(BrowseDocumentActivity.this, DownService.class);
-                        intent.putExtra(ApiConstant.Document_ID,documentID);
-                        startService(intent);
+                        presenter.startDownload();
                         break;
                     case ING:
+                        //暂停文件
+                        new SweetAlertDialog(BrowseDocumentActivity.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText("确定?")
+                                .setContentText("你确定要取消下载吗？")
+                                .setConfirmText("是，取消!")
+                                .setCancelText("不，点错了")
+                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sDialog) {
+                                        Log.i(TAG, "SweetAlertDialog onClick: ");
+                                        presenter.cancalDownload();
+                                    }
+                                })
+                                .show();
                         break;
                     case FINISH:
-                        break;
-                    case STOP:
+                        // 打开文件
                         break;
                 }
             }
         });
     }
+
+
 
     @Override
     protected void onResume(){
@@ -103,22 +134,14 @@ public class BrowseDocumentActivity extends TopBarBaseActivity {
 
         mBroadcastReceiver.setDownloadStateChangeLinser(new DownloadReceiver.onDownloadStateChangeLinser() {
             @Override
-            public void onDownloadStateChange(int state,int ID) {
+            public void onDownloadStateChange(String state,int ID) {
                 //  检测是否和下载中文件ID相同
                 if(documentID==ID){
-                    switch (state){
-                        case ApiConstant.DOWNLOAD_STATE_NONE:
-                            butonState("下载",true);
-                            break;
-                        case ApiConstant.DOWNLOAD_STATE_STOP:
-                            butonState("暂停",true);
-                            break;
-                        case ApiConstant.DOWNLOAD_STATE_ING:
-                            butonState("下载中...",false);
-                            break;
-                        case ApiConstant.DOWNLOAD_STATE_FINISH:
-                            butonState("打开",true);
-                            break;
+                    button.setText(state);
+                    if(state.equals("打开")){
+                        nowState = STATE.FINISH;
+                    }else{
+                        nowState = STATE.ING;
                     }
                 }
 
@@ -129,9 +152,9 @@ public class BrowseDocumentActivity extends TopBarBaseActivity {
 
 
     // 注册广播后，要在相应位置记得销毁广播
-// 即在onPause() 中unregisterReceiver(mBroadcastReceiver)
-// 当此Activity实例化时，会动态将MyBroadcastReceiver注册到系统中
-// 当此Activity销毁时，动态注册的MyBroadcastReceiver将不再接收到相应的广播。
+    // 即在onPause() 中unregisterReceiver(mBroadcastReceiver)
+    // 当此Activity实例化时，会动态将MyBroadcastReceiver注册到系统中
+    // 当此Activity销毁时，动态注册的MyBroadcastReceiver将不再接收到相应的广播。
     @Override
     protected void onPause() {
         super.onPause();
@@ -139,9 +162,26 @@ public class BrowseDocumentActivity extends TopBarBaseActivity {
         unregisterReceiver(mBroadcastReceiver);
     }
 
-    private void butonState(String contant,boolean clickable){
-        button.setText(contant);
-        button.setClickable(clickable);
+    @Override
+    public void setDocument(Document document) {
+        this.document = document;
+    }
+
+    @Override
+    public void documentState(STATE state) {
+        Log.i(TAG, "setState: ");
+        nowState = state;
+        switch (state){
+            case NONE:
+                button.setText("下载 ("+ FileSizeUtil.FormetFileSize(Integer.valueOf(document.getSize()))+")");
+                break;
+            case FINISH:
+                button.setText("打开");
+                break;
+            default:
+                button.setText("default");
+                break;
+        }
     }
 
 }

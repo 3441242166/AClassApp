@@ -27,6 +27,7 @@ public class DocumentActivity extends TopBarBaseActivity implements IDocumentVie
     RecyclerView recyclerView;
 
     private DocumentSectionAdapter adapter;
+    List<List<Document>> lists;
 
     private DocumentPresenter presenter;
 
@@ -70,7 +71,7 @@ public class DocumentActivity extends TopBarBaseActivity implements IDocumentVie
             public void onItemClick(int section, int position) {
                 Log.i(TAG, "onItemClick: ");
                 Intent intent = new Intent(DocumentActivity.this,BrowseDocumentActivity.class);
-                intent.putExtra(ApiConstant.Document_ID,position);
+                intent.putExtra(ApiConstant.Document_ID,lists.get(section).get(position).getId());
                 startActivity(intent);
             }
         });
@@ -97,6 +98,7 @@ public class DocumentActivity extends TopBarBaseActivity implements IDocumentVie
 
     @Override
     public void loadDataSuccess(List<List<Document>> tData) {
+        lists = tData;
         adapter.setData(tData);
     }
 

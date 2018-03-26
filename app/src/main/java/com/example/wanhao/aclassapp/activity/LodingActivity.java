@@ -23,6 +23,7 @@ import com.example.wanhao.aclassapp.view.ILodingView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.pedant.SweetAlert.ProgressHelper;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class LodingActivity extends AppCompatActivity implements View.OnClickListener,ILodingView {
@@ -70,6 +71,8 @@ public class LodingActivity extends AppCompatActivity implements View.OnClickLis
 
         pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        ProgressHelper helper = pDialog.getProgressHelper();
+        helper.setProgress(30);
         pDialog.setTitleText("Loding...");
         pDialog.setCancelable(false);
 

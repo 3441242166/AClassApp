@@ -47,4 +47,5 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.2.0'
     compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30'
     compile 'com.truizlop.sectionedrecyclerview:library:1.2.0'
+    compile 'me.jessyan:progressmanager:1.5.0'
 }

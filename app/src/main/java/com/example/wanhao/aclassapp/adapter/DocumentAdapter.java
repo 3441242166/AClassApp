@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.bean.Document;
-import com.example.wanhao.aclassapp.util.FileConvertUtil;
+import com.example.wanhao.aclassapp.util.FileSizeUtil;
 
 import java.util.List;
 
@@ -52,7 +52,7 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.Holder
         Document course = courseList.get(position);
 
         holder.name.setText(course.getTitle());
-        holder.size.setText(FileConvertUtil.byteToMb(Integer.valueOf(course.getSize()))+" 来自 "+course.getUser());
+        holder.size.setText(FileSizeUtil.FormetFileSize(Integer.valueOf(course.getSize()))+" 来自 "+course.getUser());
         holder.time.setText(course.getDate());
         String last = course.getTitle().substring(course.getTitle().length()-3);
 

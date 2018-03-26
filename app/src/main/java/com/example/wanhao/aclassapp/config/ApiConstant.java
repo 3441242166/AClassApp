@@ -42,9 +42,6 @@ public class ApiConstant {
     public static final String DOWNLOAD_PROESS = "download_proess";
 
     /**********************Download状态码************************/
-    public static final int DOWNLOAD_STATE_NONE = 0;
-    public static final int DOWNLOAD_STATE_STOP = 1;
-    public static final int DOWNLOAD_STATE_ING = 2;
-    public static final int DOWNLOAD_STATE_FINISH = 3;
+
 
 }
