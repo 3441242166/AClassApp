@@ -1,6 +1,8 @@
 package com.example.wanhao.aclassapp.activity;
 
+import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,8 +17,11 @@ import com.example.wanhao.aclassapp.bean.Document;
 import com.example.wanhao.aclassapp.broadcast.DownloadReceiver;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.BrowseDocumentPresenter;
+import com.example.wanhao.aclassapp.util.FileConvertUtil;
 import com.example.wanhao.aclassapp.util.FileSizeUtil;
 import com.example.wanhao.aclassapp.view.BrowseDocumentView;
+
+import java.io.File;
 
 import butterknife.BindView;
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -61,15 +66,7 @@ public class BrowseDocumentActivity extends TopBarBaseActivity implements Browse
     private void initView() {
         setTitle(document.getTitle());
         textView.setText(document.getTitle());
-        String last = document.getTitle().substring(document.getTitle().length()-3);
-
-        if(last.equals("pdf")){
-            Glide.with(this).load(R.drawable.icon_pdf).into(imageView);
-        }
-        if(last.equals("txt")){
-            Glide.with(this).load(R.drawable.icon_txt).into(imageView);
-        }
-
+        Glide.with(this).load(FileConvertUtil.getDocumentImageID(document.getTitle())).into(imageView);
     }
 
     private void initEvent() {
@@ -104,11 +101,18 @@ public class BrowseDocumentActivity extends TopBarBaseActivity implements Browse
                                     public void onClick(SweetAlertDialog sDialog) {
                                         Log.i(TAG, "SweetAlertDialog onClick: ");
                                         presenter.cancalDownload();
+                                        sDialog.cancel();
                                     }
                                 })
                                 .show();
                         break;
                     case FINISH:
+                        Intent intent = new Intent();
+                        File file = new File(FileConvertUtil.getDocumentFilePath()+"/"+document.getTitle());
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);//设置标记
+                        intent.setAction(Intent.ACTION_VIEW);//动作，查看
+                        intent.setDataAndType(Uri.fromFile(file), FileConvertUtil.getMIMEType(file));//设置类型
+                        startActivity(intent);
                         // 打开文件
                         break;
                 }
@@ -135,11 +139,14 @@ public class BrowseDocumentActivity extends TopBarBaseActivity implements Browse
         mBroadcastReceiver.setDownloadStateChangeLinser(new DownloadReceiver.onDownloadStateChangeLinser() {
             @Override
             public void onDownloadStateChange(String state,int ID) {
+                Log.i(TAG, "onDownloadStateChange: state "+state);
                 //  检测是否和下载中文件ID相同
                 if(documentID==ID){
                     button.setText(state);
                     if(state.equals("打开")){
                         nowState = STATE.FINISH;
+                    }else if(state.equals("重新下载")){
+                        nowState = STATE.NONE;
                     }else{
                         nowState = STATE.ING;
                     }

@@ -44,6 +44,8 @@ public class DownService extends Service {
     //  标记是否有任务在进行
     private boolean isUse;
 
+    private boolean isStop;
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -55,6 +57,7 @@ public class DownService extends Service {
         super.onCreate();
         broadcastIntent = new Intent(ApiConstant.DOWNLOAD_STATE);
         isUse = false;
+        isStop = false;
     }
 
     @Override
@@ -102,7 +105,9 @@ public class DownService extends Service {
 
     private void download(){
         isUse = true;
+
         Log.i(TAG, "download: courseID  "+document.getCourseID()+"  documentID  "+documentID);
+
         DocumentService service = RetrofitHelper.get(DocumentService.class);
 
         service.downloadDocument(SaveDataUtil.getValueFromSharedPreferences(this,ApiConstant.USER_TOKEN),Integer.valueOf(document.getCourseID()),documentID)
@@ -120,15 +125,11 @@ public class DownService extends Service {
                         try {
                             long total = Integer.valueOf(document.getSize());
                             File file = new File(savePath+"/"+document.getTitle());
-                            if (!file.exists()) {
-                                file.mkdirs();
-                            }else{
-                                file.delete();
-                            }
+
                             file.createNewFile();
                             fos = new FileOutputStream(file);
                             long sum = 0;
-                            int progress = 0;
+                            int progress;
                             while ((len = is.read(buf)) != -1) {
                                 fos.write(buf, 0, len);
                                 sum += len;
@@ -142,12 +143,14 @@ public class DownService extends Service {
                                 broadcastIntent.putExtra(ApiConstant.Document_ID,documentID);
                                 sendBroadcast(broadcastIntent);
 
+                                if(isStop){
+                                    broadcastIntent.putExtra(ApiConstant.DOWNLOAD_STATE,"重新下载");
+                                    broadcastIntent.putExtra(ApiConstant.Document_ID,documentID);
+                                    sendBroadcast(broadcastIntent);
+                                    Log.i(TAG, "accept: 取消下载");
+                                    return;
+                                }
                             }
-                            fos.flush();
-
-                        } catch (Exception e) {
-                            Log.i(TAG, "saveDocument: "+e.toString());
-                        } finally {
 
                             builder.setContentText(document.getTitle() +" 下载完成");
                             //设置进度为不确定，用于模拟安装
@@ -157,6 +160,12 @@ public class DownService extends Service {
                             broadcastIntent.putExtra(ApiConstant.Document_ID,documentID);
                             isUse =false;
                             sendBroadcast(broadcastIntent);
+
+                            fos.flush();
+
+                        } catch (Exception e) {
+                            Log.i(TAG, "saveDocument: "+e.toString());
+                        } finally {
 
                             try {
                                 if (is != null)
@@ -181,7 +190,13 @@ public class DownService extends Service {
 
     }
 
-//    public  void show(){
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        isStop = true;
+    }
+
+    //    public  void show(){
 //
 //
 //        //下载以及安装线程模拟
