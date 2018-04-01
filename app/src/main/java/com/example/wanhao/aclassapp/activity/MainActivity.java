@@ -18,6 +18,7 @@ import com.example.wanhao.aclassapp.customizeview.NoScrollViewPager;
 import com.example.wanhao.aclassapp.fragment.DocumentFragment;
 import com.example.wanhao.aclassapp.fragment.MainFragment;
 import com.example.wanhao.aclassapp.fragment.OtherFragment;
+import com.example.wanhao.aclassapp.util.ActivityCollector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ActivityCollector.addActivity(this);
         ButterKnife.bind(this);
         initView();
         initEvent();

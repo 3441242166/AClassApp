@@ -35,13 +35,16 @@ public class ApiConstant {
     public static final String COURSE_ID = "course_id";
 
     /**********************Document有关Key************************/
-    public static final String Document_ID = "document_id";
+    public static final String DOCUMENT_ID = "document_id";
+    public static final String DOCUMENT_TYPE = "document_type";
+    public static final String DOCUMENT_EDATA = "edata";
+    public static final String DOCUMENT_PREVIEW = "preview";
 
     /**********************广播有关Key************************/
     public static final String DOWNLOAD_STATE = "download_state";
-    public static final String DOWNLOAD_PROESS = "download_proess";
 
-    /**********************Download状态码************************/
-
+    /**********************Remark Adapter Type************************/
+    public static final int REMARK_NORMAL = 0;
+    public static final int REMARK_REMARK = 1;
 
 }

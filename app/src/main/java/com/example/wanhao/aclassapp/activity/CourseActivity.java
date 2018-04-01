@@ -180,4 +180,9 @@ public class CourseActivity extends AppCompatActivity implements NavigationView.
     public void setName(String name) {
         nameText.setText(name);
     }
+
+    @Override
+    public void tokenError() {
+
+    }
 }

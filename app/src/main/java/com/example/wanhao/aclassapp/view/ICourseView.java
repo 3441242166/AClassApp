@@ -10,4 +10,5 @@ public interface ICourseView {
     void setData(Bitmap bitmap,String name);
     void setHead(Bitmap bitmap);
     void setName(String name);
+    void tokenError();
 }

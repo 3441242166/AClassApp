@@ -7,7 +7,6 @@ import com.example.wanhao.aclassapp.SQLite.DocumentDao;
 import com.example.wanhao.aclassapp.base.IBaseRequestCallBack;
 import com.example.wanhao.aclassapp.bean.Document;
 import com.example.wanhao.aclassapp.bean.DocumentResult;
-import com.example.wanhao.aclassapp.bean.Result;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.DocumentService;
 import com.example.wanhao.aclassapp.util.RetrofitHelper;
@@ -70,7 +69,7 @@ public class DocumentModel {
 
     }
 
-    public void getPreviewList(String courseID, final IBaseRequestCallBack callBack){
+    public void getPreviewList(final String courseID, final IBaseRequestCallBack callBack){
         //----------从数据库取数据--------------------
 
         //----------从服务器取数据--------------------
@@ -85,32 +84,26 @@ public class DocumentModel {
                     public void accept(Response<ResponseBody> responseBodyResponse) throws Exception {
                         String accept = responseBodyResponse.body().string();
                         Log.i(TAG, "accept: "+accept);
-                        Result<Document> result = new Gson().fromJson(responseBodyResponse.body().string(),Result.class);
-                        Log.i(TAG, "accept: listSize"+result.getData().size());
+                        DocumentResult result = new Gson().fromJson(accept,DocumentResult.class);
+
                         if(result.getStatus().equals(ApiConstant.RETURN_SUCCESS)){
-                            List<Document> list = result.getData();
 
-
+                            List<Document> list = result.getCourses();
+                            dao.addDocumentList(list,SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT),courseID);
                             //dao.addCourseList(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_NAME),list);
                             callBack.requestSuccess(list);
                         }else{
+                            Log.i(TAG, " getPreviewList error");
                             callBack.requestError(new Throwable("error"));
                         }
                     }
                 },new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
+                        Log.i(TAG, throwable.toString());
                         callBack.requestError(throwable);
                     }
                 });
-
-    }
-
-    public void downloadDocument(String courseID,String DocumentID){
-
-    }
-
-    public void deleteDocument(String courseID,String DocumentID){
 
     }
 

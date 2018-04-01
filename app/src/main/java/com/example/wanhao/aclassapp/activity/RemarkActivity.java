@@ -6,10 +6,11 @@ import android.widget.TextView;
 
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
+import com.example.wanhao.aclassapp.view.IRemarkView;
 
 import butterknife.BindView;
 
-public class RemarkActivity extends TopBarBaseActivity {
+public class RemarkActivity extends TopBarBaseActivity implements IRemarkView {
 
     @BindView(R.id.ac_remark_recycler)
     RecyclerView recyclerView;
@@ -42,4 +43,28 @@ public class RemarkActivity extends TopBarBaseActivity {
     }
 
 
+    @Override
+    public void tokenError(String msg) {
+
+    }
+
+    @Override
+    public void showProgress() {
+
+    }
+
+    @Override
+    public void disimissProgress() {
+
+    }
+
+    @Override
+    public void loadDataSuccess(Object tData) {
+
+    }
+
+    @Override
+    public void loadDataError(String throwable) {
+
+    }
 }

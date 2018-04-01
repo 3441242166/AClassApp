@@ -7,8 +7,6 @@ import java.util.List;
 
 /**
  * Activity集合类统一管理Activity
- * Created by 尚振鸿 on 2017/8/15. 14:34
- * mail:szh@codekong.cn
  */
 
 public class ActivityCollector {

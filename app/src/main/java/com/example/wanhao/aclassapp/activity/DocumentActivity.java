@@ -12,6 +12,7 @@ import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
 import com.example.wanhao.aclassapp.bean.Document;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.DocumentPresenter;
+import com.example.wanhao.aclassapp.util.ActivityCollector;
 import com.example.wanhao.aclassapp.util.MyItemDecoration;
 import com.example.wanhao.aclassapp.view.IDocumentView;
 
@@ -71,7 +72,7 @@ public class DocumentActivity extends TopBarBaseActivity implements IDocumentVie
             public void onItemClick(int section, int position) {
                 Log.i(TAG, "onItemClick: ");
                 Intent intent = new Intent(DocumentActivity.this,BrowseDocumentActivity.class);
-                intent.putExtra(ApiConstant.Document_ID,lists.get(section).get(position).getId());
+                intent.putExtra(ApiConstant.DOCUMENT_ID,lists.get(section).get(position).getId());
                 startActivity(intent);
             }
         });
@@ -83,6 +84,12 @@ public class DocumentActivity extends TopBarBaseActivity implements IDocumentVie
                 //startActivity(new Intent(DocumentActivity.this,BrowseDocumentActivity.class));
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityCollector.removeActivity(this);
     }
 
 

@@ -1,10 +1,12 @@
 package com.example.wanhao.aclassapp.presenter;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.example.wanhao.aclassapp.Model.DocumentModel;
 import com.example.wanhao.aclassapp.base.IBaseRequestCallBack;
 import com.example.wanhao.aclassapp.bean.Document;
+import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.view.IDocumentFgView;
 
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.List;
  */
 
 public class DocumentFgPresenter {
+    private static final String TAG = "DocumentFgPresenter";
 
     private IDocumentFgView view;
     private Context mContext;
@@ -49,22 +52,15 @@ public class DocumentFgPresenter {
                 view.loadDataSuccess(callBack,type);
             }
         };
-        if(type.equals("edata")){
+        if(type.equals(ApiConstant.DOCUMENT_EDATA)){
+            Log.i(TAG, "getDocumentList: getEdata");
             model.getDocumentList(courseID,callBack);
         }
-        if(type.equals("preview")){
+        if(type.equals(ApiConstant.DOCUMENT_PREVIEW)){
+            Log.i(TAG, "getDocumentList: getPreview");
             model.getPreviewList(courseID,callBack);
         }
     }
-
-    public void downloadDocument(String courseID,String DocumentID){
-
-    }
-
-    public void deleteDocument(String courseID,String DocumentID){
-
-    }
-
 
 
 }

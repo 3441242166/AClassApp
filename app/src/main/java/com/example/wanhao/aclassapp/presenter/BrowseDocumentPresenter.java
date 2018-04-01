@@ -12,7 +12,7 @@ import com.example.wanhao.aclassapp.service.DownService;
 import com.example.wanhao.aclassapp.util.FileConvertUtil;
 import com.example.wanhao.aclassapp.util.FileSizeUtil;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
-import com.example.wanhao.aclassapp.view.BrowseDocumentView;
+import com.example.wanhao.aclassapp.view.IBrowseDocumentView;
 
 import java.io.File;
 
@@ -24,16 +24,16 @@ public class BrowseDocumentPresenter {
     private static final String TAG = "BrowseDocumentPresenter";
 
     private Context context;
-    private BrowseDocumentView view;
+    private IBrowseDocumentView view;
 
     private DocumentDao dao;
 
     private int courseID;
     private int documentID;
 
-    public BrowseDocumentPresenter(Context context,BrowseDocumentView browseDocumentView){
+    public BrowseDocumentPresenter(Context context,IBrowseDocumentView IBrowseDocumentView){
         this.context = context;
-        this.view = browseDocumentView;
+        this.view = IBrowseDocumentView;
         dao = new DocumentDao(context);
     }
 
@@ -69,7 +69,7 @@ public class BrowseDocumentPresenter {
     public void startDownload(){
         Log.i(TAG, "startDownload: courseID  "+courseID+"  documentID  "+documentID);
         Intent intent = new Intent(context, DownService.class);
-        intent.putExtra(ApiConstant.Document_ID,documentID);
+        intent.putExtra(ApiConstant.DOCUMENT_ID,documentID);
         intent.putExtra(ApiConstant.COURSE_ID,courseID);
         context.startService(intent);
     }
@@ -77,7 +77,7 @@ public class BrowseDocumentPresenter {
     public void cancalDownload(){
         Log.i(TAG, "cancalDownload: ");
         Intent intent = new Intent(context, DownService.class);
-        intent.putExtra(ApiConstant.Document_ID,documentID);
+        intent.putExtra(ApiConstant.DOCUMENT_ID,documentID);
         intent.putExtra(ApiConstant.COURSE_ID,courseID);
         context.stopService(intent);
     }

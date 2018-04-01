@@ -7,10 +7,12 @@ import com.example.wanhao.aclassapp.bean.Document;
  * Created by wanhao on 2018/3/26.
  */
 
-public interface BrowseDocumentView{
+public interface IBrowseDocumentView {
 
     void documentState(BrowseDocumentActivity.STATE state);
 
     void setDocument(Document document);
+
+    void tokenError();
 
 }

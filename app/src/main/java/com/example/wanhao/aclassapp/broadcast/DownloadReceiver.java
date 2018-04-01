@@ -16,7 +16,7 @@ public class DownloadReceiver extends BroadcastReceiver {
         // TODO: This method is called when the BroadcastReceiver is receiving
         // an Intent broadcast.
         if(stateChangeLinser!=null) {
-            stateChangeLinser.onDownloadStateChange(intent.getStringExtra(ApiConstant.DOWNLOAD_STATE),intent.getIntExtra(ApiConstant.Document_ID,-1));
+            stateChangeLinser.onDownloadStateChange(intent.getStringExtra(ApiConstant.DOWNLOAD_STATE),intent.getIntExtra(ApiConstant.DOCUMENT_ID,-1));
         }
 
     }

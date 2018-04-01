@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.wanhao.aclassapp.R;
@@ -17,16 +18,17 @@ import com.example.wanhao.aclassapp.bean.Document;
 import com.example.wanhao.aclassapp.broadcast.DownloadReceiver;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.BrowseDocumentPresenter;
+import com.example.wanhao.aclassapp.util.ActivityCollector;
 import com.example.wanhao.aclassapp.util.FileConvertUtil;
 import com.example.wanhao.aclassapp.util.FileSizeUtil;
-import com.example.wanhao.aclassapp.view.BrowseDocumentView;
+import com.example.wanhao.aclassapp.view.IBrowseDocumentView;
 
 import java.io.File;
 
 import butterknife.BindView;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class BrowseDocumentActivity extends TopBarBaseActivity implements BrowseDocumentView{
+public class BrowseDocumentActivity extends TopBarBaseActivity implements IBrowseDocumentView {
     private static final String TAG = "BrowseDocumentActivity";
 
     @BindView(R.id.ac_browse_button)
@@ -55,7 +57,7 @@ public class BrowseDocumentActivity extends TopBarBaseActivity implements Browse
     @Override
     protected void init(Bundle savedInstanceState) {
         presenter = new BrowseDocumentPresenter(this,this);
-        documentID = getIntent().getIntExtra(ApiConstant.Document_ID,-1);
+        documentID = getIntent().getIntExtra(ApiConstant.DOCUMENT_ID,-1);
         presenter.checkDocument(String.valueOf(documentID));
 
         initView();
@@ -172,6 +174,14 @@ public class BrowseDocumentActivity extends TopBarBaseActivity implements Browse
     @Override
     public void setDocument(Document document) {
         this.document = document;
+    }
+
+    @Override
+    public void tokenError() {
+        Toast.makeText(this, "账号在其他地方登陆", Toast.LENGTH_SHORT).show();
+        ActivityCollector.finishAll();
+        Intent intent = new Intent(this, LodingActivity.class);
+        startActivity(intent);
     }
 
     @Override

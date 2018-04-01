@@ -13,4 +13,5 @@ public interface IDocumentFgView {
     void disimissProgress();
     void loadDataError(String throwable);
     void loadDataSuccess(List<Document> tData,String type);
+    void tokenError();
 }

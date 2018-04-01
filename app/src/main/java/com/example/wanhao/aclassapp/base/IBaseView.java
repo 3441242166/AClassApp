@@ -35,7 +35,5 @@ public interface IBaseView<T> {
      */
     void loadDataError(String throwable);
 
-    void tokenError(String msg);
-
 }
 

@@ -82,7 +82,7 @@ public class DownService extends Service {
             return super.onStartCommand(intent, flags, startId);
         }
         //如果没有任务进行 则获取文件id 启动下载
-        documentID = intent.getIntExtra(ApiConstant.Document_ID, -1);
+        documentID = intent.getIntExtra(ApiConstant.DOCUMENT_ID, -1);
         document = new DocumentDao(this).alterDocument(String.valueOf(documentID), SaveDataUtil.getValueFromSharedPreferences(this, ApiConstant.COUNT));
         initNotification();
 
@@ -140,12 +140,12 @@ public class DownService extends Service {
                                 manager.notify(documentID,builder.build());
 
                                 broadcastIntent.putExtra(ApiConstant.DOWNLOAD_STATE,"下载 "+progress+"%");
-                                broadcastIntent.putExtra(ApiConstant.Document_ID,documentID);
+                                broadcastIntent.putExtra(ApiConstant.DOCUMENT_ID,documentID);
                                 sendBroadcast(broadcastIntent);
 
                                 if(isStop){
                                     broadcastIntent.putExtra(ApiConstant.DOWNLOAD_STATE,"重新下载");
-                                    broadcastIntent.putExtra(ApiConstant.Document_ID,documentID);
+                                    broadcastIntent.putExtra(ApiConstant.DOCUMENT_ID,documentID);
                                     sendBroadcast(broadcastIntent);
                                     Log.i(TAG, "accept: 取消下载");
                                     return;
@@ -157,7 +157,7 @@ public class DownService extends Service {
                             manager.notify(documentID,builder.build());
                             //manager.cancel(1);
                             broadcastIntent.putExtra(ApiConstant.DOWNLOAD_STATE,"打开");
-                            broadcastIntent.putExtra(ApiConstant.Document_ID,documentID);
+                            broadcastIntent.putExtra(ApiConstant.DOCUMENT_ID,documentID);
                             isUse =false;
                             sendBroadcast(broadcastIntent);
 

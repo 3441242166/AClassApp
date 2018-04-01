@@ -15,21 +15,21 @@ import java.util.List;
  * Created by wanhao on 2018/3/10.
  */
 
-public class MyAdapter extends BaseQuickAdapter<GridBean,BaseViewHolder> {
+    public class MyAdapter extends BaseQuickAdapter<GridBean,BaseViewHolder> {
 
-    private List<GridBean> list;
+        private List<GridBean> list;
 
-    private Context context;
+        private Context context;
 
-    public MyAdapter(int layoutResId, List data, Context context) {
-        super(layoutResId, data);
-        this.list = data;
-        this.context = context;
-    }
-
-    @Override
-    protected void convert(BaseViewHolder helper, GridBean item) {
-            helper.setText(R.id.item_grid_text,item.getName());
-            Glide.with(context).load(item.getImgID()).into((ImageView) helper.getView(R.id.item_grid_image));
+        public MyAdapter(int layoutResId, List data, Context context) {
+            super(layoutResId, data);
+            this.list = data;
+            this.context = context;
         }
-}
+
+        @Override
+        protected void convert(BaseViewHolder helper, GridBean item) {
+                helper.setText(R.id.item_grid_text,item.getName());
+                Glide.with(context).load(item.getImgID()).into((ImageView) helper.getView(R.id.item_grid_image));
+            }
+    }
