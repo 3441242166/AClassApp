@@ -12,6 +12,10 @@
             android:icon="@drawable/ic_menu_gallery"
             android:title="我的文件" />
         <item
+        android:id="@+id/nav_homework"
+        android:icon="@drawable/ic_menu_slideshow"
+        android:title="我的作业" />
+        <item
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"
             android:title="设置" />

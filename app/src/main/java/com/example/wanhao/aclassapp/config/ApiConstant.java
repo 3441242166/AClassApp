@@ -6,6 +6,7 @@ package com.example.wanhao.aclassapp.config;
 
 public class ApiConstant {
     public static final String BASE_URL = "https://api.fc.xd.style/";
+    public static final String CHAT_URL = "wss://api.fc.xd.style/im/websocket/";
 
     public final static String RETURN_SUCCESS ="SUCCESS";
     //用户token

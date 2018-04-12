@@ -12,8 +12,8 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/item_remark_head"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:src="@color/colorPrimary" />
 
         <LinearLayout
@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:text="万浩"
                 android:textColor="@color/colorBlack"
-                android:textSize="18sp" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/item_remark_date"
@@ -40,10 +40,12 @@
     </LinearLayout>
 
     <TextView
+        android:layout_marginLeft="60dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:id="@+id/item_remark_contant"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:gravity="center"
+        android:layout_height="wrap_content"
         android:text="这个老师课教的真好"
         android:textColor="@color/colorBlack"
         android:textSize="18sp" />

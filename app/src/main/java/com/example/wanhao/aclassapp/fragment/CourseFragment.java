@@ -58,7 +58,7 @@ public class CourseFragment extends LazyLoadFragment implements ICourseFgView {
     private void init(){
         presenter = new CourseFgPresenter(getActivity(),this);
         mLayoutManager = new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL);
-
+        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(mLayoutManager);
         //refreshView.setNestedScrollingEnabled(false);
 

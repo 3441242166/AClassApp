@@ -3,12 +3,16 @@ package com.example.wanhao.aclassapp.bean;
 import com.google.gson.annotations.SerializedName;
 
 public class User {
-    @SerializedName("nick_name")
+    @SerializedName("nickname")
     private String nickName;
     @SerializedName("gender")
     private String gender;
     @SerializedName("signature")
     private String signature;
+    @SerializedName("avatar")
+    private String avatar;
+    @SerializedName("role")
+    Role role;
 
     public String getNickName() {
         return nickName;
@@ -32,5 +36,21 @@ public class User {
 
     public void setSignature(String signature) {
         this.signature = signature;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

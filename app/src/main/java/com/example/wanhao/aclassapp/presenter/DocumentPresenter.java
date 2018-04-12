@@ -8,7 +8,6 @@ import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.IDocumentView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,9 +28,11 @@ public class DocumentPresenter {
 
     public void getListByCourse(){
         List<Document> list =  dao.alterAllDocument(SaveDataUtil.getValueFromSharedPreferences(context, ApiConstant.COUNT));
-        List<List<Document>> lists = new ArrayList<>();
-        lists.add(list);
-        view.loadDataSuccess(lists);
+        view.loadDataSuccess(list);
+    }
+
+    public void sortAndGroup(int x,int y){
+
     }
 
 }

@@ -1,5 +1,6 @@
 package com.example.wanhao.aclassapp.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -177,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         if (id == R.id.main_toolbar_two) {
-
+            startActivity(new Intent(MainActivity.this,DocumentActivity.class));
             return true;
         }
         if (id == R.id.main_toolbar_three) {
@@ -204,5 +205,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 
+    }
 }

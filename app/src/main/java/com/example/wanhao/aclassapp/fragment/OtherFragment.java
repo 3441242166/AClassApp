@@ -4,16 +4,15 @@ import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
-import android.widget.Toast;
 
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.activity.HomeWorkActivity;
 import com.example.wanhao.aclassapp.activity.RemarkActivity;
 import com.example.wanhao.aclassapp.adapter.CourseAdapter;
 import com.example.wanhao.aclassapp.adapter.GridAdapter;
 import com.example.wanhao.aclassapp.base.LazyLoadFragment;
 import com.example.wanhao.aclassapp.bean.GridBean;
 import com.example.wanhao.aclassapp.config.ApiConstant;
-import com.example.wanhao.aclassapp.util.MyItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,9 +51,11 @@ public class OtherFragment extends LazyLoadFragment {
         courseID = getArguments().getString(ApiConstant.COURSE_ID);
 
         dataList = new ArrayList<>();
-        GridBean bean= new GridBean();
-        bean.setImgID(R.drawable.icon_other_0);
-        bean.setName("留言板");
+        GridBean bean= new GridBean(R.drawable.icon_other_0,"留言板");
+
+        dataList.add(bean);
+
+        bean= new GridBean(R.drawable.icon_other_0,"课后习题");
         dataList.add(bean);
 
 //        for (int i = 0; i <25; i++) {
@@ -70,8 +71,8 @@ public class OtherFragment extends LazyLoadFragment {
 
         adapter=new GridAdapter(getActivity());
         adapter.setData(dataList);
+        gridView.setHasFixedSize(true);
         gridView.setLayoutManager(new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL));
-        gridView.addItemDecoration(new MyItemDecoration());
         gridView.setAdapter(adapter);
     }
 
@@ -80,12 +81,17 @@ public class OtherFragment extends LazyLoadFragment {
         adapter.setOnItemClickListener(new CourseAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                Intent intent;
                 switch (position){
                     case 0:
-                        Toast.makeText(getActivity(),courseID,Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getActivity(), RemarkActivity.class);
-                        intent.putExtra(ApiConstant.COURSE_ID,"");
-                        startActivity(new Intent(getActivity(), RemarkActivity.class));
+                        intent = new Intent(getActivity(), RemarkActivity.class);
+                        intent.putExtra(ApiConstant.COURSE_ID,courseID);
+                        startActivity(intent);
+                        break;
+                    case 1:
+                        intent = new Intent(getActivity(), HomeWorkActivity.class);
+                        intent.putExtra(ApiConstant.COURSE_ID,courseID);
+                        startActivity(intent);
                         break;
                 }
             }

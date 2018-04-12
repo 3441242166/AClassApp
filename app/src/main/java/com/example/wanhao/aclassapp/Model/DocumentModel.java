@@ -62,6 +62,7 @@ public class DocumentModel {
                 },new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
+                        Log.i(TAG, "accept: error "+throwable);
                         callBack.requestError(throwable);
                     }
                 });

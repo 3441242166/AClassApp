@@ -8,6 +8,11 @@ public class GridBean {
     private int imgID;
     private String name;
 
+    public GridBean(int imgID,String name){
+        this.imgID = imgID;
+        this.name = name;
+    }
+
     public int getImgID() {
         return imgID;
     }
@@ -23,4 +28,5 @@ public class GridBean {
     public void setName(String name) {
         this.name = name;
     }
+
 }

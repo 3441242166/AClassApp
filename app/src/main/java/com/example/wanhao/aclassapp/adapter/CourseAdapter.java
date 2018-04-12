@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.bean.Course;
 import com.example.wanhao.aclassapp.config.ApiConstant;
@@ -55,7 +57,9 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.Holder> im
         holder.name.setText(course.getName());
         holder.parent.setText(course.getParent());
         holder.number.setText("一共有 "+course.getNum()+" 人");
-        Glide.with(context).load(course.getImgUrl()+"?token="+ SaveDataUtil.getValueFromSharedPreferences(context, ApiConstant.USER_TOKEN)).into(holder.bck);
+        GlideUrl cookie = new GlideUrl(ApiConstant.BASE_URL+"course/"+courseList.get(position).getId()+"/picture"
+                , new LazyHeaders.Builder().addHeader("Authorization", SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_TOKEN)).build());
+        Glide.with(context).load(cookie).into(holder.bck);
 
         holder.itemView.setTag(position);
     }

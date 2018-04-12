@@ -7,6 +7,16 @@
     android:orientation="vertical"
     tools:context="com.example.wanhao.aclassapp.activity.DocumentActivity">
 
+    <TextView
+        android:id="@+id/ac_document_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/shape_edit_search"
+        android:ems="10"
+        android:hint="     搜索帖子/论坛/用户"
+        android:textSize="14sp" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/ac_document_recycler"
         android:layout_width="match_parent"

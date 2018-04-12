@@ -10,11 +10,12 @@ import android.view.ViewGroup;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.activity.BrowseDocumentActivity;
-import com.example.wanhao.aclassapp.adapter.DocumentAdapters;
+import com.example.wanhao.aclassapp.adapter.DocumentAdapter;
 import com.example.wanhao.aclassapp.base.LazyLoadFragment;
 import com.example.wanhao.aclassapp.bean.Document;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.DocumentFgPresenter;
+import com.example.wanhao.aclassapp.util.MyItemDecoration;
 import com.example.wanhao.aclassapp.view.IDocumentFgView;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public class DocumentListFragment extends LazyLoadFragment  implements IDocument
     List<Document> list;
     private String courseID;
     private String documentType;
-    private DocumentAdapters adapters;
+    private DocumentAdapter adapters;
 
     private View notDataView;
     private View errorView;
@@ -59,27 +60,16 @@ public class DocumentListFragment extends LazyLoadFragment  implements IDocument
     }
 
     private void initView() {
-        adapters = new DocumentAdapters(R.layout.item_document,null);
+        adapters = new DocumentAdapter(null);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL));
+        recyclerView.addItemDecoration(new MyItemDecoration());
         recyclerView.setAdapter(adapters);
 
         notDataView = getLayoutInflater().inflate(R.layout.empty_view, (ViewGroup) recyclerView.getParent(), false);
-        notDataView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.getDocumentList(courseID,documentType);
-            }
-        });
+
         errorView = getLayoutInflater().inflate(R.layout.error_view, (ViewGroup) recyclerView.getParent(), false);
-        errorView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                adapters.setEmptyView(notDataView);
-                presenter.getDocumentList(courseID,documentType);
-            }
-        });
 
         adapters.setEmptyView(notDataView);
     }
@@ -91,6 +81,21 @@ public class DocumentListFragment extends LazyLoadFragment  implements IDocument
                 Intent intent = new Intent(getActivity(),BrowseDocumentActivity.class);
                 intent.putExtra(ApiConstant.DOCUMENT_ID,list.get(position).getId());
                 startActivity(intent);
+            }
+        });
+
+        errorView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                adapters.setEmptyView(notDataView);
+                presenter.getDocumentList(courseID,documentType);
+            }
+        });
+
+        notDataView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.getDocumentList(courseID,documentType);
             }
         });
     }

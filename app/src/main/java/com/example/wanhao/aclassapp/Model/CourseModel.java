@@ -42,6 +42,7 @@ public class CourseModel implements ICourseModel{
         List<Course> list = dao.alterAllCoursse(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT));
         if(list==null || list.size()==0){
             getListDataByInternet(callBack);
+            return;
         }
         callBack.requestSuccess(list);
     }

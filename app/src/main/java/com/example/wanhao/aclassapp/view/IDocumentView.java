@@ -9,6 +9,6 @@ import java.util.List;
  * Created by wanhao on 2018/3/22.
  */
 
-public interface IDocumentView extends IBaseTokenView<List<List<Document>>> {
+public interface IDocumentView extends IBaseTokenView<List<Document>> {
 
 }

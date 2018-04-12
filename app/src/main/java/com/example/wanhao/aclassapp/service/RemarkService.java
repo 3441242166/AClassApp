@@ -13,6 +13,8 @@ import retrofit2.http.Path;
 
 public interface RemarkService {
 
-    @GET("course/{courseId}/comment")
-    Observable<Response<ResponseBody>> deleteCourse(@Header("Authorization") String token, @Path("courseId") int courseId);
+    @GET("course/{courseID}/comment")
+    Observable<Response<ResponseBody>> getRemark(@Header("Authorization") String token, @Path("courseID") int courseId);
+
+    
 }

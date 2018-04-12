@@ -11,7 +11,7 @@ import java.util.List;
 public class DocumentResult {
 
     private String status;
-    @SerializedName(value = "edata", alternate = "preview")
+    @SerializedName("data")
     private List<Document> courses;
 
     public String getStatus() {
