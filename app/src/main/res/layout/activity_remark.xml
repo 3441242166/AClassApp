@@ -16,8 +16,14 @@
         android:layout_marginTop="10dp"
         android:gravity="right"
         android:text="-写留言-"
-        android:textColor="#274862"
-        android:textSize="18sp" />
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/buttonClickColor0"/>
 
     <android.support.v7.widget.RecyclerView
         android:layout_marginTop="10dp"

@@ -69,9 +69,12 @@ public class LodingPresenter implements ILoginPresenter{
                 .subscribe(new io.reactivex.functions.Consumer<Response<ResponseBody>>() {
                     @Override
                     public void accept(Response<ResponseBody> responseBodyResponse) throws Exception {
-                        if(responseBodyResponse.isSuccessful()){
 
-                            JSONObject object = new JSONObject(responseBodyResponse.body().string());
+                        if(responseBodyResponse.isSuccessful()){
+                            String body = responseBodyResponse.body().string();
+                            Log.i(TAG, "accept: "+body);
+
+                            JSONObject object = new JSONObject(body);
                             if(object.optString("status").equals("SUCCESS")) {
                                 String token = object.optString(ApiConstant.USER_TOKEN);
                                 String role = object.optString(ApiConstant.USER_ROLE);

@@ -1,12 +1,17 @@
 package com.example.wanhao.aclassapp.activity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.adapter.RemarkAdapter;
 import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
@@ -64,6 +69,41 @@ public class RemarkActivity extends TopBarBaseActivity implements IRemarkView {
             }
         });
 
+        write.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final EditText editText = new EditText(RemarkActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(RemarkActivity.this);
+                builder.setTitle("输入你的回复")
+                        .setNegativeButton("取消", null)
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                presenter.sendRemark(editText.getText().toString(),Integer.valueOf(courseID),-1);
+                            }
+                        });
+                builder.setView(editText);
+                builder.show();
+            }
+        });
+
+        adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view,final int position) {
+                final EditText editText = new EditText(RemarkActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(RemarkActivity.this);
+                builder.setTitle("输入你的回复")
+                        .setNegativeButton("取消", null)
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                presenter.sendRemark(editText.getText().toString(),Integer.valueOf(courseID),list.get(position).getId());
+                            }
+                        });
+                builder.setView(editText);
+                builder.show();
+            }
+        });
     }
 
     private void initView() {
@@ -103,5 +143,10 @@ public class RemarkActivity extends TopBarBaseActivity implements IRemarkView {
     @Override
     public void loadDataError(String throwable) {
         Toast.makeText(this,throwable,Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void sendRemarkSucess() {
+        presenter.getRemark(Integer.valueOf(courseID));
     }
 }

@@ -72,7 +72,10 @@ public class UserMessagePresenter {
                 .subscribe(new io.reactivex.functions.Consumer<Response<ResponseBody>>() {
                     @Override
                     public void accept(Response<ResponseBody> responseBodyResponse) throws Exception {
-                        User result = new Gson().fromJson(responseBodyResponse.body().string(),User.class);
+                        String body = responseBodyResponse.body().string();
+                        Log.i(TAG, "accept: "+body);
+                        User result = new Gson().fromJson(body,User.class);
+
                         view.loadDataSuccess(result);
                         view.disimissProgress();
                     }

@@ -72,7 +72,9 @@ public class CoursePresenter {
                 .subscribe(new io.reactivex.functions.Consumer<Response<ResponseBody>>() {
                     @Override
                     public void accept(Response<ResponseBody> responseBodyResponse) throws Exception {
-                        User result = new Gson().fromJson(responseBodyResponse.body().string(),User.class);
+                        String body = responseBodyResponse.body().string();
+                        Log.i(TAG, "accept: "+body);
+                        User result = new Gson().fromJson(body,User.class);
                         SaveDataUtil.saveToSharedPreferences(mContext,ApiConstant.USER_NAME,result.getNickName());
                         iCourseView.setName(result.getNickName());
                     }

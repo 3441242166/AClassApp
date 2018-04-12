@@ -3,6 +3,7 @@ package com.example.wanhao.aclassapp.presenter;
 import android.content.Context;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.example.wanhao.aclassapp.bean.NoDataResponse;
@@ -86,8 +87,9 @@ public class RegisterPresenter {
                 .subscribe(new io.reactivex.functions.Consumer<Response<ResponseBody>>() {
                     @Override
                     public void accept(Response<ResponseBody> responseBodyResponse) throws Exception {
-
-                        NoDataResponse result = new Gson().fromJson(responseBodyResponse.body().string(),NoDataResponse.class);
+                        String body = responseBodyResponse.body().string();
+                        Log.i(TAG, "accept: "+body);
+                        NoDataResponse result = new Gson().fromJson(body,NoDataResponse.class);
                         if(result.getStatus().equals(ApiConstant.RETURN_SUCCESS)){
                             iRegisterView.loadDataSuccess("success");
                         }else{

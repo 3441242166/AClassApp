@@ -10,4 +10,5 @@ import java.util.List;
  */
 
 public interface IRemarkView extends IBaseTokenView<List<Remark>> {
+    void sendRemarkSucess();
 }
