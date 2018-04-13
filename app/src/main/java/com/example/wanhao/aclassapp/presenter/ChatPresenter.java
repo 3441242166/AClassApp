@@ -69,13 +69,15 @@ public class ChatPresenter {
             }
         });
 
-        stompClient.topic(groupUrl).subscribe(stompMessage -> {
+        stompClient.topic(responreUrl).subscribe(stompMessage -> {
             Log.i(TAG, "init: subscribe ");
             JSONObject jsonObject = new JSONObject(stompMessage.getPayload());
             Log.i(TAG, "Receive: " + stompMessage.getPayload());
             Log.i(TAG, "response = "+jsonObject.getString("response"));
 
         });
+
+        new Thread(new MyThread()).start();
     }
 
     public void sendMessage(String message){
@@ -113,6 +115,23 @@ public class ChatPresenter {
                 Log.i(TAG, "发送消息成功！");
             }
         });
+    }
+
+    public class MyThread implements Runnable {
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            while (true) {
+                try {
+                    Thread.sleep(20000);// 线程暂停10秒，单位毫秒
+                    //sendMessage("");
+                    stompClient.send("", "").subscribe();
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
 }

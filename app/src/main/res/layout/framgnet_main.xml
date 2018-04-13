@@ -11,21 +11,38 @@
         android:id="@+id/fg_main_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/fg_main_input"
-        app:layout_constraintBottom_toTopOf="@+id/fg_main_input">
+        android:layout_alignParentBottom="true">
 
     </android.support.v7.widget.RecyclerView>
 
-    <TextView
-        android:layout_below="@id/fg_main_recycler"
-        android:id="@+id/fg_main_input"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginTop="-40dp"
-        android:background="@drawable/edit_shape"
-        android:ems="10"
-        android:gravity="center|left"
-        android:inputType="textPersonName"
-        android:text="     老师好，我有一个问题想问你" />
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/fg_main_input"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="7"
+            android:background="@drawable/edit_shape"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="     老师好，我有一个问题想问你" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/buttonClickColor0" />
+
+        <Button
+            android:id="@+id/fg_main_send"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/edit_shape"
+            android:text="发送" />
+
+    </LinearLayout>
 </RelativeLayout>

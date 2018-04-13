@@ -2,6 +2,9 @@ package com.example.wanhao.aclassapp.fragment;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.wanhao.aclassapp.R;
@@ -26,6 +29,10 @@ public class MainFragment extends LazyLoadFragment implements ChatView{
 
     @BindView(R.id.fg_main_recycler)
     RecyclerView recyclerView;
+    @BindView(R.id.fg_main_input)
+    EditText editText;
+    @BindView(R.id.fg_main_send)
+    Button send;
 
     private List<ChatBean> list;
     private ChatAdapter adapter;
@@ -44,6 +51,7 @@ public class MainFragment extends LazyLoadFragment implements ChatView{
         presenter = new ChatPresenter(getContext(),this,courseID);
         initData();
         initView();
+        initEvent();
         presenter.sendMessage("this is message");
     }
 
@@ -69,7 +77,15 @@ public class MainFragment extends LazyLoadFragment implements ChatView{
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL));
         recyclerView.setAdapter(adapter);
+    }
 
+    public void initEvent(){
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.sendMessage(editText.getText().toString());
+            }
+        });
     }
 
     @Override
