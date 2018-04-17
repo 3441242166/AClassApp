@@ -10,7 +10,7 @@
         android:id="@+id/item_char_other_head"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        android:layout_margin="10dp"
+        android:layout_margin="5dp"
         android:layout_weight="1"
         android:gravity="top"
         android:src="@color/colorBlack" />
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="100dp"
-        android:layout_weight="5"
+        android:layout_weight="7"
         android:orientation="vertical">
 
         <TextView
@@ -32,7 +32,7 @@
 
         <TextView
             android:id="@+id/item_char_other_content"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:background="@drawable/text_chat"

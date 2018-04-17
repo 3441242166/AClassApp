@@ -3,9 +3,11 @@ package com.example.wanhao.aclassapp.presenter;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.wanhao.aclassapp.bean.ChatBean;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.ChatView;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,6 +16,7 @@ import org.reactivestreams.Subscription;
 
 import java.util.Arrays;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import okhttp3.WebSocket;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompHeader;
@@ -46,10 +49,11 @@ public class ChatPresenter {
     }
 
     private void init(){
-        groupUrl = ApiConstant.CHAT_URL+"group/"+courseID;
-        responreUrl = ApiConstant.CHAT_URL+"g/"+courseID;
+        groupUrl = "/group/"+courseID;
+        responreUrl = "/g/"+courseID;
 
         Log.i(TAG, "init: groupUrl = "+ groupUrl);
+        Log.i(TAG, "init: responreUrl      "+ responreUrl);
         authorizationHeader = new StompHeader("Authorization", SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_TOKEN));
 
         stompClient = Stomp.over(WebSocket.class, ApiConstant.CHAT_URL);
@@ -69,15 +73,29 @@ public class ChatPresenter {
             }
         });
 
-        stompClient.topic(responreUrl).subscribe(stompMessage -> {
-            Log.i(TAG, "init: subscribe ");
-            JSONObject jsonObject = new JSONObject(stompMessage.getPayload());
-            Log.i(TAG, "Receive: " + stompMessage.getPayload());
-            Log.i(TAG, "response = "+jsonObject.getString("response"));
+        stompClient.topic(responreUrl)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(stompMessage -> {
+            String message =stompMessage.getPayload();
+            Log.i(TAG, "init: "+message);
 
+            ChatBean result = new Gson().fromJson(message,ChatBean.class);
+
+            if(result.getUser().getNickName().equals(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_NAME))){
+                result.setItemType(ChatBean.ME);
+            }else{
+                result.setItemType(ChatBean.OTHER);
+            }
+                    Log.i(TAG, "init: thread = "+Thread.currentThread());
+            chatView.newNewMessage(result);
         });
 
+        getHestoryMessage();
         new Thread(new MyThread()).start();
+    }
+
+    public void getHestoryMessage(){
+
     }
 
     public void sendMessage(String message){

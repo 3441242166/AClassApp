@@ -49,30 +49,13 @@ public class MainFragment extends LazyLoadFragment implements ChatView{
     protected void lazyLoad() {
         courseID = getArguments().getString(ApiConstant.COURSE_ID);
         presenter = new ChatPresenter(getContext(),this,courseID);
-        initData();
+        list = new ArrayList<>();
         initView();
         initEvent();
-        presenter.sendMessage("this is message");
-    }
-
-    private void initData() {
-        list = new ArrayList<>();
-
-        for(int x=0;x<20;x++){
-            ChatBean bean = new ChatBean();
-            bean.setContent("在吗？在忙吗？你好啊？嗯哼？");
-            bean.setName("万浩的账号");
-            bean.setHeadImage(R.drawable.bck);
-            bean.setType(x%2+1);
-            list.add(bean);
-        }
-
-
-
     }
 
     private void initView() {
-        adapter = new ChatAdapter(list);
+        adapter = new ChatAdapter(null,getContext());
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL));
@@ -94,13 +77,15 @@ public class MainFragment extends LazyLoadFragment implements ChatView{
     }
 
     @Override
-    public void showNewMessage(String message) {
-        ChatBean bean = new ChatBean();
-        bean.setType(ChatBean.OTHER);
-        bean.setName("其他人");
-        bean.setHeadImage(R.drawable.bck);
-        bean.setContent(message);
-        list.add(bean);
+    public void newNewMessage(ChatBean message) {
+        list.add(message);
         adapter.setNewData(list);
     }
+
+    @Override
+    public void getHistoryMessage(List<ChatBean> list) {
+
+    }
+
+
 }
