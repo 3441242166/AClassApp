@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.example.wanhao.aclassapp.Model.CourseModel;
 import com.example.wanhao.aclassapp.base.IBaseRequestCallBack;
-import com.example.wanhao.aclassapp.bean.Course;
+import com.example.wanhao.aclassapp.bean.sqlbean.Course;
 import com.example.wanhao.aclassapp.view.ICourseFgView;
 
 import java.util.List;

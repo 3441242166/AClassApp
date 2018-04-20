@@ -3,7 +3,9 @@ package com.example.wanhao.aclassapp.presenter;
 import android.content.Context;
 import android.util.Log;
 
-import com.example.wanhao.aclassapp.bean.ChatBean;
+import com.example.wanhao.aclassapp.SQLite.ChatDao;
+import com.example.wanhao.aclassapp.bean.sqlbean.ChatBean;
+import com.example.wanhao.aclassapp.bean.sqlbean.ChatResult;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.ChatView;
@@ -13,8 +15,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
+import org.w3c.dom.ls.LSException;
 
 import java.util.Arrays;
+import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import okhttp3.WebSocket;
@@ -39,12 +43,16 @@ public class ChatPresenter {
 
     private StompClient stompClient;
     private String courseID;
-    StompHeader authorizationHeader;
+    private StompHeader authorizationHeader;
+
+    private ChatDao dao;
+    private MyThread thread;
 
     public ChatPresenter(Context context,ChatView chatView,String courseID){
         this.chatView = chatView;
         this.context = context;
         this.courseID = courseID;
+        dao = new ChatDao(context);
         init();
     }
 
@@ -68,7 +76,7 @@ public class ChatPresenter {
                     Log.i(TAG, "Connect: Error occured!", lifecycleEvent.getException());
                     break;
                 case CLOSED:
-                    Log.i(TAG, "Connect: stomp connection closed!");
+                    Log.i(TAG+"dd", "Connect: stomp connection closed!");
                     break;
             }
         });
@@ -77,25 +85,34 @@ public class ChatPresenter {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(stompMessage -> {
             String message =stompMessage.getPayload();
-            Log.i(TAG, "init: "+message);
 
-            ChatBean result = new Gson().fromJson(message,ChatBean.class);
+            ChatResult result = new Gson().fromJson(message,ChatResult.class);
 
-            if(result.getUser().getNickName().equals(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_NAME))){
-                result.setItemType(ChatBean.ME);
-            }else{
-                result.setItemType(ChatBean.OTHER);
+            if(!result.getStatus().equals(ApiConstant.RETURN_SUCCESS)){
+                chatView.tokenError();
+            }else {
+
+                if (result.getMessage().getUser().getNickName().equals(SaveDataUtil.getValueFromSharedPreferences(context, ApiConstant.USER_NAME))) {
+                    result.getMessage().setItemType(ChatBean.ME);
+                } else {
+                    result.getMessage().setItemType(ChatBean.OTHER);
+                }
+                Log.i(TAG, "init: thread = " + Thread.currentThread());
+                chatView.newNewMessage(result.getMessage());
             }
-                    Log.i(TAG, "init: thread = "+Thread.currentThread());
-            chatView.newNewMessage(result);
         });
-
-        getHestoryMessage();
-        new Thread(new MyThread()).start();
+        thread = new MyThread();
+        thread.start();
     }
 
-    public void getHestoryMessage(){
+    public void getHistoryMessage(){
+        List<ChatBean> list = dao.alterChatBean(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT),courseID,0,0);
+        chatView.getHistoryMessage(list);
+    }
 
+    public void addChat(ChatBean chatBean){
+        Log.i(TAG, "addChat: chatContent "+chatBean.getContent());
+        dao.addchat(chatBean,SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT),courseID);
     }
 
     public void sendMessage(String message){
@@ -135,21 +152,31 @@ public class ChatPresenter {
         });
     }
 
-    public class MyThread implements Runnable {
+    public void stopThread(){
+        thread.state = false;
+        stompClient.disconnect();
+    }
+
+    public class MyThread extends Thread {
+        public boolean state = true;
+
         @Override
         public void run() {
             // TODO Auto-generated method stub
-            while (true) {
+            while (state) {
                 try {
-                    Thread.sleep(20000);// 线程暂停10秒，单位毫秒
-                    //sendMessage("");
                     stompClient.send("", "").subscribe();
+                    Thread.sleep(20000);// 线程暂停20秒，单位毫秒
+                    if(!state)
+                        break;
+                    //sendMessage("");
                 } catch (InterruptedException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
         }
+
     }
 
 }

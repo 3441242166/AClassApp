@@ -9,7 +9,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.wanhao.aclassapp.bean.Course;
+import com.example.wanhao.aclassapp.bean.sqlbean.Course;
 
 import java.util.ArrayList;
 import java.util.List;

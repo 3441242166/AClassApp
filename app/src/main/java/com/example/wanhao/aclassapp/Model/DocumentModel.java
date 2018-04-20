@@ -5,8 +5,8 @@ import android.util.Log;
 
 import com.example.wanhao.aclassapp.SQLite.DocumentDao;
 import com.example.wanhao.aclassapp.base.IBaseRequestCallBack;
-import com.example.wanhao.aclassapp.bean.Document;
-import com.example.wanhao.aclassapp.bean.DocumentResult;
+import com.example.wanhao.aclassapp.bean.sqlbean.Document;
+import com.example.wanhao.aclassapp.bean.sqlbean.DocumentResult;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.DocumentService;
 import com.example.wanhao.aclassapp.util.RetrofitHelper;

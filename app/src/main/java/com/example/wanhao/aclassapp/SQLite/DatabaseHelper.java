@@ -36,6 +36,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 ",AUTHOR text" +
                 ",PRIMARY KEY(USERID,DOCUMENTID,COURSEID))");
 
+        db.execSQL("create table CHAT (" +
+                "CHATID int " +
+                ",USERID text" +
+                ",COURSEID text" +
+                ",CONTENT text" +
+                ",DATE text" +
+                ",MESSAGETYPE int" +
+                ",NICENAME text" +
+                ",AVATAR text" +
+                ",ROLE text" +
+                ",PRIMARY KEY(CHATID,COURSEID,USERID))");
     }
 
     @Override

@@ -12,7 +12,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.adapter.DocumentAdapter;
 import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
-import com.example.wanhao.aclassapp.bean.Document;
+import com.example.wanhao.aclassapp.bean.sqlbean.Document;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.dialog.DocumentDialog;
 import com.example.wanhao.aclassapp.presenter.DocumentPresenter;

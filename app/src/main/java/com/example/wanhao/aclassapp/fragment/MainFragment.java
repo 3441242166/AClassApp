@@ -1,18 +1,22 @@
 package com.example.wanhao.aclassapp.fragment;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.activity.LodingActivity;
 import com.example.wanhao.aclassapp.adapter.ChatAdapter;
 import com.example.wanhao.aclassapp.base.LazyLoadFragment;
-import com.example.wanhao.aclassapp.bean.ChatBean;
+import com.example.wanhao.aclassapp.bean.sqlbean.ChatBean;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.ChatPresenter;
+import com.example.wanhao.aclassapp.util.ActivityCollector;
 import com.example.wanhao.aclassapp.view.ChatView;
 
 import java.util.ArrayList;
@@ -52,6 +56,7 @@ public class MainFragment extends LazyLoadFragment implements ChatView{
         list = new ArrayList<>();
         initView();
         initEvent();
+        presenter.getHistoryMessage();
     }
 
     private void initView() {
@@ -80,12 +85,25 @@ public class MainFragment extends LazyLoadFragment implements ChatView{
     public void newNewMessage(ChatBean message) {
         list.add(message);
         adapter.setNewData(list);
+        presenter.addChat(message);
     }
 
     @Override
     public void getHistoryMessage(List<ChatBean> list) {
-
+        this.list = list;
+        adapter.setNewData(list);
     }
 
+    @Override
+    public void tokenError() {
+        Toast.makeText(getContext(),"登陆失效",Toast.LENGTH_SHORT).show();
+        ActivityCollector.finishAll();
+        startActivity(new Intent(getActivity(), LodingActivity.class));
+    }
 
+    @Override
+    public void onStop() {
+        presenter.stopThread();
+        super.onStop();
+    }
 }

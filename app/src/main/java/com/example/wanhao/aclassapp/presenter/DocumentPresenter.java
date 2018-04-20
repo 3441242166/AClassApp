@@ -3,7 +3,7 @@ package com.example.wanhao.aclassapp.presenter;
 import android.content.Context;
 
 import com.example.wanhao.aclassapp.SQLite.DocumentDao;
-import com.example.wanhao.aclassapp.bean.Document;
+import com.example.wanhao.aclassapp.bean.sqlbean.Document;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.IDocumentView;

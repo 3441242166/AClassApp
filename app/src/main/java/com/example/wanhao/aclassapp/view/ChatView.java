@@ -1,6 +1,6 @@
 package com.example.wanhao.aclassapp.view;
 
-import com.example.wanhao.aclassapp.bean.ChatBean;
+import com.example.wanhao.aclassapp.bean.sqlbean.ChatBean;
 
 import java.util.List;
 
@@ -15,4 +15,6 @@ public interface ChatView {
     void newNewMessage(ChatBean message);
 
     void getHistoryMessage(List<ChatBean> list);
+
+    void tokenError();
 }

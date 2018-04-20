@@ -1,6 +1,7 @@
-package com.example.wanhao.aclassapp.bean;
+package com.example.wanhao.aclassapp.bean.sqlbean;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.example.wanhao.aclassapp.bean.User;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -11,6 +12,8 @@ public class ChatBean implements MultiItemEntity {
     public static final int ME = 1;
     public static final int OTHER = 2;
 
+
+    int sqlID;
     @SerializedName("id")
     String id;
     @SerializedName("content")
@@ -25,6 +28,18 @@ public class ChatBean implements MultiItemEntity {
     User user;
 
     int type;
+
+    public ChatBean(){
+        user = new User();
+    }
+
+    public int getSqlID() {
+        return sqlID;
+    }
+
+    public void setSqlID(int sqlID) {
+        this.sqlID = sqlID;
+    }
 
     public String getId() {
         return id;

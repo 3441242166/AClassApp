@@ -64,14 +64,14 @@ public class AddCoursePresenter implements IAddCoursePresenter{
                             }
                         }else{
                             view.disimissProgress();
-                            view.loadDataError(context.getResources().getString(R.string.internet_error));
+                            view.loadDataError("unknow error");
                         }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         view.disimissProgress();
-                        view.loadDataError(context.getResources().getString(R.string.internet_error));
+                        view.loadDataError("internet error");
                     }
                 });
 

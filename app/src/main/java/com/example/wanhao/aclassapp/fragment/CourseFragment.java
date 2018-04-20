@@ -12,7 +12,7 @@ import com.example.wanhao.aclassapp.activity.LodingActivity;
 import com.example.wanhao.aclassapp.activity.MainActivity;
 import com.example.wanhao.aclassapp.adapter.CourseAdapter;
 import com.example.wanhao.aclassapp.base.LazyLoadFragment;
-import com.example.wanhao.aclassapp.bean.Course;
+import com.example.wanhao.aclassapp.bean.sqlbean.Course;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.CourseFgPresenter;
 import com.example.wanhao.aclassapp.util.ActivityCollector;

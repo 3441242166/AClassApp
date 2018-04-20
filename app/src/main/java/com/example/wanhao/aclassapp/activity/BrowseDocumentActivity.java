@@ -14,7 +14,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
-import com.example.wanhao.aclassapp.bean.Document;
+import com.example.wanhao.aclassapp.bean.sqlbean.Document;
 import com.example.wanhao.aclassapp.broadcast.DownloadReceiver;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.BrowseDocumentPresenter;

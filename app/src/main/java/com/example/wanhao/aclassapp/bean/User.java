@@ -14,6 +14,10 @@ public class User {
     @SerializedName("role")
     Role role;
 
+    public User(){
+        role = new Role();
+    }
+
     public String getNickName() {
         return nickName;
     }
