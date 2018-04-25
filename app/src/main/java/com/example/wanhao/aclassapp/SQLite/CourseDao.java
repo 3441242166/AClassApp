@@ -43,7 +43,15 @@ public class CourseDao {
     // 删除方法，返回值是int
     public int deleteCourse(String user,String id){
         SQLiteDatabase sqLiteDatabase = mMyDBHelper.getWritableDatabase();
-        int deleteResult = sqLiteDatabase.delete("COURSE","ID=?,USER=?", new String[]{id,user});
+        int deleteResult = sqLiteDatabase.delete("COURSE","ID= AND USER=?", new String[]{id,user});
+        sqLiteDatabase.close();
+        return deleteResult;
+    }
+
+    // 删除方法，返回值是int
+    public int deleteAllCourse(String user){
+        SQLiteDatabase sqLiteDatabase = mMyDBHelper.getWritableDatabase();
+        int deleteResult = sqLiteDatabase.delete("COURSE","USER=?", new String[]{user});
         sqLiteDatabase.close();
         return deleteResult;
     }

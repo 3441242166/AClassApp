@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.wanhao.aclassapp.bean.NoDataResponse;
+import com.example.wanhao.aclassapp.bean.Remark;
 import com.example.wanhao.aclassapp.bean.RemarkRequset;
 import com.example.wanhao.aclassapp.bean.RemarkResult;
 import com.example.wanhao.aclassapp.config.ApiConstant;
@@ -12,6 +13,9 @@ import com.example.wanhao.aclassapp.util.RetrofitHelper;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.IRemarkView;
 import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
@@ -51,7 +55,15 @@ public class RemarkPresenter {
                         RemarkResult result = new Gson().fromJson(body,RemarkResult.class);
 
                         if(result.getStatus().equals(ApiConstant.RETURN_SUCCESS)){
-                            iRemarkView.loadDataSuccess(result.getList());
+
+                            List<Remark> list = result.getList();
+                            List<Remark> temp = new ArrayList<>();
+
+                            for(int x=0;x<list.size();x++){
+                                temp.add(list.get(list.size()-x-1));
+                            }
+                            iRemarkView.loadDataSuccess(temp);
+
                         }else{
                             iRemarkView.tokenError("error");
                         }
@@ -60,7 +72,7 @@ public class RemarkPresenter {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-
+                        iRemarkView.loadDataError("网络错误");
                     }
                 });
 

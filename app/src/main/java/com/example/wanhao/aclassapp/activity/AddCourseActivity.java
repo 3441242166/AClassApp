@@ -10,7 +10,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.acker.simplezxing.activity.CaptureActivity;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.base.BaseApplication;
 import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.AddCoursePresenter;
@@ -32,7 +34,7 @@ public class AddCourseActivity extends TopBarBaseActivity implements View.OnClic
     @BindView(R.id.ac_choose_ed)
     EditText editText;
 
-    private SweetAlertDialog pDialog;
+    MaterialDialog dialog;
     private boolean isSucess = false;
 
     @Override
@@ -77,10 +79,12 @@ public class AddCourseActivity extends TopBarBaseActivity implements View.OnClic
     @Override
     protected void init(Bundle savedInstanceState) {
 
-        pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
-        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
-        pDialog.setTitleText("添加中...");
-        pDialog.setCancelable(false);
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(this)
+                .title("Zzz...")
+                .content("加载中...")
+                .progress(true,100,false);
+
+        dialog = builder.build();
 
         mPresenter = new AddCoursePresenter(this,this);
 
@@ -99,12 +103,12 @@ public class AddCourseActivity extends TopBarBaseActivity implements View.OnClic
 
     @Override
     public void showProgress() {
-        pDialog.show();
+        dialog.show();
     }
 
     @Override
     public void disimissProgress() {
-        pDialog.hide();
+        dialog.dismiss();
     }
 
     @Override
@@ -123,9 +127,9 @@ public class AddCourseActivity extends TopBarBaseActivity implements View.OnClic
 
     @Override
     public void tokenError(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-        ActivityCollector.finishAll();
+        Toast.makeText(BaseApplication.getContext(),"token失效，请重新登陆", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, LodingActivity.class);
         startActivity(intent);
+        ActivityCollector.finishAll();
     }
 }

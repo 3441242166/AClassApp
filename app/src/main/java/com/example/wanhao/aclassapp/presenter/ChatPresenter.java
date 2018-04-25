@@ -1,6 +1,7 @@
 package com.example.wanhao.aclassapp.presenter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.wanhao.aclassapp.SQLite.ChatDao;
@@ -116,6 +117,9 @@ public class ChatPresenter {
     }
 
     public void sendMessage(String message){
+        if(TextUtils.isEmpty(message)){
+            return;
+        }
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("content", message);
@@ -150,6 +154,11 @@ public class ChatPresenter {
                 Log.i(TAG, "发送消息成功！");
             }
         });
+    }
+
+    public void deleteChat(int chatId){
+        dao.deleteChat(String.valueOf(chatId),SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT),courseID);
+        chatView.newNewMessage(null);
     }
 
     public void stopThread(){

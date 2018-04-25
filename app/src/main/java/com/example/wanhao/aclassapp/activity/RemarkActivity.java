@@ -1,6 +1,7 @@
 package com.example.wanhao.aclassapp.activity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -14,10 +15,13 @@ import android.widget.Toast;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.adapter.RemarkAdapter;
+import com.example.wanhao.aclassapp.base.BarBaseActivity;
+import com.example.wanhao.aclassapp.base.BaseApplication;
 import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
 import com.example.wanhao.aclassapp.bean.Remark;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.RemarkPresenter;
+import com.example.wanhao.aclassapp.util.ActivityCollector;
 import com.example.wanhao.aclassapp.util.MyItemDecoration;
 import com.example.wanhao.aclassapp.view.IRemarkView;
 
@@ -26,7 +30,7 @@ import java.util.List;
 
 import butterknife.BindView;
 
-public class RemarkActivity extends TopBarBaseActivity implements IRemarkView {
+public class RemarkActivity extends BarBaseActivity implements IRemarkView {
     private static final String TAG = "RemarkActivity";
 
     @BindView(R.id.ac_remark_recycler)
@@ -121,7 +125,10 @@ public class RemarkActivity extends TopBarBaseActivity implements IRemarkView {
 
     @Override
     public void tokenError(String msg) {
-
+        Toast.makeText(BaseApplication.getContext(),"token失效，请重新登陆", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, LodingActivity.class);
+        startActivity(intent);
+        ActivityCollector.finishAll();
     }
 
     @Override

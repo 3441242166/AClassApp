@@ -14,7 +14,9 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.base.BaseApplication;
 import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
 import com.example.wanhao.aclassapp.bean.User;
 import com.example.wanhao.aclassapp.config.ApiConstant;
@@ -25,6 +27,7 @@ import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.IUserMessageView;
 
 import butterknife.BindView;
+import cn.pedant.SweetAlert.ProgressHelper;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -44,7 +47,8 @@ public class UserMessageActivity extends TopBarBaseActivity implements IUserMess
 
     private User user;
     private UserMessagePresenter presenter;
-    SweetAlertDialog pDialog;
+
+    MaterialDialog dialog;
 
     boolean isFirst = true;
 
@@ -58,10 +62,12 @@ public class UserMessageActivity extends TopBarBaseActivity implements IUserMess
         presenter = new UserMessagePresenter(this,this);
         setTitle("我的信息");
 
-        pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
-        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
-        pDialog.setTitleText("Loding...");
-        pDialog.setCancelable(false);
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(this)
+                .title("Zzz...")
+                .content("加载中...")
+                .progress(true,100,false);
+
+        dialog = builder.build();
 
         initEvent();
         presenter.getHeadImage();
@@ -143,12 +149,12 @@ public class UserMessageActivity extends TopBarBaseActivity implements IUserMess
 
     @Override
     public void showProgress() {
-        pDialog.show();
+        dialog.show();
     }
 
     @Override
     public void disimissProgress() {
-        pDialog.hide();
+        dialog.dismiss();
     }
 
     @Override
@@ -222,9 +228,9 @@ public class UserMessageActivity extends TopBarBaseActivity implements IUserMess
 
     @Override
     public void tokenError(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-        ActivityCollector.finishAll();
+        Toast.makeText(BaseApplication.getContext(),"token失效，请重新登陆", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, LodingActivity.class);
+        ActivityCollector.finishAll();
         startActivity(intent);
     }
 

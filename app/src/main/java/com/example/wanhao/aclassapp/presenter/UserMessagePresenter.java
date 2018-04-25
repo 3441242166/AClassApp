@@ -28,6 +28,8 @@ import com.example.wanhao.aclassapp.util.RetrofitHelper;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.IUserMessageView;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -74,10 +76,18 @@ public class UserMessagePresenter {
                     public void accept(Response<ResponseBody> responseBodyResponse) throws Exception {
                         String body = responseBodyResponse.body().string();
                         Log.i(TAG, "accept: "+body);
-                        User result = new Gson().fromJson(body,User.class);
+                        JsonObject obj = new JsonParser().parse(body).getAsJsonObject();
+                        Log.i(TAG, "accept: obj status "+obj.get("status"));
+                        if(obj.get("status")==null){
+                            User result = new Gson().fromJson(body,User.class);
+                            view.loadDataSuccess(result);
+                            view.disimissProgress();
+                        }else if(obj.get("status").getAsString().equals(ApiConstant.RETURN_ERROR)){
+                            Log.i(TAG, "accept: token error");
+                            view.tokenError("token失效，请重新登陆");
+                            return;
+                        }
 
-                        view.loadDataSuccess(result);
-                        view.disimissProgress();
                     }
                 }, new Consumer<Throwable>() {
                     @Override

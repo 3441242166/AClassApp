@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.presenter.LodingPresenter;
 import com.example.wanhao.aclassapp.view.ILodingView;
@@ -35,7 +36,7 @@ public class LodingActivity extends AppCompatActivity implements View.OnClickLis
     @BindView(R.id.ac_loding_password) EditText etPassword;
     @BindView(R.id.ac_loding_cardview) CardView cardView;
 
-    SweetAlertDialog pDialog;
+    MaterialDialog dialog;
 
     LodingPresenter presenter;
 
@@ -68,12 +69,12 @@ public class LodingActivity extends AppCompatActivity implements View.OnClickLis
 
     private void initView() {
 
-        pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
-        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
-        ProgressHelper helper = pDialog.getProgressHelper();
-        helper.setProgress(30);
-        pDialog.setTitleText("Loding...");
-        pDialog.setCancelable(false);
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(this)
+                .title("Zzz...")
+                .content("加载中...")
+                .progress(true,100,false);
+
+        dialog = builder.build();
 
         fab.setOnClickListener(this);
         btGo.setOnClickListener(this);
@@ -84,12 +85,12 @@ public class LodingActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void showProgress() {
-        pDialog.show();
+        dialog.show();
     }
 
     @Override
     public void disimissProgress() {
-        pDialog.hide();
+        dialog.dismiss();
     }
 
     @Override

@@ -1,12 +1,15 @@
 package com.example.wanhao.aclassapp.fragment;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.activity.LodingActivity;
 import com.example.wanhao.aclassapp.activity.MainActivity;
@@ -41,6 +44,7 @@ public class CourseFragment extends LazyLoadFragment implements ICourseFgView {
     private CourseAdapter adapter;
     private StaggeredGridLayoutManager mLayoutManager;
 
+    MaterialDialog dialog;
     private int deletePos = -1;
 
     @Override
@@ -65,6 +69,22 @@ public class CourseFragment extends LazyLoadFragment implements ICourseFgView {
         adapter = new CourseAdapter(getActivity());
         recyclerView.setAdapter(adapter);
 
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
+                .title("警告")
+                .content("确定要删除此门课程吗")
+                .positiveText("删除")
+                .negativeText("点错了")
+                .onAny(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        if (which == DialogAction.POSITIVE) {
+                            presenter.delete(String.valueOf(deletePos+1));
+                        }
+
+                    }
+                });
+        dialog = builder.build();
+
     }
 
     private void initEvent(){
@@ -83,20 +103,8 @@ public class CourseFragment extends LazyLoadFragment implements ICourseFgView {
         adapter.setOnLongItemClickListener(new CourseAdapter.OnLongItemClickListener() {
             @Override
             public void onLongItemClick(View view,final int position) {
-                new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("确定?")
-                        .setContentText("你确定要删除"+courseList.get(position).getName()+"吗？")
-                        .setConfirmText("是，删除它!")
-                        .setCancelText("不，点错了")
-                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sDialog) {
-                                deletePos = position;
-                                sDialog.cancel();
-                                presenter.delete(courseList.get(position).getId());
-                            }
-                        })
-                        .show();
+                deletePos =position;
+                dialog.show();
             }
         });
 
@@ -145,14 +153,7 @@ public class CourseFragment extends LazyLoadFragment implements ICourseFgView {
 
     @Override
     public void deleteSucess() {
-        new SweetAlertDialog(getActivity(),SweetAlertDialog.SUCCESS_TYPE)
-                .setTitleText("删除!")
-                .setContentText("删除成功!")
-                .setConfirmText("确认")
-                .showCancelButton(false)
-                .setCancelClickListener(null)
-                .setConfirmClickListener(null)
-                .show();
+
         courseList.remove(deletePos);
         adapter.notifyDataSetChanged();
     }

@@ -50,8 +50,7 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".activity.HomeWorkActivity" />
-        <activity android:name=".activity.DoHomeworkActivity"></activity>
+        <activity android:name=".activity.DoHomeworkActivity" />
     </application>
 
 </manifest>

@@ -7,8 +7,8 @@ package com.example.wanhao.aclassapp.bean;
 public class Homework {
 
     int id;
-    String title;
-    String date;
+    String content;
+    String answer;
 
     public int getId() {
         return id;
@@ -18,19 +18,19 @@ public class Homework {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getContent() {
+        return content;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public String getDate() {
-        return date;
+    public String getAnswer() {
+        return answer;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
 }

@@ -46,7 +46,14 @@ public class ChatDao {
     // 删除方法，返回值是int
     public int deleteChat(String chatID,String userID,String courseID){
         SQLiteDatabase sqLiteDatabase = mMyDBHelper.getWritableDatabase();
-        int deleteResult = sqLiteDatabase.delete("CHAT","chatID=?,userID=?,courseID=?", new String[]{chatID,userID,courseID});
+        int deleteResult = sqLiteDatabase.delete("CHAT","chatID=? AND userID=? AND courseID=?", new String[]{chatID,userID,courseID});
+        sqLiteDatabase.close();
+        return deleteResult;
+    }
+
+    public int deleteAllChat(String userID,String courseID){
+        SQLiteDatabase sqLiteDatabase = mMyDBHelper.getWritableDatabase();
+        int deleteResult = sqLiteDatabase.delete("CHAT","userID=? AND courseID=?", new String[]{userID,courseID});
         sqLiteDatabase.close();
         return deleteResult;
     }

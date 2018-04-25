@@ -30,6 +30,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "DOCUMENTID text" +
                 ",USERID text" +
                 ",COURSEID text" +
+                ",TYPE text" +
                 ",TITLE text" +
                 ",DATE text" +
                 ",SIZE text" +

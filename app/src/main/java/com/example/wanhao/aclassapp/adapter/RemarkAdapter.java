@@ -36,6 +36,12 @@ public class RemarkAdapter extends BaseMultiItemQuickAdapter<Remark,BaseViewHold
     }
 
     @Override
+    public void setNewData(@Nullable List<Remark> data) {
+        this.data = data;
+        super.setNewData(data);
+    }
+
+    @Override
     protected void convert(BaseViewHolder helper, Remark item) {
         Log.i(TAG, "convert: type "+ helper.getItemViewType());
         GlideUrl cookie = new GlideUrl(item.getUserNmae().getAvatar()

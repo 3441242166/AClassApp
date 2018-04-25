@@ -6,7 +6,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
 import com.example.wanhao.aclassapp.R;
-import com.example.wanhao.aclassapp.activity.HomeWorkActivity;
+import com.example.wanhao.aclassapp.activity.DoHomeworkActivity;
 import com.example.wanhao.aclassapp.activity.RemarkActivity;
 import com.example.wanhao.aclassapp.adapter.CourseAdapter;
 import com.example.wanhao.aclassapp.adapter.GridAdapter;
@@ -89,7 +89,7 @@ public class OtherFragment extends LazyLoadFragment {
                         startActivity(intent);
                         break;
                     case 1:
-                        intent = new Intent(getActivity(), HomeWorkActivity.class);
+                        intent = new Intent(getActivity(), DoHomeworkActivity.class);
                         intent.putExtra(ApiConstant.COURSE_ID,courseID);
                         startActivity(intent);
                         break;

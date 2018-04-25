@@ -13,6 +13,8 @@ import com.example.wanhao.aclassapp.util.RetrofitHelper;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.ICourseView;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
@@ -74,9 +76,15 @@ public class CoursePresenter {
                     public void accept(Response<ResponseBody> responseBodyResponse) throws Exception {
                         String body = responseBodyResponse.body().string();
                         Log.i(TAG, "accept: "+body);
-                        User result = new Gson().fromJson(body,User.class);
-                        SaveDataUtil.saveToSharedPreferences(mContext,ApiConstant.USER_NAME,result.getNickName());
-                        iCourseView.setName(result.getNickName());
+                        JsonObject obj = new JsonParser().parse(body).getAsJsonObject();
+                        if(obj.get("status")==null){
+                            User result = new Gson().fromJson(body,User.class);
+                            iCourseView.setName(result.getNickName());
+                        }else if(obj.get("status").getAsString().equals(ApiConstant.RETURN_ERROR)){
+                            Log.i(TAG, "accept: token error");
+                            iCourseView.tokenError();
+                            return;
+                        }
                     }
                 }, new Consumer<Throwable>() {
                     @Override

@@ -37,7 +37,6 @@ public class DocumentModel {
     }
 
     public void getDocumentList(final String courseID, final IBaseRequestCallBack callBack){
-        //----------从数据库取数据--------------------
 
         //----------从服务器取数据--------------------
         DocumentService service = RetrofitHelper.get(DocumentService.class);
@@ -53,7 +52,7 @@ public class DocumentModel {
                         DocumentResult result = new Gson().fromJson(accept,DocumentResult.class);
                         if(result.getStatus().equals(ApiConstant.RETURN_SUCCESS)){
                             List<Document> list = result.getCourses();
-                            dao.addDocumentList(list,SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT),courseID);
+                            dao.addDocumentList(list,SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT),courseID,ApiConstant.DOCUMENT_EDATA);
                             callBack.requestSuccess(list);
                         }else{
                             callBack.requestError(new Throwable("error"));
@@ -71,8 +70,6 @@ public class DocumentModel {
     }
 
     public void getPreviewList(final String courseID, final IBaseRequestCallBack callBack){
-        //----------从数据库取数据--------------------
-
         //----------从服务器取数据--------------------
         DocumentService service = RetrofitHelper.get(DocumentService.class);
 
@@ -90,7 +87,7 @@ public class DocumentModel {
                         if(result.getStatus().equals(ApiConstant.RETURN_SUCCESS)){
 
                             List<Document> list = result.getCourses();
-                            dao.addDocumentList(list,SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT),courseID);
+                            dao.addDocumentList(list,SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT),courseID,ApiConstant.DOCUMENT_PREVIEW);
                             //dao.addCourseList(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_NAME),list);
                             callBack.requestSuccess(list);
                         }else{

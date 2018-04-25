@@ -9,6 +9,8 @@ public class ApiConstant {
     public static final String CHAT_URL = "wss://api.fc.xd.style/im/websocket";
 
     public final static String RETURN_SUCCESS ="SUCCESS";
+    public final static String RETURN_ERROR ="FAILED";
+
     //用户token
     public static final String USER_TOKEN = "token";
     public static final String USER_ROLE = "role";

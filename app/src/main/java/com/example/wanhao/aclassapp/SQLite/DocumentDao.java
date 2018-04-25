@@ -24,7 +24,7 @@ public class DocumentDao {
         mMyDBHelper=new DatabaseHelper(context);
     }
     // 增加的方法吗，返回的的是一个long值
-    public void addDocumentList(List<Document> list, String userID, String courseID){
+    public void addDocumentList(List<Document> list, String userID, String courseID,String type){
 
         SQLiteDatabase sqLiteDatabase =  mMyDBHelper.getWritableDatabase();
 
@@ -34,6 +34,7 @@ public class DocumentDao {
 
             ContentValues contentValues = new ContentValues();
             contentValues.put("DOCUMENTID", course.getId());
+            contentValues.put("TYPE", type);
             contentValues.put("USERID", userID);
             contentValues.put("COURSEID", courseID);
             contentValues.put("TITLE", course.getTitle());
@@ -59,6 +60,31 @@ public class DocumentDao {
         SQLiteDatabase readableDatabase = mMyDBHelper.getReadableDatabase();
         // 查询比较特别,涉及到 cursor
         Cursor cursor = readableDatabase.rawQuery("select * from DOCUMENT WHERE USERID=?", new String[]{user});
+
+        List<Document> list =new ArrayList<Document>();
+
+        while (cursor.moveToNext()) {
+            Document task = new Document();
+            task.setId(Integer.valueOf(cursor.getString(cursor.getColumnIndex("DOCUMENTID"))));
+            task.setTitle(cursor.getString(cursor.getColumnIndex("TITLE")));
+            task.setSize(cursor.getString(cursor.getColumnIndex("SIZE")));
+            task.setDate(cursor.getString(cursor.getColumnIndex("DATE")));
+            task.setUser(cursor.getString(cursor.getColumnIndex("AUTHOR")));
+            task.setCourseID(cursor.getString(cursor.getColumnIndex("COURSEID")));
+            Log.i(TAG, "alterAllDocument: courseID "+task.getCourseID()+" documentID "+task.getId());
+            list.add(task);
+        }
+
+        cursor.close(); // 记得关闭 corsor
+        readableDatabase.close(); // 关闭数据库
+        return list;
+    }
+
+    public List<Document> alterAllTypeDocument(String user,String courseID,String type){
+        Log.i(TAG, "alterAllTypeDocument: user ="+user+" courseID ="+courseID+" type ="+type);
+        SQLiteDatabase readableDatabase = mMyDBHelper.getReadableDatabase();
+        // 查询比较特别,涉及到 cursor
+        Cursor cursor = readableDatabase.rawQuery("select * from DOCUMENT WHERE USERID=? AND COURSEID=? AND TYPE=?", new String[]{user,courseID,type});
 
         List<Document> list =new ArrayList<Document>();
 

@@ -8,13 +8,12 @@
     tools:context="com.example.wanhao.aclassapp.activity.MainActivity">
 
     <android.support.v7.widget.Toolbar
-        app:titleTextColor="@color/colorWrite"
-        android:fitsSystemWindows="true"
-        android:elevation="4dp"
-        android:background="@color/colorPrimary"
         android:id="@+id/fg_other_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:elevation="4dp"
+        app:titleTextColor="@color/colorWrite">
 
     </android.support.v7.widget.Toolbar>
 

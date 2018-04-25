@@ -16,11 +16,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.base.BaseApplication;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.fragment.CourseFragment;
 import com.example.wanhao.aclassapp.presenter.CoursePresenter;
+import com.example.wanhao.aclassapp.util.ActivityCollector;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.ICourseView;
 
@@ -45,6 +48,7 @@ public class CourseActivity extends AppCompatActivity implements NavigationView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course);
+        ActivityCollector.addActivity(this);
         ButterKnife.bind(this);
         init();
         presenter.getData();
@@ -74,24 +78,6 @@ public class CourseActivity extends AppCompatActivity implements NavigationView.
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.course, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -102,11 +88,7 @@ public class CourseActivity extends AppCompatActivity implements NavigationView.
             startActivity(new Intent(this,UserMessageActivity.class));
         } else if (id == R.id.nav_gallery) {
             startActivity(new Intent(this,DocumentActivity.class));
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        }else if (id == R.id.nav_send) {
             SaveDataUtil.saveToSharedPreferences(this,ApiConstant.USER_TOKEN,"");
             startActivity(new Intent(this,LodingActivity.class));
             finish();
@@ -183,6 +165,16 @@ public class CourseActivity extends AppCompatActivity implements NavigationView.
 
     @Override
     public void tokenError() {
+        Toast.makeText(BaseApplication.getContext(),"token失效，请重新登陆", Toast.LENGTH_SHORT).show();
+        SaveDataUtil.saveToSharedPreferences(this,ApiConstant.USER_TOKEN,"");
+        Intent intent = new Intent(this, LodingActivity.class);
+        ActivityCollector.finishAll();
+        startActivity(intent);
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityCollector.removeActivity(this);
     }
 }

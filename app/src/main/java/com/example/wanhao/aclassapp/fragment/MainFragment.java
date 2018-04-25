@@ -9,9 +9,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.activity.LodingActivity;
 import com.example.wanhao.aclassapp.adapter.ChatAdapter;
+import com.example.wanhao.aclassapp.base.BaseApplication;
 import com.example.wanhao.aclassapp.base.LazyLoadFragment;
 import com.example.wanhao.aclassapp.bean.sqlbean.ChatBean;
 import com.example.wanhao.aclassapp.config.ApiConstant;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 /**
  * Created by wanhao on 2018/2/27.
@@ -72,6 +75,23 @@ public class MainFragment extends LazyLoadFragment implements ChatView{
             @Override
             public void onClick(View view) {
                 presenter.sendMessage(editText.getText().toString());
+                editText.setText("");
+            }
+        });
+
+        adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+
+            }
+        });
+
+        adapter.setOnItemLongClickListener(new BaseQuickAdapter.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
+                presenter.deleteChat(list.get(position).getSqlID());
+                list.remove(position);
+                return true;
             }
         });
     }
@@ -83,9 +103,13 @@ public class MainFragment extends LazyLoadFragment implements ChatView{
 
     @Override
     public void newNewMessage(ChatBean message) {
-        list.add(message);
-        adapter.setNewData(list);
-        presenter.addChat(message);
+        if(message!=null) {
+            list.add(message);
+            adapter.setNewData(list);
+            presenter.addChat(message);
+        }else {
+            adapter.setNewData(list);
+        }
     }
 
     @Override
@@ -96,9 +120,10 @@ public class MainFragment extends LazyLoadFragment implements ChatView{
 
     @Override
     public void tokenError() {
-        Toast.makeText(getContext(),"登陆失效",Toast.LENGTH_SHORT).show();
+        Toast.makeText(BaseApplication.getContext(),"token失效，请重新登陆", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getContext(), LodingActivity.class);
         ActivityCollector.finishAll();
-        startActivity(new Intent(getActivity(), LodingActivity.class));
+        startActivity(intent);
     }
 
     @Override

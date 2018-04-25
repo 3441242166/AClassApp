@@ -1,8 +1,10 @@
 package com.example.wanhao.aclassapp.Model;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.SQLite.ChatDao;
 import com.example.wanhao.aclassapp.SQLite.CourseDao;
 import com.example.wanhao.aclassapp.base.IBaseRequestCallBack;
 import com.example.wanhao.aclassapp.bean.sqlbean.Course;
@@ -20,6 +22,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
+import retrofit2.HttpException;
 import retrofit2.Response;
 
 /**
@@ -61,6 +64,7 @@ public class CourseModel implements ICourseModel{
                         CourseResult result = new Gson().fromJson(responseBodyResponse.body().string(),CourseResult.class);
                         if(result.getStatus().equals(ApiConstant.RETURN_SUCCESS)){
                             List<Course> list = result.getCourses();
+                            dao.deleteAllCourse(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT));
                             dao.addCourseList(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT),list);
                             callBack.requestSuccess(list);
                         }else{
@@ -78,6 +82,10 @@ public class CourseModel implements ICourseModel{
     @Override
     public void deleteCourse(final String id, final IBaseRequestCallBack callBack){
         callBack.beforeRequest();
+
+        ChatDao chatDao = new ChatDao(context);
+        chatDao.deleteAllChat(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT),id);
+
         CourseService service = RetrofitHelper.get(CourseService.class);
         service.deleteCourse(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_TOKEN),Integer.valueOf(id))
                 .subscribeOn(Schedulers.io())
@@ -86,8 +94,10 @@ public class CourseModel implements ICourseModel{
                     @Override
                     public void accept(Response<ResponseBody> responseBodyResponse) throws Exception {
                         //Log.i(TAG, "deleteCourse: "+responseBodyResponse.body().string());
-                        NoDataResponse result = new Gson().fromJson(responseBodyResponse.body().string(),NoDataResponse.class);
-                        if(result.getStatus().equals(ApiConstant.RETURN_SUCCESS)){
+                        String result = responseBodyResponse.body().string();
+                        Log.i(TAG, "accept: result = "+result);
+                        NoDataResponse dataResponse = new Gson().fromJson(result,NoDataResponse.class);
+                        if(dataResponse.getStatus().equals(ApiConstant.RETURN_SUCCESS)){
                             callBack.requestSuccess("");
                             dao.deleteCourse(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT),id);
                         }else{
@@ -97,7 +107,8 @@ public class CourseModel implements ICourseModel{
                 },new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        callBack.requestError(new Throwable(context.getResources().getString(R.string.internet_error)));
+                        Log.i(TAG, "accept: throwable "+throwable);
+                        callBack.requestError(throwable);
                     }
                 });
     }
