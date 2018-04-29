@@ -10,6 +10,8 @@ public class Homework {
     String content;
     String answer;
 
+    int choose = -1;
+
     public int getId() {
         return id;
     }
@@ -32,5 +34,28 @@ public class Homework {
 
     public void setAnswer(String answer) {
         this.answer = answer;
+    }
+
+    public int getChoose() {
+        return choose;
+    }
+
+    public void setChoose(int choose) {
+        this.choose = choose;
+    }
+
+    public String getUserChoose(){
+        switch (choose){
+            case 0:
+                return "A";
+            case 1:
+                return "B";
+            case 2:
+                return "C";
+            case 3:
+                return "D";
+        }
+
+        return null;
     }
 }

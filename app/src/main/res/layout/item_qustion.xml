@@ -29,6 +29,7 @@
         android:orientation="vertical">
 
         <Button
+            android:background="@drawable/bt_shape"
             android:id="@+id/item_qustion_a"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,6 +37,7 @@
             android:text="A" />
 
         <Button
+            android:background="@drawable/bt_shape"
             android:id="@+id/item_qustion_b"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -43,6 +45,7 @@
             android:text="B" />
 
         <Button
+            android:background="@drawable/bt_shape"
             android:id="@+id/item_qustion_c"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -50,6 +53,7 @@
             android:text="C" />
 
         <Button
+            android:background="@drawable/bt_shape"
             android:id="@+id/item_qustion_d"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -57,11 +61,12 @@
             android:text="D" />
 
         <Button
+            android:background="@drawable/bt_shape"
             android:id="@+id/item_qustion_next"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="下一题" />
+            android:text="不知道" />
     </LinearLayout>
 
 </LinearLayout>

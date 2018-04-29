@@ -6,6 +6,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.wanhao.aclassapp.R;
@@ -113,6 +114,7 @@ public class DocumentListFragment extends LazyLoadFragment  implements IDocument
     @Override
     public void loadDataError(String throwable) {
         //adapters.setEmptyView(errorView);
+        Toast.makeText(getContext(),"网络错误",Toast.LENGTH_SHORT).show();
         Log.i(TAG, "loadDataError: "+documentType);
     }
 

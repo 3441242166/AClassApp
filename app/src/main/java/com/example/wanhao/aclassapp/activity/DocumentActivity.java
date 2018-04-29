@@ -30,8 +30,6 @@ public class DocumentActivity extends TopBarBaseActivity implements IDocumentVie
 
     @BindView(R.id.ac_document_recycler)
     RecyclerView recyclerView;
-    @BindView(R.id.ac_document_search)
-    TextView search;
 
     private DocumentAdapter adapter;
     private List<Document> list;
@@ -83,13 +81,6 @@ public class DocumentActivity extends TopBarBaseActivity implements IDocumentVie
                 Intent intent = new Intent(DocumentActivity.this,BrowseDocumentActivity.class);
                 intent.putExtra(ApiConstant.DOCUMENT_ID,list.get(position).getId());
                 startActivity(intent);
-            }
-        });
-
-        search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
             }
         });
 

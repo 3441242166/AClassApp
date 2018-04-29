@@ -98,7 +98,7 @@ public class MainFragment extends LazyLoadFragment implements ChatView{
 
     @Override
     public void error(String message) {
-        Toast.makeText(getContext(),message,Toast.LENGTH_SHORT).show();
+        Toast.makeText(BaseApplication.getContext(),message,Toast.LENGTH_SHORT).show();
     }
 
     @Override
