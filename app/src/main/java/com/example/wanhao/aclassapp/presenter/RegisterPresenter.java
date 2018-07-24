@@ -56,7 +56,7 @@ public class RegisterPresenter {
             return;
         }
         if (TextUtils.isEmpty(code)){
-            iRegisterView.loadDataError("");
+            iRegisterView.loadDataError("验证码不能为空");
             return;
         }
         if (TextUtils.isEmpty(password)){

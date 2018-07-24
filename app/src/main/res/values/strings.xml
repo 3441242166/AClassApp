@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AClassApp</string>
+    <string name="app_name">翻转课堂</string>
     <string name="title_activity_course">CourseActivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>

@@ -1,5 +1,6 @@
 package com.example.wanhao.aclassapp.presenter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
@@ -28,7 +29,7 @@ import retrofit2.Response;
  * Created by wanhao on 2017/11/22.
  */
 
-public class LodingPresenter implements ILoginPresenter{
+public class LodingPresenter{
     private static final String TAG = "LodingPresenter";
 
     private ILodingView iLoginView;
@@ -39,7 +40,7 @@ public class LodingPresenter implements ILoginPresenter{
         this.mContext = context;
     }
 
-    @Override
+    @SuppressLint("CheckResult")
     public void login(final String phoneNum, final String password) {
         if (TextUtils.isEmpty(phoneNum)){
             iLoginView.loadDataError("账号不能为空");
@@ -63,6 +64,7 @@ public class LodingPresenter implements ILoginPresenter{
         RequestBody body = RequestBody.create(JSON, jsonObject.toString());
 
         LodingService service = RetrofitHelper.get(LodingService.class);
+
         service.login(body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -79,21 +81,21 @@ public class LodingPresenter implements ILoginPresenter{
                                 String token = object.optString(ApiConstant.USER_TOKEN);
                                 String role = object.optString(ApiConstant.USER_ROLE);
                                 Log.i(TAG, "accept: " + token + "  " + role);
+
                                 SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.USER_TOKEN, token);
                                 SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.USER_ROLE, role);
                                 SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.COUNT, phoneNum);
                                 SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.PASSWORD, password);
                                 SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.TOKEN_TIME, DateUtil.getNowDateString());
-                                iLoginView.disimissProgress();
+
                                 iLoginView.loadDataSuccess(null);
                             }else{
-                                iLoginView.disimissProgress();
                                 iLoginView.loadDataError("账户或密码错误");
                             }
                         }else{
-                            iLoginView.disimissProgress();
                             iLoginView.loadDataError("账户或密码错误");
                         }
+                        iLoginView.disimissProgress();
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -104,17 +106,10 @@ public class LodingPresenter implements ILoginPresenter{
                 });
     }
 
-    @Override
     public void init() {
         String count = SaveDataUtil.getValueFromSharedPreferences(mContext,ApiConstant.COUNT);
         String password = SaveDataUtil.getValueFromSharedPreferences(mContext,ApiConstant.PASSWORD);
         iLoginView.initData(count,password);
     }
 
-}
-
-interface ILoginPresenter{
-    void login(String phoneNum, String password);
-
-    void init();
 }

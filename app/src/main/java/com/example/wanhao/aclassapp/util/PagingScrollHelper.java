@@ -11,6 +11,10 @@ import android.view.View;
  * Created by wanhao on 2017/10/23.
  */
 
+/**
+ * 类viewPager滑动
+ */
+
 public class PagingScrollHelper {
 
     RecyclerView mRecyclerView = null;

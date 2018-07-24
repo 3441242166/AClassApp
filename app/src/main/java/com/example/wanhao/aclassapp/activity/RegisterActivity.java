@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.presenter.RegisterPresenter;
 import com.example.wanhao.aclassapp.view.IRegisterView;
@@ -33,8 +34,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @BindView(R.id.ac_register_cardview)CardView cardView;
 
     RegisterPresenter registerPresenter;
-
-    SweetAlertDialog pDialog;
+    MaterialDialog dialog;
 
     CountDownTimer timer = new CountDownTimer(60000, 1000) {
         @Override
@@ -61,16 +61,20 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void InitView() {
+
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(this)
+                .title("Zzz...")
+                .content("加载中...")
+                .progress(true,100,false);
+
+        dialog = builder.build();
+
         registerPresenter = new RegisterPresenter(this,this);
 
         btGo.setOnClickListener(this);
         fab.setOnClickListener(this);
         tvCode.setOnClickListener(this);
 
-        pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
-        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
-        pDialog.setTitleText("Loding...");
-        pDialog.setCancelable(false);
     }
 
     private void InitEvent() {
@@ -96,12 +100,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void showProgress() {
-        pDialog.show();
+        dialog.show();
     }
 
     @Override
     public void disimissProgress() {
-        pDialog.hide();
+        dialog.dismiss();
     }
 
     @Override

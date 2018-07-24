@@ -16,6 +16,7 @@ import com.example.wanhao.aclassapp.base.LazyLoadFragment;
 import com.example.wanhao.aclassapp.bean.sqlbean.Document;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.DocumentFgPresenter;
+import com.example.wanhao.aclassapp.util.ColorDividerItemDecoration;
 import com.example.wanhao.aclassapp.util.MyItemDecoration;
 import com.example.wanhao.aclassapp.view.IDocumentFgView;
 
@@ -65,7 +66,7 @@ public class DocumentListFragment extends LazyLoadFragment  implements IDocument
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL));
-        recyclerView.addItemDecoration(new MyItemDecoration());
+        recyclerView.addItemDecoration(new ColorDividerItemDecoration());
         recyclerView.setAdapter(adapters);
 
         notDataView = getLayoutInflater().inflate(R.layout.empty_view, (ViewGroup) recyclerView.getParent(), false);

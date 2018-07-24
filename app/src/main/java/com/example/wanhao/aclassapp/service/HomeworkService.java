@@ -16,6 +16,4 @@ public interface HomeworkService {
 
     @POST("course/{courseId}/quiz/{quizId}")
     Observable<Response<ResponseBody>> postAnswer(@Header("Authorization") String token, @Path("courseId") String courseId,@Path("quizId") String quizId, @Body RequestBody body);
-
-
 }

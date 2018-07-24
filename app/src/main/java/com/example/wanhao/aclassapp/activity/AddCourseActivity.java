@@ -1,7 +1,6 @@
 package com.example.wanhao.aclassapp.activity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
@@ -20,8 +19,6 @@ import com.example.wanhao.aclassapp.util.ActivityCollector;
 import com.example.wanhao.aclassapp.view.IAddCourseView;
 
 import butterknife.BindView;
-import cn.pedant.SweetAlert.SweetAlertDialog;
-
 
 public class AddCourseActivity extends TopBarBaseActivity implements View.OnClickListener, IAddCourseView {
 
@@ -35,7 +32,6 @@ public class AddCourseActivity extends TopBarBaseActivity implements View.OnClic
     EditText editText;
 
     MaterialDialog dialog;
-    private boolean isSucess = false;
 
     @Override
     public void onClick(View view) {
@@ -48,6 +44,7 @@ public class AddCourseActivity extends TopBarBaseActivity implements View.OnClic
                 startActivityForResult(new Intent(this, CaptureActivity.class), CaptureActivity.REQ_CODE);
                 break;
         }
+
     }
 
     @Override

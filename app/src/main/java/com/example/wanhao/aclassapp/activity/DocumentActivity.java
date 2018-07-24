@@ -17,6 +17,7 @@ import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.dialog.DocumentDialog;
 import com.example.wanhao.aclassapp.presenter.DocumentPresenter;
 import com.example.wanhao.aclassapp.util.ActivityCollector;
+import com.example.wanhao.aclassapp.util.ColorDividerItemDecoration;
 import com.example.wanhao.aclassapp.util.MyItemDecoration;
 import com.example.wanhao.aclassapp.view.IDocumentView;
 
@@ -54,7 +55,7 @@ public class DocumentActivity extends TopBarBaseActivity implements IDocumentVie
         dialog = new DocumentDialog(this);
 
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL));
-        recyclerView.addItemDecoration(new MyItemDecoration());
+        recyclerView.addItemDecoration(new ColorDividerItemDecoration());
         adapter = new DocumentAdapter(null);
         recyclerView.setAdapter(adapter);
     }

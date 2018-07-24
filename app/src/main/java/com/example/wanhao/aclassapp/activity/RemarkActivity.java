@@ -22,6 +22,7 @@ import com.example.wanhao.aclassapp.bean.Remark;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.RemarkPresenter;
 import com.example.wanhao.aclassapp.util.ActivityCollector;
+import com.example.wanhao.aclassapp.util.ColorDividerItemDecoration;
 import com.example.wanhao.aclassapp.util.MyItemDecoration;
 import com.example.wanhao.aclassapp.view.IRemarkView;
 
@@ -117,7 +118,7 @@ public class RemarkActivity extends BarBaseActivity implements IRemarkView {
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL));
-        recyclerView.addItemDecoration(new MyItemDecoration());
+        recyclerView.addItemDecoration(new ColorDividerItemDecoration());
         recyclerView.setAdapter(adapter);
 
     }

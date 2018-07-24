@@ -7,7 +7,7 @@ import com.example.wanhao.aclassapp.base.IBaseView;
  * Created by wanhao on 2017/11/22.
  */
 
-public interface ILodingView extends IBaseView {
+public interface ILodingView extends IBaseView<String> {
 
     void initData(String count, String password);
 }

@@ -94,7 +94,7 @@ public class LodingActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     @Override
-    public void loadDataSuccess(Object tData) {
+    public void loadDataSuccess(String tData) {
         startActivity(new Intent(this, CourseActivity.class));
         Toast.makeText(this,"success", Toast.LENGTH_SHORT).show();
         finish();
