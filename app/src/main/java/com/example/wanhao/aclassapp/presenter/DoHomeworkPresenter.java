@@ -3,9 +3,8 @@ package com.example.wanhao.aclassapp.presenter;
 import android.content.Context;
 import android.util.Log;
 
-import com.example.wanhao.aclassapp.bean.Homework;
-import com.example.wanhao.aclassapp.bean.HomeworkResponse;
-import com.example.wanhao.aclassapp.bean.User;
+import com.example.wanhao.aclassapp.bean.requestbean.Homework;
+import com.example.wanhao.aclassapp.bean.requestbean.HomeworkResponse;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.HomeworkService;
 import com.example.wanhao.aclassapp.util.RetrofitHelper;

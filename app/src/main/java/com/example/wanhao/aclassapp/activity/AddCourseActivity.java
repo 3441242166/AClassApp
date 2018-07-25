@@ -16,6 +16,7 @@ import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.AddCoursePresenter;
 import com.example.wanhao.aclassapp.util.ActivityCollector;
+import com.example.wanhao.aclassapp.util.DialogUtil;
 import com.example.wanhao.aclassapp.view.IAddCourseView;
 
 import butterknife.BindView;
@@ -75,27 +76,18 @@ public class AddCourseActivity extends TopBarBaseActivity implements View.OnClic
 
     @Override
     protected void init(Bundle savedInstanceState) {
-
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(this)
-                .title("Zzz...")
-                .content("加载中...")
-                .progress(true,100,false);
-
-        dialog = builder.build();
-
+        setTopLeftButton(new OnClickListener() {
+            @Override
+            public void onClick() {
+                finish();
+            }
+        });
+        setTitle("添加课程");
+        dialog = DialogUtil.waitDialog(this);
         mPresenter = new AddCoursePresenter(this,this);
 
         abtAdd.setOnClickListener(this);
         floatingActionButton.setOnClickListener(this);
-
-        setTopLeftButton(new OnClickListener() {
-            @Override
-            public void onClick() {
-                AddCourseActivity.this.finish();
-            }
-        });
-
-        setTitle("添加课程");
     }
 
     @Override
@@ -109,8 +101,8 @@ public class AddCourseActivity extends TopBarBaseActivity implements View.OnClic
     }
 
     @Override
-    public void loadDataSuccess(Object tData) {
-        Toast.makeText(this,"success", Toast.LENGTH_SHORT).show();
+    public void loadDataSuccess(String tData) {
+        Toast.makeText(this,tData, Toast.LENGTH_SHORT).show();
         Intent intent = new Intent();
         intent.putExtra("result", ApiConstant.ADD_SUCCESS);
         setResult(ApiConstant.ADD_SUCCESS, intent);

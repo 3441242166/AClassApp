@@ -17,13 +17,11 @@ import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.adapter.RemarkAdapter;
 import com.example.wanhao.aclassapp.base.BarBaseActivity;
 import com.example.wanhao.aclassapp.base.BaseApplication;
-import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
-import com.example.wanhao.aclassapp.bean.Remark;
+import com.example.wanhao.aclassapp.bean.requestbean.Remark;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.RemarkPresenter;
 import com.example.wanhao.aclassapp.util.ActivityCollector;
 import com.example.wanhao.aclassapp.util.ColorDividerItemDecoration;
-import com.example.wanhao.aclassapp.util.MyItemDecoration;
 import com.example.wanhao.aclassapp.view.IRemarkView;
 
 import java.util.ArrayList;

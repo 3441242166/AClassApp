@@ -3,7 +3,6 @@ package com.example.wanhao.aclassapp.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -18,17 +17,16 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.base.BaseApplication;
 import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
-import com.example.wanhao.aclassapp.bean.User;
+import com.example.wanhao.aclassapp.bean.requestbean.User;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.UserMessagePresenter;
 import com.example.wanhao.aclassapp.util.ActivityCollector;
+import com.example.wanhao.aclassapp.util.DialogUtil;
 import com.example.wanhao.aclassapp.util.FileConvertUtil;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.IUserMessageView;
 
 import butterknife.BindView;
-import cn.pedant.SweetAlert.ProgressHelper;
-import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserMessageActivity extends TopBarBaseActivity implements IUserMessageView{
@@ -62,12 +60,7 @@ public class UserMessageActivity extends TopBarBaseActivity implements IUserMess
         presenter = new UserMessagePresenter(this,this);
         setTitle("我的信息");
 
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(this)
-                .title("Zzz...")
-                .content("加载中...")
-                .progress(true,100,false);
-
-        dialog = builder.build();
+        dialog = DialogUtil.waitDialog(this);
 
         initEvent();
         presenter.getHeadImage();
@@ -228,10 +221,7 @@ public class UserMessageActivity extends TopBarBaseActivity implements IUserMess
 
     @Override
     public void tokenError(String msg) {
-        Toast.makeText(BaseApplication.getContext(),"token失效，请重新登陆", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, LodingActivity.class);
-        ActivityCollector.finishAll();
-        startActivity(intent);
+        tokenError(msg);
     }
 
 }

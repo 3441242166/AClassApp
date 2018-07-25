@@ -1,26 +1,26 @@
 package com.example.wanhao.aclassapp.presenter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.example.wanhao.aclassapp.bean.NoDataResponse;
+import com.example.wanhao.aclassapp.bean.requestbean.NoDataResponse;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.RegisterService;
+import com.example.wanhao.aclassapp.util.GsonUtils;
 import com.example.wanhao.aclassapp.util.RetrofitHelper;
 import com.example.wanhao.aclassapp.view.IRegisterView;
 import com.google.gson.Gson;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
@@ -50,6 +50,7 @@ public class RegisterPresenter {
     }
 
     //注册
+    @SuppressLint("CheckResult")
     public void register(String phoneNum, String password, String code){
         if (TextUtils.isEmpty(phoneNum)){
             iRegisterView.loadDataError("手机号不能为空");
@@ -68,20 +69,12 @@ public class RegisterPresenter {
 
         iRegisterView.showProgress();
 
-        RegisterService service = RetrofitHelper.get(RegisterService.class);
+        Map<String,String> map = new HashMap<>();
+        map.put(ApiConstant.USER_NAME, phoneNum);
+        map.put(ApiConstant.PASSWORD, password);
+        map.put(ApiConstant.USER_ROLE, "student");
 
-        JSONObject jsonObject = new JSONObject();
-        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-        try {
-            jsonObject.put(ApiConstant.USER_NAME, phoneNum);
-            jsonObject.put(ApiConstant.PASSWORD, password);
-            jsonObject.put(ApiConstant.USER_ROLE, "student");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        RequestBody body = RequestBody.create(JSON, jsonObject.toString());
-
-        service.register(body)
+        RetrofitHelper.get(RegisterService.class).register(GsonUtils.toBody(map))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new io.reactivex.functions.Consumer<Response<ResponseBody>>() {

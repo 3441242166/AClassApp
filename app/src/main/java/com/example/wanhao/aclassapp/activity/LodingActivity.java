@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.presenter.LodingPresenter;
+import com.example.wanhao.aclassapp.util.DialogUtil;
 import com.example.wanhao.aclassapp.view.ILodingView;
 
 import butterknife.BindView;
@@ -50,6 +51,17 @@ public class LodingActivity extends AppCompatActivity implements View.OnClickLis
         presenter.init();
     }
 
+    private void initView() {
+
+        dialog = DialogUtil.waitDialog(this);
+
+        fab.setOnClickListener(this);
+        btGo.setOnClickListener(this);
+        forget.setOnClickListener(this);
+
+        presenter = new LodingPresenter(this,this);
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -67,22 +79,6 @@ public class LodingActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    private void initView() {
-
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(this)
-                .title("Zzz...")
-                .content("加载中...")
-                .progress(true,100,false);
-
-        dialog = builder.build();
-
-        fab.setOnClickListener(this);
-        btGo.setOnClickListener(this);
-        forget.setOnClickListener(this);
-
-        presenter = new LodingPresenter(this,this);
-    }
-
     @Override
     public void showProgress() {
         dialog.show();
@@ -96,7 +92,7 @@ public class LodingActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void loadDataSuccess(String tData) {
         startActivity(new Intent(this, CourseActivity.class));
-        Toast.makeText(this,"success", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,tData, Toast.LENGTH_SHORT).show();
         finish();
     }
 

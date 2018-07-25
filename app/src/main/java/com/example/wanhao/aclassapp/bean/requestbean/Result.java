@@ -1,4 +1,4 @@
-package com.example.wanhao.aclassapp.bean;
+package com.example.wanhao.aclassapp.bean.requestbean;
 
 import java.util.List;
 

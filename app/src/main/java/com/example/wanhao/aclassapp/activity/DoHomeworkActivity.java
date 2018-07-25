@@ -10,14 +10,12 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.adapter.QuestionAdapter;
 import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
-import com.example.wanhao.aclassapp.bean.Homework;
-import com.example.wanhao.aclassapp.bean.Question;
+import com.example.wanhao.aclassapp.bean.requestbean.Homework;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.DoHomeworkPresenter;
 import com.example.wanhao.aclassapp.util.PagingScrollHelper;
 import com.example.wanhao.aclassapp.view.DoHomeworkView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;

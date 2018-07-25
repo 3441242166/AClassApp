@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
-import com.example.wanhao.aclassapp.bean.User;
+import com.example.wanhao.aclassapp.bean.requestbean.User;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.UserMessageService;
 import com.example.wanhao.aclassapp.util.FileConvertUtil;

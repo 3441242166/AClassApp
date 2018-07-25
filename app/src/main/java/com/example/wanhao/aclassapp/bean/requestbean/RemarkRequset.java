@@ -1,4 +1,4 @@
-package com.example.wanhao.aclassapp.bean;
+package com.example.wanhao.aclassapp.bean.requestbean;
 
 /**
  * Created by wanhao on 2018/4/12.

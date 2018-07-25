@@ -1,8 +1,7 @@
 package com.example.wanhao.aclassapp.view;
 
 import com.example.wanhao.aclassapp.base.IBaseTokenView;
-import com.example.wanhao.aclassapp.bean.Homework;
-import com.example.wanhao.aclassapp.bean.Question;
+import com.example.wanhao.aclassapp.bean.requestbean.Homework;
 
 import java.util.List;
 

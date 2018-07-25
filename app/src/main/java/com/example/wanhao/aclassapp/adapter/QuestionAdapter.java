@@ -6,8 +6,7 @@ import android.widget.Button;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.example.wanhao.aclassapp.R;
-import com.example.wanhao.aclassapp.bean.Homework;
-import com.example.wanhao.aclassapp.bean.Question;
+import com.example.wanhao.aclassapp.bean.requestbean.Homework;
 
 import java.util.List;
 

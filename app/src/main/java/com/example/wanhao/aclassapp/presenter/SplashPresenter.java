@@ -4,7 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.example.wanhao.aclassapp.bean.NoDataResponse;
+import com.example.wanhao.aclassapp.bean.requestbean.NoDataResponse;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.TokenService;
 import com.example.wanhao.aclassapp.util.DateUtil;

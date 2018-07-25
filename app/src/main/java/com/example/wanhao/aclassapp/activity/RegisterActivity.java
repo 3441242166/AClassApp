@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.presenter.RegisterPresenter;
+import com.example.wanhao.aclassapp.util.DialogUtil;
 import com.example.wanhao.aclassapp.view.IRegisterView;
 
 import butterknife.BindView;
@@ -62,12 +63,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     private void InitView() {
 
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(this)
-                .title("Zzz...")
-                .content("加载中...")
-                .progress(true,100,false);
-
-        dialog = builder.build();
+        dialog = DialogUtil.waitDialog(this);
 
         registerPresenter = new RegisterPresenter(this,this);
 

@@ -1,5 +1,6 @@
 package com.example.wanhao.aclassapp.presenter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -17,11 +18,14 @@ import android.view.WindowManager;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.example.wanhao.aclassapp.Model.CourseModel;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.activity.UserMessageActivity;
-import com.example.wanhao.aclassapp.bean.NoDataResponse;
-import com.example.wanhao.aclassapp.bean.User;
+import com.example.wanhao.aclassapp.bean.requestbean.NoDataResponse;
+import com.example.wanhao.aclassapp.bean.requestbean.User;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.UserMessageService;
 import com.example.wanhao.aclassapp.util.RetrofitHelper;
@@ -35,6 +39,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.ExecutionException;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
@@ -55,7 +60,7 @@ public class UserMessagePresenter {
     private Context context;
     private IUserMessageView view;
     private CourseModel model;
-    UserMessageService service;
+    private UserMessageService service;
 
 
     public UserMessagePresenter(Context context, IUserMessageView view){
@@ -65,6 +70,7 @@ public class UserMessagePresenter {
         service = RetrofitHelper.get(UserMessageService.class);
     }
 
+    @SuppressLint("CheckResult")
     public void getUserMessage(){
         view.showProgress();
 
@@ -78,7 +84,7 @@ public class UserMessagePresenter {
                         Log.i(TAG, "accept: "+body);
                         JsonObject obj = new JsonParser().parse(body).getAsJsonObject();
                         Log.i(TAG, "accept: obj status "+obj.get("status"));
-                        if(obj.get("status")==null){
+                        if(obj.get("status") == null){
                             User result = new Gson().fromJson(body,User.class);
                             view.loadDataSuccess(result);
                             view.disimissProgress();
@@ -99,6 +105,7 @@ public class UserMessagePresenter {
 
     }
 
+    @SuppressLint("CheckResult")
     public void sentUserMessage(User user){
         view.showProgress();
 
@@ -117,19 +124,20 @@ public class UserMessagePresenter {
                             view.changeUserSucess();
                             view.disimissProgress();
                         }else{
-                            view.loadDataError(context.getResources().getString(R.string.internet_error));
+                            view.loadDataError(context.getResources().getString(R.string.error_internet));
                             view.disimissProgress();
                         }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        view.loadDataError(context.getResources().getString(R.string.internet_error));
+                        view.loadDataError(context.getResources().getString(R.string.error_internet));
                         view.disimissProgress();
                     }
                 });
     }
 
+    @SuppressLint("CheckResult")
     public void postHeadImage(String path){
         view.showProgress();
         RequestBody body = RequestBody.create(MediaType.parse("multipart/form-data"),new File(path));
@@ -146,13 +154,24 @@ public class UserMessagePresenter {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        view.loadDataError(context.getResources().getString(R.string.internet_error));
+                        view.loadDataError(context.getResources().getString(R.string.error_internet));
                         view.disimissProgress();
                     }
                 });
     }
 
+    @SuppressLint("CheckResult")
     public void getHeadImage(){
+//        GlideUrl cookie = new GlideUrl(ApiConstant.BASE_URL+"avatar"
+//                , new LazyHeaders.Builder().addHeader("Authorization", SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_TOKEN)).build());
+//        try {
+//            Bitmap bitmap = Glide.with(context).load(cookie).asBitmap().centerCrop().into(500, 500).get();
+//            view.showImage(bitmap);
+//        } catch (InterruptedException | ExecutionException e) {
+//            e.printStackTrace();
+//            view.loadDataError("获取头像失败");
+//        }
+
         service.getAvatar(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_TOKEN))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

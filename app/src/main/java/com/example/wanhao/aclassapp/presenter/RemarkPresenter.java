@@ -3,10 +3,10 @@ package com.example.wanhao.aclassapp.presenter;
 import android.content.Context;
 import android.util.Log;
 
-import com.example.wanhao.aclassapp.bean.NoDataResponse;
-import com.example.wanhao.aclassapp.bean.Remark;
-import com.example.wanhao.aclassapp.bean.RemarkRequset;
-import com.example.wanhao.aclassapp.bean.RemarkResult;
+import com.example.wanhao.aclassapp.bean.requestbean.NoDataResponse;
+import com.example.wanhao.aclassapp.bean.requestbean.Remark;
+import com.example.wanhao.aclassapp.bean.requestbean.RemarkRequset;
+import com.example.wanhao.aclassapp.bean.requestbean.RemarkResult;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.RemarkService;
 import com.example.wanhao.aclassapp.util.RetrofitHelper;

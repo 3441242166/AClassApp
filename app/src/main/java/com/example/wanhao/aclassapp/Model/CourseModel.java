@@ -1,5 +1,6 @@
 package com.example.wanhao.aclassapp.Model;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
@@ -9,7 +10,7 @@ import com.example.wanhao.aclassapp.SQLite.CourseDao;
 import com.example.wanhao.aclassapp.base.IBaseRequestCallBack;
 import com.example.wanhao.aclassapp.bean.sqlbean.Course;
 import com.example.wanhao.aclassapp.bean.sqlbean.CourseResult;
-import com.example.wanhao.aclassapp.bean.NoDataResponse;
+import com.example.wanhao.aclassapp.bean.requestbean.NoDataResponse;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.CourseService;
 import com.example.wanhao.aclassapp.util.RetrofitHelper;
@@ -22,7 +23,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
-import retrofit2.HttpException;
 import retrofit2.Response;
 
 /**
@@ -79,6 +79,7 @@ public class CourseModel implements ICourseModel{
                 });
     }
 
+    @SuppressLint("CheckResult")
     @Override
     public void deleteCourse(final String id, final IBaseRequestCallBack callBack){
         callBack.beforeRequest();
@@ -101,7 +102,7 @@ public class CourseModel implements ICourseModel{
                             callBack.requestSuccess("");
                             dao.deleteCourse(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT),id);
                         }else{
-                            callBack.requestError(new Throwable(context.getResources().getString(R.string.internet_error)));
+                            callBack.requestError(new Throwable(context.getResources().getString(R.string.error_internet)));
                         }
                     }
                 },new Consumer<Throwable>() {

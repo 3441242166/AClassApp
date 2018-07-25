@@ -1,4 +1,4 @@
-package com.example.wanhao.aclassapp.bean;
+package com.example.wanhao.aclassapp.bean.requestbean;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.google.gson.annotations.SerializedName;

@@ -15,7 +15,7 @@ import com.example.wanhao.aclassapp.util.ActivityCollector;
 
 import butterknife.ButterKnife;
 
-public abstract class BarBaseActivity extends AppCompatActivity {
+public abstract class BarBaseActivity extends BaseTokenActivity {
 
     private Toolbar toolbar;
     private FrameLayout viewContent;
@@ -35,11 +35,9 @@ public abstract class BarBaseActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_base_bar);
 
-        ActivityCollector.addActivity(this);
-
-        toolbar = (Toolbar) findViewById(R.id.id_toolbar);
-        viewContent = (FrameLayout) findViewById(R.id.id_viewContent);
-        tvTitle = (TextView) findViewById(R.id.id_tvTitle);
+        toolbar = findViewById(R.id.id_toolbar);
+        viewContent = findViewById(R.id.id_viewContent);
+        tvTitle =  findViewById(R.id.id_tvTitle);
         toolbar.setFitsSystemWindows(true);
         //初始化设置 Toolbar
         setSupportActionBar(toolbar);
@@ -114,11 +112,4 @@ public abstract class BarBaseActivity extends AppCompatActivity {
 
         return true; // true 告诉系统我们自己处理了点击事件
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ActivityCollector.removeActivity(this);
-    }
-
 }

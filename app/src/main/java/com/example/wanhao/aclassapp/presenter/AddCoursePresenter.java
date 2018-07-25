@@ -1,5 +1,6 @@
 package com.example.wanhao.aclassapp.presenter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
@@ -7,6 +8,7 @@ import android.util.Log;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.AddCourseService;
+import com.example.wanhao.aclassapp.util.ResourcesUtil;
 import com.example.wanhao.aclassapp.util.RetrofitHelper;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.IAddCourseView;
@@ -23,7 +25,7 @@ import retrofit2.Response;
  * Created by wanhao on 2018/2/24.
  */
 
-public class AddCoursePresenter implements IAddCoursePresenter{
+public class AddCoursePresenter{
     private static final String TAG = "AddCoursePresenter";
 
     private Context context;
@@ -34,11 +36,11 @@ public class AddCoursePresenter implements IAddCoursePresenter{
         this.view = view;
     }
 
-    @Override
+    @SuppressLint("CheckResult")
     public void add(String code) {
 
         if (TextUtils.isEmpty(code)) {
-            view.loadDataError("课程代码不能为空");
+            view.loadDataError(ResourcesUtil.getString(R.string.error_courseid_empty));
             return;
         }
         view.showProgress();
@@ -56,28 +58,23 @@ public class AddCoursePresenter implements IAddCoursePresenter{
                             Log.i(TAG, "accept: "+responseBodyResponse.body().string());
                             String status = jsonObject.optString("status");
                             if (status.equals("SUCCESS")) {
-                                view.disimissProgress();
                                 view.loadDataSuccess("添加成功");
                             } else {
-                                view.disimissProgress();
-                                view.loadDataError("添加课程失败，请检查课程代码");
+                                view.loadDataError(ResourcesUtil.getString(R.string.error_courseid));
                             }
                         }else{
-                            view.disimissProgress();
-                            view.loadDataError("unknow error");
+                            view.loadDataError(ResourcesUtil.getString(R.string.error_internet));
                         }
+                        view.disimissProgress();
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         view.disimissProgress();
-                        view.loadDataError("internet error");
+                        view.loadDataError(ResourcesUtil.getString(R.string.error_internet));
                     }
                 });
 
     }
 }
 
-interface IAddCoursePresenter{
-    void add(String code);
-}
