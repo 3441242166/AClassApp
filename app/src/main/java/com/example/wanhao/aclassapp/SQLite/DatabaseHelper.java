@@ -3,12 +3,16 @@ package com.example.wanhao.aclassapp.SQLite;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import static com.chad.library.adapter.base.listener.SimpleClickListener.TAG;
 
 /**
  * Created by wanhao on 2017/8/9.
  */
 
 public class DatabaseHelper extends SQLiteOpenHelper {
+    private static final String TAG = "DatabaseHelper";
 
     public DatabaseHelper(Context context) {
         super(context, "mySQLite.db", null, 8);
@@ -37,6 +41,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 ",AUTHOR text" +
                 ",PRIMARY KEY(USERID,DOCUMENTID,COURSEID))");
 
+
         db.execSQL("create table CHAT (" +
                 "CHATID int " +
                 ",USERID text" +
@@ -48,6 +53,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 ",AVATAR text" +
                 ",ROLE text" +
                 ",PRIMARY KEY(CHATID,COURSEID,USERID))");
+
+        Log.i(TAG, "onCreate: "+"create table CHAT (CHATID int ,USERID text,COURSEID text,CONTENT text,DATE text,MESSAGETYPE int,PRIMARY KEY(CHATID,COURSEID,USERID))");
     }
 
     @Override

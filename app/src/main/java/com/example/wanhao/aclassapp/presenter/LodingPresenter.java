@@ -6,6 +6,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.bean.HttpResult;
+import com.example.wanhao.aclassapp.bean.Role;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.LodingService;
 import com.example.wanhao.aclassapp.util.DateUtil;
@@ -14,20 +16,16 @@ import com.example.wanhao.aclassapp.util.ResourcesUtil;
 import com.example.wanhao.aclassapp.util.RetrofitHelper;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.ILodingView;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
-import retrofit2.Response;
+
+import static com.example.wanhao.aclassapp.config.ApiConstant.RETURN_SUCCESS;
 
 
 /**
@@ -65,41 +63,28 @@ public class LodingPresenter{
         RetrofitHelper.get(LodingService.class).login(GsonUtils.toBody(map))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new io.reactivex.functions.Consumer<Response<ResponseBody>>() {
-                    @Override
-                    public void accept(Response<ResponseBody> responseBodyResponse) throws Exception {
+                .subscribe(responseBodyResponse -> {
+                    String body = responseBodyResponse.body().string();
+                    Log.i(TAG, "accept: "+body);
 
-                        if(responseBodyResponse.isSuccessful()){
-                            String body = responseBodyResponse.body().string();
-                            Log.i(TAG, "accept: "+body);
+                    HttpResult<Role> result = new Gson().fromJson(body,new TypeToken<HttpResult<Role>>(){}.getType());
 
-                            JSONObject object = new JSONObject(body);
-                            if(object.optString("status").equals("SUCCESS")) {
-                                String token = object.optString(ApiConstant.USER_TOKEN);
-                                String role = object.optString(ApiConstant.USER_ROLE);
-
-                                SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.USER_TOKEN, token);
-                                SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.USER_ROLE, role);
-                                SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.COUNT, phoneNum);
-                                SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.PASSWORD, password);
-                                SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.TOKEN_TIME, DateUtil.getNowDateString());
-
-                                iLoginView.loadDataSuccess("登陆成功");
-                            }else{
-                                iLoginView.loadDataError(ResourcesUtil.getString(R.string.error_count_password));
-                            }
-                        }else{
-                            iLoginView.loadDataError(ResourcesUtil.getString(R.string.error_count_password));
-                        }
-                        iLoginView.disimissProgress();
+                    if(result.getCode().equals(RETURN_SUCCESS)){
+                        Role role = result.getData();
+                        SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.USER_TOKEN, role.getToken());
+                        SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.USER_ROLE, role.getRole());
+                        SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.COUNT, phoneNum);
+                        SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.PASSWORD, password);
+                        SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.TOKEN_TIME, DateUtil.getNowDateString());
+                        iLoginView.loadDataSuccess("登陆成功");
+                    }else{
+                        iLoginView.loadDataError(result.getMessage());
                     }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        Log.i(TAG, "accept: "+throwable.toString());
-                        iLoginView.disimissProgress();
-                        iLoginView.loadDataError(ResourcesUtil.getString(R.string.error_internet));
-                    }
+                    iLoginView.disimissProgress();
+                }, throwable -> {
+                    Log.i(TAG, "accept: "+throwable.toString());
+                    iLoginView.disimissProgress();
+                    iLoginView.loadDataError(ResourcesUtil.getString(R.string.error_internet));
                 });
     }
 

@@ -3,8 +3,7 @@ package com.example.wanhao.aclassapp.view;
 import android.graphics.Bitmap;
 
 import com.example.wanhao.aclassapp.base.IBaseTokenView;
-import com.example.wanhao.aclassapp.base.IBaseView;
-import com.example.wanhao.aclassapp.bean.requestbean.User;
+import com.example.wanhao.aclassapp.bean.User;
 
 /**
  * Created by wanhao on 2018/2/25.

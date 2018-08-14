@@ -21,34 +21,34 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.example.wanhao.aclassapp.Model.CourseModel;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.activity.UserMessageActivity;
-import com.example.wanhao.aclassapp.bean.requestbean.NoDataResponse;
-import com.example.wanhao.aclassapp.bean.requestbean.User;
+import com.example.wanhao.aclassapp.bean.HttpResult;
+import com.example.wanhao.aclassapp.bean.Role;
+import com.example.wanhao.aclassapp.bean.User;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.UserMessageService;
 import com.example.wanhao.aclassapp.util.RetrofitHelper;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.IUserMessageView;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.concurrent.ExecutionException;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
-import retrofit2.Response;
+
+import static com.example.wanhao.aclassapp.config.ApiConstant.BASE_URL;
+import static com.example.wanhao.aclassapp.config.ApiConstant.RETURN_SUCCESS;
 
 /**
  * Created by wanhao on 2018/2/25.
@@ -70,37 +70,36 @@ public class UserMessagePresenter {
         service = RetrofitHelper.get(UserMessageService.class);
     }
 
+    public void init(){
+        view.showProgress();
+        getUserMessage();
+        getHeadImage();
+    }
+
     @SuppressLint("CheckResult")
     public void getUserMessage(){
-        view.showProgress();
 
         service.getProfile(SaveDataUtil.getValueFromSharedPreferences(context, ApiConstant.USER_TOKEN))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new io.reactivex.functions.Consumer<Response<ResponseBody>>() {
-                    @Override
-                    public void accept(Response<ResponseBody> responseBodyResponse) throws Exception {
-                        String body = responseBodyResponse.body().string();
-                        Log.i(TAG, "accept: "+body);
-                        JsonObject obj = new JsonParser().parse(body).getAsJsonObject();
-                        Log.i(TAG, "accept: obj status "+obj.get("status"));
-                        if(obj.get("status") == null){
-                            User result = new Gson().fromJson(body,User.class);
-                            view.loadDataSuccess(result);
-                            view.disimissProgress();
-                        }else if(obj.get("status").getAsString().equals(ApiConstant.RETURN_ERROR)){
-                            Log.i(TAG, "accept: token error");
-                            view.tokenError("token失效，请重新登陆");
-                            return;
-                        }
+                .subscribe(responseBodyResponse -> {
+                    String body = responseBodyResponse.body().string();
+                    Log.i(TAG, "accept: "+body);
 
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        view.loadDataError("获取个人信息失败");
+                    HttpResult<User> result = new Gson().fromJson(body,new TypeToken<HttpResult<User>>(){}.getType());
+
+                    if(result.getCode().equals(RETURN_SUCCESS)){
+                        view.loadDataSuccess(result.getData());
+                        SaveDataUtil.saveToSharedPreferences(context,ApiConstant.USER_NAME,result.getData().getNickName());
+                    }else{
+                        view.loadDataError(result.getMessage());
+                        view.tokenError("token失效，请重新登陆");
                         view.disimissProgress();
                     }
+                }, throwable -> {
+                    view.loadDataError("获取个人信息失败");
+                    view.disimissProgress();
+                    Log.i(TAG, "accept: "+throwable);
                 });
 
     }
@@ -111,104 +110,76 @@ public class UserMessagePresenter {
 
         String json = new Gson().toJson(user);
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-        RequestBody body = RequestBody.create(JSON, json);
+        RequestBody requestBody = RequestBody.create(JSON, json);
 
-        service.postProfile(SaveDataUtil.getValueFromSharedPreferences(context, ApiConstant.USER_TOKEN),body)
+        service.postProfile(SaveDataUtil.getValueFromSharedPreferences(context, ApiConstant.USER_TOKEN),requestBody)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new io.reactivex.functions.Consumer<Response<ResponseBody>>() {
-                    @Override
-                    public void accept(Response<ResponseBody> responseBodyResponse) throws Exception {
-                        NoDataResponse result = new Gson().fromJson(responseBodyResponse.body().string(),NoDataResponse.class);
-                        if(result.getStatus().equals(ApiConstant.RETURN_SUCCESS)){
-                            view.changeUserSucess();
-                            view.disimissProgress();
-                        }else{
-                            view.loadDataError(context.getResources().getString(R.string.error_internet));
-                            view.disimissProgress();
-                        }
+                .subscribe(responseBodyResponse -> {
+                    String body = responseBodyResponse.body().string();
+                    Log.i(TAG, "accept: "+body);
+
+                    HttpResult<Role> result = new Gson().fromJson(body,new TypeToken<HttpResult<Role>>(){}.getType());
+                    if(result.getCode().equals(ApiConstant.RETURN_SUCCESS)){
+                        view.changeUserSucess();
+                    }else{
+                        view.loadDataError(result.getMessage());
                     }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        view.loadDataError(context.getResources().getString(R.string.error_internet));
-                        view.disimissProgress();
-                    }
+                }, throwable -> {
+                    Log.i(TAG, "sentUserMessage: "+throwable);
+                    view.loadDataError(context.getResources().getString(R.string.error_internet));
                 });
+        view.disimissProgress();
     }
 
     @SuppressLint("CheckResult")
-    public void postHeadImage(String path){
+    private void postHeadImage(String path){
         view.showProgress();
         RequestBody body = RequestBody.create(MediaType.parse("multipart/form-data"),new File(path));
         MultipartBody.Part part = MultipartBody.Part.createFormData("file", "avatar.png", body);
         service.uploadAvatar(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_TOKEN),part)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new io.reactivex.functions.Consumer<Response<ResponseBody>>() {
-                    @Override
-                    public void accept(Response<ResponseBody> responseBodyResponse) throws Exception {
-                        view.changeUserSucess();
-                        view.disimissProgress();
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        view.loadDataError(context.getResources().getString(R.string.error_internet));
-                        view.disimissProgress();
-                    }
+                .subscribe(responseBodyResponse -> {
+                    view.changeUserSucess();
+                    view.disimissProgress();
+                }, throwable -> {
+                    view.loadDataError(context.getResources().getString(R.string.error_internet));
+                    view.disimissProgress();
                 });
     }
 
     @SuppressLint("CheckResult")
     public void getHeadImage(){
-//        GlideUrl cookie = new GlideUrl(ApiConstant.BASE_URL+"avatar"
-//                , new LazyHeaders.Builder().addHeader("Authorization", SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_TOKEN)).build());
-//        try {
-//            Bitmap bitmap = Glide.with(context).load(cookie).asBitmap().centerCrop().into(500, 500).get();
-//            view.showImage(bitmap);
-//        } catch (InterruptedException | ExecutionException e) {
-//            e.printStackTrace();
-//            view.loadDataError("获取头像失败");
-//        }
 
-        service.getAvatar(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_TOKEN))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new io.reactivex.functions.Consumer<Response<ResponseBody>>() {
-                    @Override
-                    public void accept(Response<ResponseBody> responseBodyResponse) throws Exception {
-                        Bitmap bitmap = BitmapFactory.decodeStream(responseBodyResponse.body().byteStream());
-                        view.showImage(bitmap);
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        view.loadDataError("获取头像失败");
-                    }
-                });
+        GlideUrl cookie = new GlideUrl(BASE_URL+"avatar"
+                , new LazyHeaders.Builder().addHeader("Authorization", SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_TOKEN)).build());
+        Glide.with(context)
+                .load(cookie)
+                .asBitmap()
+                .into(target);
     }
+    private SimpleTarget<Bitmap> target = new SimpleTarget<Bitmap>(50,50) {
+        @Override
+        public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+            view.showImage(resource);
+        }
+    };
 
     public void openSelectAvatarDialog(){
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_select_avatar, null);
         final PopupWindow popupWindow = getPopupWindow(view);
         //设置点击事件
-        TextView cameraTextView = (TextView) view.findViewById(R.id.dialog_cmera);
-        TextView selectAvatar = (TextView) view.findViewById(R.id.dialog_photo);
-        cameraTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                takeCamera();
-                popupWindow.dismiss();
-            }
-        });
-        selectAvatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        TextView cameraTextView = view.findViewById(R.id.dialog_cmera);
+        TextView selectAvatar = view.findViewById(R.id.dialog_photo);
+        cameraTextView.setOnClickListener(v -> {
+            takeCamera();
+            popupWindow.dismiss();});
+
+        selectAvatar.setOnClickListener(v -> {
                 openGallery();
-                popupWindow.dismiss();
-            }
-        });
+                popupWindow.dismiss(); });
+
         View parent = LayoutInflater.from(context).inflate(R.layout.activity_user_message, null);
         //显示PopupWindow
         popupWindow.showAtLocation(parent, Gravity.BOTTOM, 0, 0);
@@ -242,7 +213,7 @@ public class UserMessagePresenter {
 
     public void onSelectImage(Uri uri) {
         //两种情况存在
-        String filePath = "";
+        String filePath;
         long fileSize = 0;
         //URI的scheme直接就是file://.....
         if ("file".equals(uri.getScheme())) {
@@ -276,9 +247,6 @@ public class UserMessagePresenter {
             }
 
             inputStream.close();
-        } catch (
-                FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

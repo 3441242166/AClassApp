@@ -11,21 +11,18 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.wanhao.aclassapp.R;
-import com.example.wanhao.aclassapp.activity.LodingActivity;
 import com.example.wanhao.aclassapp.activity.MainActivity;
 import com.example.wanhao.aclassapp.adapter.CourseAdapter;
 import com.example.wanhao.aclassapp.base.LazyLoadFragment;
-import com.example.wanhao.aclassapp.bean.sqlbean.Course;
+import com.example.wanhao.aclassapp.bean.Course;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.CourseFgPresenter;
-import com.example.wanhao.aclassapp.util.ActivityCollector;
 import com.example.wanhao.aclassapp.view.ICourseFgView;
 import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.List;
 
 import butterknife.BindView;
-import cn.pedant.SweetAlert.SweetAlertDialog;
 
 /**
  * Created by wanhao on 2018/2/23.
@@ -42,7 +39,6 @@ public class CourseFragment extends LazyLoadFragment implements ICourseFgView {
     private CourseFgPresenter presenter;
     private List<Course> courseList;
     private CourseAdapter adapter;
-    private StaggeredGridLayoutManager mLayoutManager;
 
     MaterialDialog dialog;
     private int deletePos = -1;
@@ -61,9 +57,8 @@ public class CourseFragment extends LazyLoadFragment implements ICourseFgView {
 
     private void init(){
         presenter = new CourseFgPresenter(getActivity(),this);
-        mLayoutManager = new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL));
         //refreshView.setNestedScrollingEnabled(false);
 
         adapter = new CourseAdapter(getActivity());
@@ -160,9 +155,6 @@ public class CourseFragment extends LazyLoadFragment implements ICourseFgView {
 
     @Override
     public void tokenError(String msg) {
-        Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
-        ActivityCollector.finishAll();
-        Intent intent = new Intent(getActivity(), LodingActivity.class);
-        startActivity(intent);
+        tokenError(msg);
     }
 }

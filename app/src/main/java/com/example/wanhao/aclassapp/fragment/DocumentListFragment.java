@@ -13,11 +13,10 @@ import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.activity.BrowseDocumentActivity;
 import com.example.wanhao.aclassapp.adapter.DocumentAdapter;
 import com.example.wanhao.aclassapp.base.LazyLoadFragment;
-import com.example.wanhao.aclassapp.bean.sqlbean.Document;
+import com.example.wanhao.aclassapp.bean.Document;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.DocumentFgPresenter;
 import com.example.wanhao.aclassapp.util.ColorDividerItemDecoration;
-import com.example.wanhao.aclassapp.util.MyItemDecoration;
 import com.example.wanhao.aclassapp.view.IDocumentFgView;
 
 import java.util.List;
@@ -127,7 +126,7 @@ public class DocumentListFragment extends LazyLoadFragment  implements IDocument
     }
 
     @Override
-    public void tokenError() {
-        Log.i(TAG, "tokenError: "+documentType);
+    public void tokenError(String msg) {
+        tokenError(msg);
     }
 }

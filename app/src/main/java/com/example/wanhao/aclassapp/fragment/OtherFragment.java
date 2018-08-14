@@ -3,12 +3,10 @@ package com.example.wanhao.aclassapp.fragment;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.view.View;
 
 import com.example.wanhao.aclassapp.R;
-import com.example.wanhao.aclassapp.activity.DoHomeworkActivity;
+import com.example.wanhao.aclassapp.activity.HomeWorkActivity;
 import com.example.wanhao.aclassapp.activity.RemarkActivity;
-import com.example.wanhao.aclassapp.adapter.CourseAdapter;
 import com.example.wanhao.aclassapp.adapter.GridAdapter;
 import com.example.wanhao.aclassapp.base.LazyLoadFragment;
 import com.example.wanhao.aclassapp.bean.GridBean;
@@ -58,13 +56,6 @@ public class OtherFragment extends LazyLoadFragment {
         bean= new GridBean(R.drawable.icon_other_0,"课后习题");
         dataList.add(bean);
 
-//        for (int i = 0; i <25; i++) {
-//            GridBean bean= new GridBean();
-//            bean.setImgID(R.drawable.mainicon_0);
-//            bean.setName("sss");
-//            dataList.add(bean);
-//        }
-
     }
 
     private void initView() {
@@ -78,22 +69,17 @@ public class OtherFragment extends LazyLoadFragment {
 
     private void initEvent() {
 
-        adapter.setOnItemClickListener(new CourseAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Intent intent;
-                switch (position){
-                    case 0:
-                        intent = new Intent(getActivity(), RemarkActivity.class);
-                        intent.putExtra(ApiConstant.COURSE_ID,courseID);
-                        startActivity(intent);
-                        break;
-                    case 1:
-                        intent = new Intent(getActivity(), DoHomeworkActivity.class);
-                        intent.putExtra(ApiConstant.COURSE_ID,courseID);
-                        startActivity(intent);
-                        break;
-                }
+        adapter.setOnItemClickListener((view, position) -> {
+            Intent intent;
+            switch (position){
+                case 0:
+                    intent = new Intent(getActivity(), RemarkActivity.class);
+                    intent.putExtra(ApiConstant.COURSE_ID,courseID);
+                    startActivity(intent);
+                    break;
+                case 1:
+                    startActivity(new Intent(getContext(), HomeWorkActivity.class));
+                    break;
             }
         });
 

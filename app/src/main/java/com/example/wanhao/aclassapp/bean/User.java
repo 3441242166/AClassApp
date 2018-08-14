@@ -1,4 +1,4 @@
-package com.example.wanhao.aclassapp.bean.requestbean;
+package com.example.wanhao.aclassapp.bean;
 
 import com.google.gson.annotations.SerializedName;
 

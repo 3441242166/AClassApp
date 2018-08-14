@@ -1,4 +1,4 @@
-package com.example.wanhao.aclassapp.bean.requestbean;
+package com.example.wanhao.aclassapp.bean;
 
 /**
  * Created by wanhao on 2017/5/13.
@@ -6,9 +6,9 @@ package com.example.wanhao.aclassapp.bean.requestbean;
 
 public class HttpResult<T> {
 
-    String code;
+    private String code;
 
-    String msg;
+    private String message;
 
     private T data;
 
@@ -21,12 +21,12 @@ public class HttpResult<T> {
         return this;
     }
 
-    public String getMsg() {
-        return msg;
+    public String getMessage() {
+        return message;
     }
 
-    public HttpResult<T> setMsg(String msg) {
-        this.msg = msg;
+    public HttpResult<T> setMessage(String msg) {
+        this.message = msg;
         return this;
     }
 

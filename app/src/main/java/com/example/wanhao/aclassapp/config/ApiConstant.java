@@ -1,14 +1,16 @@
 package com.example.wanhao.aclassapp.config;
 
 /**
- * Created by wanhao on 2018/1/31.
+ * 网络请求常量
  */
 
 public class ApiConstant {
-    public static final String BASE_URL = "https://api.fc.xd.style/";
-    public static final String CHAT_URL = "wss://api.fc.xd.style/im/websocket";
+    //public static final String BASE_URL = "https://api.fc.xd.style/";
+    //public static final String CHAT_URL = "wss://api.fc.xd.style/im/websocket";
+    public static final String BASE_URL = "http://2056jc0993.iok.la:45532/";
+    public static final String CHAT_URL = "wss://2056jc0993.iok.la:45532/im/websocket";
 
-    public final static String RETURN_SUCCESS ="SUCCESS";
+    public final static String RETURN_SUCCESS ="200";
     public final static String RETURN_ERROR ="FAILED";
 
     //用户token
@@ -18,7 +20,7 @@ public class ApiConstant {
     public static final String PASSWORD = "password";
     public static final String USER_NAME = "username";
     /*********************文件命名相关********************************/
-    public static final String  FILE_NAME = "fckt";
+    public static final String  FILE_NAME = "fzkt";
 
     public static final int ADD_SUCCESS = 1;
     public static final int ADD_ERROR = 0;

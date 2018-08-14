@@ -22,6 +22,8 @@ import com.example.wanhao.aclassapp.presenter.LodingPresenter;
 import com.example.wanhao.aclassapp.util.DialogUtil;
 import com.example.wanhao.aclassapp.view.ILodingView;
 
+import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.pedant.SweetAlert.ProgressHelper;
@@ -37,9 +39,9 @@ public class LodingActivity extends AppCompatActivity implements View.OnClickLis
     @BindView(R.id.ac_loding_password) EditText etPassword;
     @BindView(R.id.ac_loding_cardview) CardView cardView;
 
-    MaterialDialog dialog;
+    private MaterialDialog dialog;
 
-    LodingPresenter presenter;
+    private LodingPresenter presenter = new LodingPresenter(this,this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +61,6 @@ public class LodingActivity extends AppCompatActivity implements View.OnClickLis
         btGo.setOnClickListener(this);
         forget.setOnClickListener(this);
 
-        presenter = new LodingPresenter(this,this);
     }
 
     @Override
@@ -110,7 +111,7 @@ public class LodingActivity extends AppCompatActivity implements View.OnClickLis
     private void hideKeyboard() {
         View view = getCurrentFocus();
         if (view != null) {
-            ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).
+            ((InputMethodManager) Objects.requireNonNull(getSystemService(Context.INPUT_METHOD_SERVICE))).
                     hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }

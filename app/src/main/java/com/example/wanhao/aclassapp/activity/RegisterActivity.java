@@ -34,7 +34,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @BindView(R.id.ac_register_getcode)TextView tvCode;
     @BindView(R.id.ac_register_cardview)CardView cardView;
 
-    RegisterPresenter registerPresenter;
+    RegisterPresenter registerPresenter = new RegisterPresenter(this,this);
     MaterialDialog dialog;
 
     CountDownTimer timer = new CountDownTimer(60000, 1000) {
@@ -56,24 +56,15 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_register);
         ButterKnife.bind(this);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
         InitView();
-        InitEvent();
     }
 
     private void InitView() {
-
         dialog = DialogUtil.waitDialog(this);
-
-        registerPresenter = new RegisterPresenter(this,this);
 
         btGo.setOnClickListener(this);
         fab.setOnClickListener(this);
         tvCode.setOnClickListener(this);
-
-    }
-
-    private void InitEvent() {
 
     }
 
@@ -105,7 +96,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
-    public void loadDataSuccess(Object tData) {
+    public void loadDataSuccess(String tData) {
         Toast.makeText(this,"注册成功", Toast.LENGTH_SHORT).show();
     }
 

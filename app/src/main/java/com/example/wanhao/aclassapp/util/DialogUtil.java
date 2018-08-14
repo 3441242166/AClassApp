@@ -11,6 +11,7 @@ public class DialogUtil {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(context)
                 .title("Zzz...")
                 .content("加载中...")
+                .cancelable(false)
                 .progress(true,100,false);
 
         return builder.build();

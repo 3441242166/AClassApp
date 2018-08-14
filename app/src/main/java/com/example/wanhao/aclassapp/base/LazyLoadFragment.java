@@ -1,11 +1,18 @@
 package com.example.wanhao.aclassapp.base;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.wanhao.aclassapp.activity.LodingActivity;
+import com.example.wanhao.aclassapp.util.ActivityCollector;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -118,5 +125,24 @@ public abstract class LazyLoadFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         mUnbinder.unbind();
+    }
+
+    protected void tokenError(String msg){
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(BaseApplication.getContext())
+                .title("错误")
+                .content(msg)
+                .positiveText("重新登陆")
+                .cancelable(false)
+                .onAny(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        switch (which){
+                            case POSITIVE:
+                                ActivityCollector.finishAll();
+                                startActivity(new Intent(BaseApplication.getContext(), LodingActivity.class));
+                                break;
+                        }
+                    }
+                });
     }
 }

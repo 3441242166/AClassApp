@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.example.wanhao.aclassapp.R;
-import com.example.wanhao.aclassapp.bean.sqlbean.Document;
+import com.example.wanhao.aclassapp.bean.Document;
 import com.example.wanhao.aclassapp.util.FileConvertUtil;
 import com.example.wanhao.aclassapp.util.FileSizeUtil;
 

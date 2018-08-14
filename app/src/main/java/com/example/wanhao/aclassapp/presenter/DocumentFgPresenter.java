@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.example.wanhao.aclassapp.Model.DocumentModel;
 import com.example.wanhao.aclassapp.base.IBaseRequestCallBack;
-import com.example.wanhao.aclassapp.bean.sqlbean.Document;
+import com.example.wanhao.aclassapp.bean.Document;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.view.IDocumentFgView;
 

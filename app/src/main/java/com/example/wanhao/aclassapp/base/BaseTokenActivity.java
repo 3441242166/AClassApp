@@ -8,25 +8,23 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.wanhao.aclassapp.activity.LodingActivity;
 import com.example.wanhao.aclassapp.util.ActivityCollector;
 
-public class BaseTokenActivity extends BaseActivity{
+abstract public class BaseTokenActivity extends BaseActivity{
 
-    protected void tokenError(){
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(BaseApplication.getContext())
+    protected void tokenAbate(String msg){
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(this)
                 .title("错误")
-                .content("登陆已失效,请重新登陆")
+                .content(msg)
                 .positiveText("重新登陆")
                 .cancelable(false)
-                .onAny(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        switch (which){
-                            case POSITIVE:
-                                ActivityCollector.finishAll();
-                                startActivity(new Intent(BaseApplication.getContext(), LodingActivity.class));
-                                break;
-                        }
+                .onAny((dialog, which) -> {
+                    switch (which){
+                        case POSITIVE:
+                            ActivityCollector.finishAll();
+                            startActivity(new Intent(BaseApplication.getContext(), LodingActivity.class));
+                            break;
                     }
                 });
+        builder.build().show();
     }
 
 }

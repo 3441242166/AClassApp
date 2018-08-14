@@ -4,26 +4,22 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
-import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.SQLite.ChatDao;
 import com.example.wanhao.aclassapp.SQLite.CourseDao;
 import com.example.wanhao.aclassapp.base.IBaseRequestCallBack;
-import com.example.wanhao.aclassapp.bean.sqlbean.Course;
-import com.example.wanhao.aclassapp.bean.sqlbean.CourseResult;
-import com.example.wanhao.aclassapp.bean.requestbean.NoDataResponse;
+import com.example.wanhao.aclassapp.bean.HttpResult;
+import com.example.wanhao.aclassapp.bean.Course;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.CourseService;
 import com.example.wanhao.aclassapp.util.RetrofitHelper;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
-import retrofit2.Response;
 
 /**
  * Created by wanhao on 2018/2/25.
@@ -50,6 +46,7 @@ public class CourseModel implements ICourseModel{
         callBack.requestSuccess(list);
     }
 
+    @SuppressLint("CheckResult")
     @Override
     public void getListDataByInternet(final IBaseRequestCallBack<List<Course>> callBack) {
         callBack.beforeRequest();
@@ -57,25 +54,23 @@ public class CourseModel implements ICourseModel{
         service.getCourseList(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_TOKEN))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Response<ResponseBody>>() {
-                    @Override
-                    public void accept(Response<ResponseBody> responseBodyResponse) throws Exception {
-                        //Log.i(TAG, "accept: "+responseBodyResponse.body().string());
-                        CourseResult result = new Gson().fromJson(responseBodyResponse.body().string(),CourseResult.class);
-                        if(result.getStatus().equals(ApiConstant.RETURN_SUCCESS)){
-                            List<Course> list = result.getCourses();
-                            dao.deleteAllCourse(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT));
-                            dao.addCourseList(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT),list);
-                            callBack.requestSuccess(list);
-                        }else{
-                            callBack.requestError(new Throwable("error"));
-                        }
+                .subscribe(responseBodyResponse -> {
+                    String body = responseBodyResponse.body().string();
+                    Log.i(TAG, "accept: "+body);
+
+                    HttpResult<List<Course>> result = new Gson().fromJson(body,new TypeToken<HttpResult<List<Course>>>(){}.getType());
+
+                    if(result.getCode().equals(ApiConstant.RETURN_SUCCESS)){
+                        List<Course> list = result.getData();
+                        dao.deleteAllCourse(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT));
+                        dao.addCourseList(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT),list);
+                        callBack.requestSuccess(list);
+                    }else{
+                        callBack.requestError(new Throwable(result.getMessage()));
                     }
-                },new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        callBack.requestError(throwable);
-                    }
+                }, throwable -> {
+                    callBack.requestError(new Throwable("网络异常"));
+                    Log.i(TAG, "accept: "+throwable);
                 });
     }
 
@@ -91,26 +86,21 @@ public class CourseModel implements ICourseModel{
         service.deleteCourse(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_TOKEN),Integer.valueOf(id))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Response<ResponseBody>>() {
-                    @Override
-                    public void accept(Response<ResponseBody> responseBodyResponse) throws Exception {
-                        //Log.i(TAG, "deleteCourse: "+responseBodyResponse.body().string());
-                        String result = responseBodyResponse.body().string();
-                        Log.i(TAG, "accept: result = "+result);
-                        NoDataResponse dataResponse = new Gson().fromJson(result,NoDataResponse.class);
-                        if(dataResponse.getStatus().equals(ApiConstant.RETURN_SUCCESS)){
-                            callBack.requestSuccess("");
-                            dao.deleteCourse(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT),id);
-                        }else{
-                            callBack.requestError(new Throwable(context.getResources().getString(R.string.error_internet)));
-                        }
+                .subscribe(responseBodyResponse -> {
+                    String body = responseBodyResponse.body().string();
+                    Log.i(TAG, "accept: "+body);
+
+                    HttpResult<String> result = new Gson().fromJson(body,new TypeToken<HttpResult<String>>(){}.getType());
+
+                    if(result.getCode().equals(ApiConstant.RETURN_SUCCESS)){
+                        callBack.requestSuccess("");
+                        dao.deleteCourse(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT),id);
+                    }else{
+                        callBack.requestError(new Throwable(result.getMessage()));
                     }
-                },new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        Log.i(TAG, "accept: throwable "+throwable);
-                        callBack.requestError(throwable);
-                    }
+                }, throwable -> {
+                    Log.i(TAG, "accept: throwable "+throwable);
+                    callBack.requestError(throwable);
                 });
     }
 }
@@ -120,5 +110,5 @@ interface ICourseModel{
 
     void getListDataByDB(IBaseRequestCallBack<List<Course>> callBack);
 
-    public void deleteCourse(String id,IBaseRequestCallBack callBack);
+    void deleteCourse(String id,IBaseRequestCallBack callBack);
 }

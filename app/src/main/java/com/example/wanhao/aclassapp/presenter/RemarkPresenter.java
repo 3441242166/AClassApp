@@ -1,29 +1,27 @@
 package com.example.wanhao.aclassapp.presenter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
-import com.example.wanhao.aclassapp.bean.requestbean.NoDataResponse;
-import com.example.wanhao.aclassapp.bean.requestbean.Remark;
-import com.example.wanhao.aclassapp.bean.requestbean.RemarkRequset;
-import com.example.wanhao.aclassapp.bean.requestbean.RemarkResult;
+import com.example.wanhao.aclassapp.bean.HttpResult;
+import com.example.wanhao.aclassapp.bean.Remark;
+import com.example.wanhao.aclassapp.bean.RemarkRequset;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.RemarkService;
 import com.example.wanhao.aclassapp.util.RetrofitHelper;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.IRemarkView;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
-import retrofit2.Response;
 
 /**
  * Created by wanhao on 2018/3/28.
@@ -40,6 +38,7 @@ public class RemarkPresenter {
         this.context = context;
     }
 
+    @SuppressLint("CheckResult")
     public void getRemark(int courseID){
         Log.i(TAG, "getRemark: courseID "+courseID);
         RemarkService service = RetrofitHelper.get(RemarkService.class);
@@ -47,66 +46,61 @@ public class RemarkPresenter {
         service.getRemark(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_TOKEN),courseID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new io.reactivex.functions.Consumer<Response<ResponseBody>>() {
-                    @Override
-                    public void accept(Response<ResponseBody> responseBodyResponse) throws Exception {
-                        String body = responseBodyResponse.body().string();
-                        Log.i(TAG, "accept: "+body);
-                        RemarkResult result = new Gson().fromJson(body,RemarkResult.class);
+                .subscribe(responseBodyResponse -> {
+                    String body = responseBodyResponse.body().string();
+                    Log.i(TAG, "accept: "+body);
 
-                        if(result.getStatus().equals(ApiConstant.RETURN_SUCCESS)){
+                    HttpResult<List<Remark>> result = new Gson().fromJson(body,new TypeToken<HttpResult<List<Remark>>>(){}.getType());
 
-                            List<Remark> list = result.getList();
-                            List<Remark> temp = new ArrayList<>();
+                    if(result.getCode().equals(ApiConstant.RETURN_SUCCESS)){
 
-                            for(int x=0;x<list.size();x++){
-                                temp.add(list.get(list.size()-x-1));
-                            }
-                            iRemarkView.loadDataSuccess(temp);
+                        List<Remark> list = result.getData();
+                        List<Remark> temp = new ArrayList<>();
 
-                        }else{
-                            iRemarkView.tokenError("error");
+                        for(int x=0;x<list.size();x++){
+                            temp.add(list.get(list.size()-x-1));
                         }
+                        iRemarkView.loadDataSuccess(temp);
 
+                    }else{
+                        iRemarkView.loadDataError(result.getMessage());
                     }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        iRemarkView.loadDataError("网络错误");
-                    }
+
+                }, throwable -> {
+                    iRemarkView.loadDataError("网络错误");
+                    Log.i(TAG, "getRemark: "+throwable);
                 });
 
     }
 
-    public void sendRemark(String remark,int courseID,int replyID){
+    @SuppressLint("CheckResult")
+    public void sendRemark(String remark, int courseID, int replyID){
         Log.i(TAG, "sendRemark: ");
         RemarkRequset remarkRequset = new RemarkRequset(replyID,remark);
 
         String json = new Gson().toJson(remarkRequset);
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-        RequestBody body = RequestBody.create(JSON, json);
+        RequestBody requestBody = RequestBody.create(JSON, json);
         Log.i(TAG, "sendRemark: json  "+json);
         RemarkService service = RetrofitHelper.get(RemarkService.class);
 
-        service.sendRemark(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_TOKEN),courseID,body)
+        service.sendRemark(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_TOKEN),courseID,requestBody)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new io.reactivex.functions.Consumer<Response<ResponseBody>>() {
-                    @Override
-                    public void accept(Response<ResponseBody> responseBodyResponse) throws Exception {
-                        NoDataResponse result = new Gson().fromJson(responseBodyResponse.body().string(),NoDataResponse.class);
-                        if(result.getStatus().equals(ApiConstant.RETURN_SUCCESS)){
+                .subscribe(responseBodyResponse -> {
+                    String body = responseBodyResponse.body().string();
+                    Log.i(TAG, "accept: "+body);
 
-                            iRemarkView.sendRemarkSucess();
-                        }else{
-                            iRemarkView.tokenError("token error");
-                        }
+                    HttpResult<String> result = new Gson().fromJson(body,new TypeToken<HttpResult<String>>(){}.getType());
+
+                    if(result.getCode().equals(ApiConstant.RETURN_SUCCESS)){
+                        iRemarkView.sendRemarkSucess();
+                    }else{
+                        iRemarkView.sendRemarkError(result.getMessage());
                     }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        iRemarkView.tokenError(throwable.toString());
-                    }
+                }, throwable ->{
+                    iRemarkView.sendRemarkError("网络错误");
+                    Log.i(TAG, "getRemark: "+throwable);
                 });
 
     }

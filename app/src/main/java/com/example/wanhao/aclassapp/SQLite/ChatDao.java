@@ -6,8 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.example.wanhao.aclassapp.bean.sqlbean.ChatBean;
-import com.example.wanhao.aclassapp.bean.sqlbean.Document;
+import com.example.wanhao.aclassapp.bean.ChatBean;
 
 import java.util.ArrayList;
 import java.util.List;

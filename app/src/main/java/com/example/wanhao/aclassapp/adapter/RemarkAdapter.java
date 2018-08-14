@@ -10,7 +10,7 @@ import com.bumptech.glide.load.model.LazyHeaders;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.example.wanhao.aclassapp.R;
-import com.example.wanhao.aclassapp.bean.requestbean.Remark;
+import com.example.wanhao.aclassapp.bean.Remark;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 
@@ -72,7 +72,6 @@ public class RemarkAdapter extends BaseMultiItemQuickAdapter<Remark,BaseViewHold
 
                 break;
         }
-
 
     }
 }

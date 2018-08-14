@@ -76,12 +76,7 @@ public class AddCourseActivity extends TopBarBaseActivity implements View.OnClic
 
     @Override
     protected void init(Bundle savedInstanceState) {
-        setTopLeftButton(new OnClickListener() {
-            @Override
-            public void onClick() {
-                finish();
-            }
-        });
+        setTopLeftButton(this::finish);
         setTitle("添加课程");
         dialog = DialogUtil.waitDialog(this);
         mPresenter = new AddCoursePresenter(this,this);
@@ -116,9 +111,7 @@ public class AddCourseActivity extends TopBarBaseActivity implements View.OnClic
 
     @Override
     public void tokenError(String msg) {
-        Toast.makeText(BaseApplication.getContext(),"token失效，请重新登陆", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, LodingActivity.class);
-        startActivity(intent);
-        ActivityCollector.finishAll();
+        tokenAbate(msg);
     }
+
 }

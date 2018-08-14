@@ -9,16 +9,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
-import com.example.wanhao.aclassapp.bean.sqlbean.Document;
+import com.example.wanhao.aclassapp.bean.Document;
 import com.example.wanhao.aclassapp.broadcast.DownloadReceiver;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.BrowseDocumentPresenter;
-import com.example.wanhao.aclassapp.util.ActivityCollector;
 import com.example.wanhao.aclassapp.util.FileConvertUtil;
 import com.example.wanhao.aclassapp.util.FileSizeUtil;
 import com.example.wanhao.aclassapp.view.IBrowseDocumentView;
@@ -177,11 +175,8 @@ public class BrowseDocumentActivity extends TopBarBaseActivity implements IBrows
     }
 
     @Override
-    public void tokenError() {
-        Toast.makeText(this, "账号在其他地方登陆", Toast.LENGTH_SHORT).show();
-        ActivityCollector.finishAll();
-        Intent intent = new Intent(this, LodingActivity.class);
-        startActivity(intent);
+    public void tokenError(String msg) {
+        tokenAbate(msg);
     }
 
     @Override

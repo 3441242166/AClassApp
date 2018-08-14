@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.example.wanhao.aclassapp.SQLite.DocumentDao;
 import com.example.wanhao.aclassapp.activity.BrowseDocumentActivity;
-import com.example.wanhao.aclassapp.bean.sqlbean.Document;
+import com.example.wanhao.aclassapp.bean.Document;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.DownService;
 import com.example.wanhao.aclassapp.util.FileConvertUtil;

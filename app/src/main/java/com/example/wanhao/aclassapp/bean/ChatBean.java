@@ -1,7 +1,7 @@
-package com.example.wanhao.aclassapp.bean.sqlbean;
+package com.example.wanhao.aclassapp.bean;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
-import com.example.wanhao.aclassapp.bean.requestbean.User;
+import com.example.wanhao.aclassapp.bean.User;
 import com.google.gson.annotations.SerializedName;
 
 /**

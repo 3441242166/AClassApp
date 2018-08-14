@@ -6,20 +6,20 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.bean.HttpResult;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.AddCourseService;
 import com.example.wanhao.aclassapp.util.ResourcesUtil;
 import com.example.wanhao.aclassapp.util.RetrofitHelper;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.IAddCourseView;
-
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
-import retrofit2.Response;
+
+import static com.example.wanhao.aclassapp.config.ApiConstant.RETURN_SUCCESS;
 
 /**
  * Created by wanhao on 2018/2/24.
@@ -50,31 +50,24 @@ public class AddCoursePresenter{
         service.addCourse(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_TOKEN),Integer.parseInt(code))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new io.reactivex.functions.Consumer<Response<ResponseBody>>() {
-                    @Override
-                    public void accept(Response<ResponseBody> responseBodyResponse) throws Exception {
-                        if(responseBodyResponse.isSuccessful()){
-                            JSONObject jsonObject = new JSONObject(responseBodyResponse.body().string());
-                            Log.i(TAG, "accept: "+responseBodyResponse.body().string());
-                            String status = jsonObject.optString("status");
-                            if (status.equals("SUCCESS")) {
-                                view.loadDataSuccess("添加成功");
-                            } else {
-                                view.loadDataError(ResourcesUtil.getString(R.string.error_courseid));
-                            }
-                        }else{
-                            view.loadDataError(ResourcesUtil.getString(R.string.error_internet));
-                        }
-                        view.disimissProgress();
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        view.disimissProgress();
-                        view.loadDataError(ResourcesUtil.getString(R.string.error_internet));
-                    }
-                });
+                .subscribe(responseBodyResponse -> {
+                    String body = responseBodyResponse.body().string();
+                    Log.i(TAG, "accept: "+body);
 
+                    HttpResult<String> result = new Gson().fromJson(body,new TypeToken<HttpResult<String>>(){}.getType());
+
+                    if(result.getCode().equals(RETURN_SUCCESS)){
+                        view.loadDataSuccess(result.getMessage());
+                    }else{
+                        view.loadDataError(result.getMessage());
+                    }
+                    view.disimissProgress();
+                }, throwable -> {
+                    view.loadDataError(ResourcesUtil.getString(R.string.error_internet));
+                    Log.i(TAG, "accept: "+throwable);
+                    view.disimissProgress();
+
+                });
     }
 }
 

@@ -3,15 +3,12 @@ package com.example.wanhao.aclassapp.activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.View;
+import android.support.v7.widget.LinearSnapHelper;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.adapter.QuestionAdapter;
 import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
-import com.example.wanhao.aclassapp.bean.requestbean.Homework;
-import com.example.wanhao.aclassapp.config.ApiConstant;
+import com.example.wanhao.aclassapp.bean.Question;
 import com.example.wanhao.aclassapp.presenter.DoHomeworkPresenter;
 import com.example.wanhao.aclassapp.util.PagingScrollHelper;
 import com.example.wanhao.aclassapp.view.DoHomeworkView;
@@ -20,17 +17,15 @@ import java.util.List;
 
 import butterknife.BindView;
 
-public class DoHomeworkActivity extends TopBarBaseActivity implements DoHomeworkView{
-    private static final String TAG = "DoHomeworkActivity";
+public class DoHomeworkActivity extends TopBarBaseActivity implements DoHomeworkView {
 
-    @BindView(R.id.ac_dohome_recycler)
+    @BindView(R.id.ac_dohomework_recycler)
     RecyclerView recyclerView;
 
-    List<Homework> list;
-    private QuestionAdapter adapter;
+    QuestionAdapter adapter = new QuestionAdapter(null,this);
+    private PagingScrollHelper scrollHelper = new PagingScrollHelper();
 
-    private DoHomeworkPresenter presenter;
-    private String courseID;
+    DoHomeworkPresenter presenter = new DoHomeworkPresenter(this,this);
 
     @Override
     protected int getContentView() {
@@ -39,70 +34,25 @@ public class DoHomeworkActivity extends TopBarBaseActivity implements DoHomework
 
     @Override
     protected void init(Bundle savedInstanceState) {
-        courseID = getIntent().getStringExtra(ApiConstant.COURSE_ID);
-        Log.i(TAG, "init: courseID "+courseID);
-        initData();
+        setTitle("数据库第一章课后习题");
+        presenter.getHomeworkList("");
         initView();
         initEvent();
-        presenter.getHomeworkList(courseID);
-    }
-
-    private void initData() {
-        presenter = new DoHomeworkPresenter(this,this);
-    }
-
-    private void initView() {
-        setTitle("随堂测试");
-
-        adapter = new QuestionAdapter(list);
-
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        recyclerView.setAdapter(adapter);
-
-        PagingScrollHelper scrollHelper = new PagingScrollHelper();
-        scrollHelper.setUpRecycleView(recyclerView);
     }
 
     private void initEvent() {
-        setTopLeftButton(new OnClickListener() {
-            @Override
-            public void onClick() {
-                finish();
-            }
-        });
+        setTopLeftButton(this::finish);
+        scrollHelper.setOnPageChangeListener(index -> {
 
-        setTopRightButton("提交", new OnClickListener() {
-            @Override
-            public void onClick() {
-                presenter.postAnwser(list,courseID);
-            }
         });
+    }
 
-        adapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
-            @Override
-            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
-                switch (view.getId()){
-                    case R.id.item_qustion_a:
-                        list.get(position).setChoose(0);
-                        break;
-                    case R.id.item_qustion_b:
-                        list.get(position).setChoose(1);
-                        break;
-                    case R.id.item_qustion_c:
-                        list.get(position).setChoose(2);
-                        break;
-                    case R.id.item_qustion_d:
-                        list.get(position).setChoose(3);
-                        break;
-                    case R.id.item_qustion_next:
-                        list.get(position).setChoose(-1);
-                        break;
-                }
-                adapter.notifyDataSetChanged();
-            }
-        });
+    private void initView() {
+        setTitle("数据库第一章课后习题");
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        new LinearSnapHelper().attachToRecyclerView(recyclerView);
+        recyclerView.setAdapter(adapter);
+        scrollHelper.setUpRecycleView(recyclerView);
     }
 
     @Override
@@ -121,9 +71,8 @@ public class DoHomeworkActivity extends TopBarBaseActivity implements DoHomework
     }
 
     @Override
-    public void loadDataSuccess(List<Homework> tData) {
-        list = tData;
-        adapter.setNewData(list);
+    public void loadDataSuccess(List<Question> tData) {
+        adapter.setNewData(tData);
     }
 
     @Override

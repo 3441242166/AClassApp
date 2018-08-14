@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.SQLite.DocumentDao;
-import com.example.wanhao.aclassapp.bean.sqlbean.Document;
+import com.example.wanhao.aclassapp.bean.Document;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.util.FileConvertUtil;
 import com.example.wanhao.aclassapp.util.RetrofitHelper;

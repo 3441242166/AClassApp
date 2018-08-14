@@ -7,10 +7,13 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.example.wanhao.aclassapp.bean.requestbean.NoDataResponse;
+import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.bean.HttpResult;
+import com.example.wanhao.aclassapp.bean.Role;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.RegisterService;
 import com.example.wanhao.aclassapp.util.GsonUtils;
+import com.example.wanhao.aclassapp.util.ResourcesUtil;
 import com.example.wanhao.aclassapp.util.RetrofitHelper;
 import com.example.wanhao.aclassapp.view.IRegisterView;
 import com.google.gson.Gson;
@@ -19,10 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
-import retrofit2.Response;
 
 
 /**
@@ -77,25 +77,22 @@ public class RegisterPresenter {
         RetrofitHelper.get(RegisterService.class).register(GsonUtils.toBody(map))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new io.reactivex.functions.Consumer<Response<ResponseBody>>() {
-                    @Override
-                    public void accept(Response<ResponseBody> responseBodyResponse) throws Exception {
-                        String body = responseBodyResponse.body().string();
-                        Log.i(TAG, "accept: "+body);
-                        NoDataResponse result = new Gson().fromJson(body,NoDataResponse.class);
-                        if(result.getStatus().equals(ApiConstant.RETURN_SUCCESS)){
-                            iRegisterView.loadDataSuccess("success");
-                        }else{
-                            iRegisterView.loadDataError("其他错误");
-                        }
-                        iRegisterView.disimissProgress();
+                .subscribe(responseBodyResponse -> {
+                    String body = responseBodyResponse.body().string();
+                    Log.i(TAG, "accept: "+body);
+
+                    HttpResult<Role> result = new Gson().fromJson(body,HttpResult.class);
+
+                    if(result.getCode().equals(ApiConstant.RETURN_SUCCESS)){
+                        iRegisterView.loadDataSuccess("成功注册！");
+                    }else{
+                        iRegisterView.loadDataError(result.getMessage());
                     }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        iRegisterView.loadDataError("网络错误");
-                        iRegisterView.disimissProgress();
-                    }
+                    iRegisterView.disimissProgress();
+                }, throwable -> {
+                    Log.i(TAG, "accept: "+throwable);
+                    iRegisterView.loadDataError(ResourcesUtil.getString(R.string.error_internet));
+                    iRegisterView.disimissProgress();
                 });
 
     }

@@ -1,4 +1,4 @@
-package com.example.wanhao.aclassapp.bean.sqlbean;
+package com.example.wanhao.aclassapp.bean;
 
 import com.google.gson.annotations.SerializedName;
 

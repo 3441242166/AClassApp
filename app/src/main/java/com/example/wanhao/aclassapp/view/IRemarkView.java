@@ -1,7 +1,7 @@
 package com.example.wanhao.aclassapp.view;
 
 import com.example.wanhao.aclassapp.base.IBaseTokenView;
-import com.example.wanhao.aclassapp.bean.requestbean.Remark;
+import com.example.wanhao.aclassapp.bean.Remark;
 
 import java.util.List;
 
@@ -11,4 +11,5 @@ import java.util.List;
 
 public interface IRemarkView extends IBaseTokenView<List<Remark>> {
     void sendRemarkSucess();
+    void sendRemarkError(String msg);
 }

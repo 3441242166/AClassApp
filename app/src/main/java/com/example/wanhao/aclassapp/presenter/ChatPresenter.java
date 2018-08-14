@@ -1,13 +1,13 @@
 package com.example.wanhao.aclassapp.presenter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.wanhao.aclassapp.SQLite.ChatDao;
-import com.example.wanhao.aclassapp.bean.sqlbean.ChatBean;
-import com.example.wanhao.aclassapp.bean.sqlbean.ChatResult;
+import com.example.wanhao.aclassapp.bean.ChatBean;
+import com.example.wanhao.aclassapp.bean.ChatResult;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.ChatView;
@@ -17,7 +17,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
-import org.w3c.dom.ls.LSException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -58,6 +57,7 @@ public class ChatPresenter {
         init();
     }
 
+    @SuppressLint("CheckResult")
     private void init(){
         groupUrl = "/group/"+courseID;
         responreUrl = "/g/"+courseID;
@@ -91,7 +91,7 @@ public class ChatPresenter {
             ChatResult result = new Gson().fromJson(message,ChatResult.class);
 
             if(!result.getStatus().equals(ApiConstant.RETURN_SUCCESS)){
-                chatView.tokenError();
+                chatView.tokenError("Token 失效");
             }else {
 
                 if (result.getMessage().getUser().getNickName().equals(SaveDataUtil.getValueFromSharedPreferences(context, ApiConstant.USER_NAME))) {

@@ -4,11 +4,15 @@
     tools:showIn="navigation_view">
 
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/nav_message"
             android:icon="@drawable/ic_menu_camera"
             android:title="我的信息" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_document"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="我的文件" />
+        <item
+            android:id="@+id/nav_homework"
             android:icon="@drawable/ic_menu_gallery"
             android:title="我的文件" />
 

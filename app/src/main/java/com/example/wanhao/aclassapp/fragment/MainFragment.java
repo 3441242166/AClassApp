@@ -1,9 +1,7 @@
 package com.example.wanhao.aclassapp.fragment;
 
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,21 +9,18 @@ import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.wanhao.aclassapp.R;
-import com.example.wanhao.aclassapp.activity.LodingActivity;
 import com.example.wanhao.aclassapp.adapter.ChatAdapter;
 import com.example.wanhao.aclassapp.base.BaseApplication;
 import com.example.wanhao.aclassapp.base.LazyLoadFragment;
-import com.example.wanhao.aclassapp.bean.sqlbean.ChatBean;
+import com.example.wanhao.aclassapp.bean.ChatBean;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.ChatPresenter;
-import com.example.wanhao.aclassapp.util.ActivityCollector;
 import com.example.wanhao.aclassapp.view.ChatView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import cn.pedant.SweetAlert.SweetAlertDialog;
 
 /**
  * Created by wanhao on 2018/2/27.
@@ -119,11 +114,8 @@ public class MainFragment extends LazyLoadFragment implements ChatView{
     }
 
     @Override
-    public void tokenError() {
-        Toast.makeText(BaseApplication.getContext(),"token失效，请重新登陆", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(getContext(), LodingActivity.class);
-        ActivityCollector.finishAll();
-        startActivity(intent);
+    public void tokenError(String msg) {
+        tokenError(msg);
     }
 
     @Override

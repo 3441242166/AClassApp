@@ -9,10 +9,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -20,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.base.BaseApplication;
+import com.example.wanhao.aclassapp.base.BaseTokenActivity;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.fragment.CourseFragment;
 import com.example.wanhao.aclassapp.presenter.CoursePresenter;
@@ -31,7 +30,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class CourseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener ,View.OnClickListener,ICourseView {
+public class CourseActivity extends BaseTokenActivity implements NavigationView.OnNavigationItemSelectedListener ,View.OnClickListener,ICourseView {
     private static final String TAG = "CourseActivity";
 
     @BindView(R.id.ac_course_fab) FloatingActionButton fab;
@@ -48,7 +47,6 @@ public class CourseActivity extends AppCompatActivity implements NavigationView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course);
-        ActivityCollector.addActivity(this);
         ButterKnife.bind(this);
         init();
         presenter.getData();
@@ -70,12 +68,7 @@ public class CourseActivity extends AppCompatActivity implements NavigationView.
         headImage = view.findViewById(R.id.ac_course_headimage);
         nameText = view.findViewById(R.id.ac_course_name);
 
-        headImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(CourseActivity.this,UserMessageActivity.class));
-            }
-        });
+        headImage.setOnClickListener(view1 -> startActivity(new Intent(CourseActivity.this,UserMessageActivity.class)));
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -84,14 +77,16 @@ public class CourseActivity extends AppCompatActivity implements NavigationView.
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_message) {
             startActivity(new Intent(this,UserMessageActivity.class));
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_document) {
             startActivity(new Intent(this,DocumentActivity.class));
         }else if (id == R.id.nav_send) {
             SaveDataUtil.saveToSharedPreferences(this,ApiConstant.USER_TOKEN,"");
             startActivity(new Intent(this,LodingActivity.class));
             finish();
+        }else if(id == R.id.nav_homework){
+            startActivity(new Intent(this,AssignmentActivity.class));
         }
 
         DrawerLayout drawer = findViewById(R.id.ac_course_drawer_layout);
@@ -145,14 +140,6 @@ public class CourseActivity extends AppCompatActivity implements NavigationView.
         presenter.getData();
     }
 
-
-
-    @Override
-    public void setData(Bitmap bitmap, String name) {
-        headImage.setImageBitmap(bitmap);
-        nameText.setText(name);
-    }
-
     @Override
     public void setHead(Bitmap bitmap) {
         headImage.setImageBitmap(bitmap);
@@ -175,6 +162,5 @@ public class CourseActivity extends AppCompatActivity implements NavigationView.
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ActivityCollector.removeActivity(this);
     }
 }

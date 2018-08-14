@@ -1,6 +1,6 @@
 package com.example.wanhao.aclassapp.view;
 
-import com.example.wanhao.aclassapp.bean.sqlbean.Document;
+import com.example.wanhao.aclassapp.bean.Document;
 
 import java.util.List;
 
@@ -13,5 +13,5 @@ public interface IDocumentFgView {
     void disimissProgress();
     void loadDataError(String throwable);
     void loadDataSuccess(List<Document> tData,String type);
-    void tokenError();
+    void tokenError(String msg);
 }

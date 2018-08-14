@@ -1,7 +1,7 @@
 package com.example.wanhao.aclassapp.view;
 
 import com.example.wanhao.aclassapp.base.IBaseTokenView;
-import com.example.wanhao.aclassapp.bean.sqlbean.Course;
+import com.example.wanhao.aclassapp.bean.Course;
 
 import java.util.List;
 

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.example.wanhao.aclassapp.bean.requestbean.NoDataResponse;
+import com.example.wanhao.aclassapp.bean.HttpResult;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.TokenService;
 import com.example.wanhao.aclassapp.util.DateUtil;
@@ -12,6 +12,7 @@ import com.example.wanhao.aclassapp.util.RetrofitHelper;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.ISplashView;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
 
@@ -51,14 +52,18 @@ public class SplashPresenter {
             service.check(token).enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    Log.i(TAG, "onResponse: ");
-                    NoDataResponse result = null;
+                    String body = null;
                     try {
-                        result = new Gson().fromJson(response.body().string(),NoDataResponse.class);
+                        body = response.body().string();
                     } catch (IOException e) {
+                        e.printStackTrace();
                         view.goLoding();
                     }
-                    if(result.getStatus().equals(ApiConstant.RETURN_SUCCESS)){
+                    Log.i(TAG, "accept: "+body);
+
+                    HttpResult<String> result = new Gson().fromJson(body,new TypeToken<HttpResult<String>>(){}.getType());
+
+                    if(result.getCode().equals(ApiConstant.RETURN_SUCCESS)){
                         SaveDataUtil.saveToSharedPreferences(context, ApiConstant.TOKEN_TIME, DateUtil.getNowDateString());
                         view.goCourse();
                     }else{

@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
  * Created by wanhao on 2017/10/3.
  */
 
-public abstract class TopBarBaseActivity extends AppCompatActivity {
+public abstract class TopBarBaseActivity extends BaseTokenActivity {
 
     private Toolbar toolbar;
     private FrameLayout viewContent;
@@ -40,11 +40,9 @@ public abstract class TopBarBaseActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_base_top_bar);
 
-        ActivityCollector.addActivity(this);
-
-        toolbar = (Toolbar) findViewById(R.id.id_toolbar);
-        viewContent = (FrameLayout) findViewById(R.id.id_viewContent);
-        tvTitle = (TextView) findViewById(R.id.id_tvTitle);
+        toolbar = findViewById(R.id.id_toolbar);
+        viewContent = findViewById(R.id.id_viewContent);
+        tvTitle = findViewById(R.id.id_tvTitle);
         toolbar.setFitsSystemWindows(true);
         //初始化设置 Toolbar
         setSupportActionBar(toolbar);
@@ -123,7 +121,6 @@ public abstract class TopBarBaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ActivityCollector.removeActivity(this);
     }
 
 }
