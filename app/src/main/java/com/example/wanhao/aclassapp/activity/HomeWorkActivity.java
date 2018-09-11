@@ -56,7 +56,7 @@ public class HomeWorkActivity extends TopBarBaseActivity implements IHomeworkVie
     }
 
     @Override
-    public void disimissProgress() {
+    public void dismissProgress() {
 
     }
 

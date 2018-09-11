@@ -86,7 +86,7 @@ public class DocumentActivity extends TopBarBaseActivity implements IDocumentVie
     }
 
     @Override
-    public void disimissProgress() {
+    public void dismissProgress() {
 
     }
 

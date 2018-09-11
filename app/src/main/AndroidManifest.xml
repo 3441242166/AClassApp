@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:Android="http://schemas.android.com/apk/res-auto"
     package="com.example.wanhao.aclassapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -52,7 +53,9 @@
 
         <activity android:name=".activity.HomeWorkActivity" />
         <activity android:name=".activity.DoHomeworkActivity" />
-        <activity android:name=".activity.AssignmentActivity"></activity>
+        <activity android:name=".activity.AssignmentActivity" />
+        <activity android:name=".activity.MainActivity2" />
+        <activity android:name=".activity.CourseActivity2"></activity>
     </application>
 
 </manifest>

@@ -80,10 +80,10 @@ public class LodingPresenter{
                     }else{
                         iLoginView.loadDataError(result.getMessage());
                     }
-                    iLoginView.disimissProgress();
+                    iLoginView.dismissProgress();
                 }, throwable -> {
                     Log.i(TAG, "accept: "+throwable.toString());
-                    iLoginView.disimissProgress();
+                    iLoginView.dismissProgress();
                     iLoginView.loadDataError(ResourcesUtil.getString(R.string.error_internet));
                 });
     }

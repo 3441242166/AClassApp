@@ -1,6 +1,7 @@
 package com.example.wanhao.aclassapp.adapter;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseViewHolder;
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.bean.Assignment;
 import com.example.wanhao.aclassapp.bean.Course;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
@@ -22,96 +26,26 @@ import java.util.List;
  * Created by wanhao on 2018/2/24.
  */
 
-public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.Holder> implements View.OnClickListener,View.OnLongClickListener{
+public class CourseAdapter extends BaseQuickAdapter<Course,BaseViewHolder> {
 
-    private List<Course> courseList;
-
-    private OnItemClickListener onItemClickListener;
-    private OnLongItemClickListener onItemLongClickListener;
-
-    private View view;
     private Context context;
 
-    public CourseAdapter(Context context){
+    public CourseAdapter(@Nullable List<Course> data,Context context) {
+        super(R.layout.item_course, data);
         this.context = context;
     }
 
-    public void setData(List<Course> courseList){
-        this.courseList = courseList;
-        notifyDataSetChanged();
-    }
-
     @Override
-    public CourseAdapter.Holder onCreateViewHolder(ViewGroup parent, int viewType) {
-        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_course, parent, false);
-        Holder vh = new Holder(view);
-        view.setOnClickListener(this);
-        view.setOnLongClickListener(this);
-        return vh;
-    }
+    protected void convert(BaseViewHolder helper, Course item) {
 
-    @Override
-    public void onBindViewHolder(CourseAdapter.Holder holder, int position) {
-        Course course = courseList.get(position);
+        helper.setText(R.id.item_course_name,item.getName());
+        helper.setText(R.id.item_course_parent, item.getParent());
+        helper.setText(R.id.item_course_number,"一共有 "+item.getNum()+" 人");
 
-        holder.name.setText(course.getName());
-        holder.parent.setText(course.getParent());
-        holder.number.setText("一共有 "+course.getNum()+" 人");
-        GlideUrl cookie = new GlideUrl(ApiConstant.BASE_URL+"course/"+courseList.get(position).getId()+"/picture"
+        GlideUrl cookie = new GlideUrl(ApiConstant.BASE_URL+"course/"+item.getId()+"/picture"
                 , new LazyHeaders.Builder().addHeader("Authorization", SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_TOKEN)).build());
-        Glide.with(context).load(cookie).into(holder.bck);
+        Glide.with(context).load(cookie).crossFade().into((ImageView) helper.getView(R.id.item_course_img));
 
-        holder.itemView.setTag(position);
-    }
-
-    @Override
-    public int getItemCount() {
-        return courseList==null ? 0:courseList.size();
-    }
-
-    @Override
-    public void onClick(View view) {
-        if(onItemClickListener!=null){
-            onItemClickListener.onItemClick(view,(int)view.getTag());
-        }
-    }
-
-    @Override
-    public boolean onLongClick(View view) {
-        if(onItemLongClickListener!=null){
-            onItemLongClickListener.onLongItemClick(view,(int)view.getTag());
-        }
-        return true;
-    }
-
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.onItemClickListener = listener;
-    }
-
-    public void setOnLongItemClickListener(OnLongItemClickListener listener) {
-        this.onItemLongClickListener = listener;
-    }
-
-    public static class Holder extends RecyclerView.ViewHolder {
-        public TextView name;
-        public TextView parent;
-        public TextView number;
-        public ImageView bck;
-
-        public Holder(View view) {
-            super(view);
-            name = view.findViewById(R.id.item_course_name);
-            parent = view.findViewById(R.id.item_course_parent);
-            number = view.findViewById(R.id.item_course_number);
-            bck = view.findViewById(R.id.item_course_img);
-        }
-    }
-
-    public interface OnLongItemClickListener {
-        void onLongItemClick(View view, int position);
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(View view, int position);
+        Glide.with(context).load("").crossFade().into((ImageView) helper.getView(R.id.item_course_img));
     }
 }

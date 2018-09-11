@@ -66,7 +66,7 @@ public class DoHomeworkActivity extends TopBarBaseActivity implements DoHomework
     }
 
     @Override
-    public void disimissProgress() {
+    public void dismissProgress() {
 
     }
 

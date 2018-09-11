@@ -41,8 +41,8 @@ public class DocumentDao {
             contentValues.put("DATE", course.getDate());
             contentValues.put("SIZE", course.getSize());
             contentValues.put("AUTHOR", course.getUser());
-
             long rowd = sqLiteDatabase.insert("DOCUMENT", null, contentValues);
+            Log.i(TAG, "addDocumentList: rowd = "+rowd);
         }
         sqLiteDatabase.close();
     }
@@ -108,7 +108,7 @@ public class DocumentDao {
     public Document alterDocument(String documentID,String userID){
         Log.i(TAG, "alterDocument: userID  "+userID+"  documentID  "+documentID);
         SQLiteDatabase readableDatabase = mMyDBHelper.getReadableDatabase();
-        // 查询比较特别,涉及到 cursor
+
         Cursor cursor = readableDatabase.rawQuery("select * from DOCUMENT WHERE USERID=? AND DOCUMENTID=?", new String[]{userID,documentID});
         Document task = new Document();
 
@@ -122,6 +122,7 @@ public class DocumentDao {
             task.setCourseID(cursor.getString(cursor.getColumnIndex("COURSEID")));
             break;
         }
+
         Log.i(TAG, "alterDocument: courseID "+task.getCourseID());
         cursor.close(); // 记得关闭 corsor
         readableDatabase.close(); // 关闭数据库

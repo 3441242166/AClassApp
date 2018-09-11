@@ -94,7 +94,6 @@ public class FileConvertUtil {
             "/" + SaveDataUtil.getValueFromSharedPreferences(BaseApplication.getContext(), ApiConstant.COUNT);
 
     public static final String FILE_DOCUMENT_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) +
-            "/classroom" +
             "/" + SaveDataUtil.getValueFromSharedPreferences(BaseApplication.getContext(), ApiConstant.COUNT);
 
     /**
@@ -142,7 +141,7 @@ public class FileConvertUtil {
     }
 
     public static String getDocumentFilePath(){
-        return FILE_DOCUMENT_PATH +"/document";
+        return FILE_DOCUMENT_PATH;
     }
 
     public static void saveDocument(InputStream is,long size,String title, DownService.DownloadListener downloadListener){

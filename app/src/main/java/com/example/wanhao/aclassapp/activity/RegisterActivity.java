@@ -91,7 +91,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
-    public void disimissProgress() {
+    public void dismissProgress() {
         dialog.dismiss();
     }
 

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    tools:context=".activity.MainActivity2">
+
+    <com.example.wanhao.aclassapp.customizeview.NoScrollViewPager
+        android:id="@+id/ac_main_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <TextView
+        style="@style/item_horizontal" />
+
+    <android.support.design.widget.BottomNavigationView
+        app:itemBackground="@null"
+        android:id="@+id/ac_main_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:menu="@menu/menu_main_bootom1" />
+
+</LinearLayout>

@@ -76,29 +76,19 @@ public class DocumentListFragment extends LazyLoadFragment  implements IDocument
     }
 
     private void initEvent(){
-        adapters.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                Intent intent = new Intent(getActivity(),BrowseDocumentActivity.class);
-                intent.putExtra(ApiConstant.DOCUMENT_ID,list.get(position).getId());
-                startActivity(intent);
-            }
+        adapters.setOnItemClickListener((adapter, view, position) -> {
+            Intent intent = new Intent(getActivity(),BrowseDocumentActivity.class);
+            Log.i(TAG, "initEvent: id = "+list.get(position).getId());
+            intent.putExtra(ApiConstant.DOCUMENT_ID,list.get(position).getId());
+            startActivity(intent);
         });
 
-        errorView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                adapters.setEmptyView(notDataView);
-                presenter.getDocumentList(courseID,documentType);
-            }
+        errorView.setOnClickListener(v -> {
+            adapters.setEmptyView(notDataView);
+            presenter.getDocumentList(courseID,documentType);
         });
 
-        notDataView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.getDocumentList(courseID,documentType);
-            }
-        });
+        notDataView.setOnClickListener(v -> presenter.getDocumentList(courseID,documentType));
     }
 
     @Override

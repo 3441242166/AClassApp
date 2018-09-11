@@ -37,7 +37,7 @@ public class BasePresenterImp<V extends IBaseView, T> implements IBaseRequestCal
     @Override
     public void requestError(Throwable throwable) {
         iBaseView.loadDataError(throwable.toString());
-        iBaseView.disimissProgress(); //请求错误，提示错误信息之后隐藏progress
+        iBaseView.dismissProgress(); //请求错误，提示错误信息之后隐藏progress
     }
 
     /**
@@ -47,7 +47,7 @@ public class BasePresenterImp<V extends IBaseView, T> implements IBaseRequestCal
      */
     @Override
     public void requestComplete() {
-        iBaseView.disimissProgress();
+        iBaseView.dismissProgress();
     }
 
     /**

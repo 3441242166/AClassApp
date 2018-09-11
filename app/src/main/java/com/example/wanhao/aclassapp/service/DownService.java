@@ -1,5 +1,6 @@
 package com.example.wanhao.aclassapp.service;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
@@ -101,8 +102,10 @@ public class DownService extends Service {
         manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(documentID, builder.build());
         builder.setProgress(100,0,false);
+
     }
 
+    @SuppressLint("CheckResult")
     private void download(){
         isUse = true;
 
@@ -113,79 +116,83 @@ public class DownService extends Service {
         service.downloadDocument(SaveDataUtil.getValueFromSharedPreferences(this,ApiConstant.USER_TOKEN),Integer.valueOf(document.getCourseID()),documentID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .subscribe(new io.reactivex.functions.Consumer<Response<ResponseBody>>() {
-                    @Override
-                    public void accept(Response<ResponseBody> response) throws Exception {
-                        InputStream is = response.body().byteStream();
-                        byte[] buf = new byte[2048];
-                        int len = 0;
-                        FileOutputStream fos = null;
-                        // 储存下载文件的目录
-                        String savePath = FileConvertUtil.getDocumentFilePath();
-                        try {
-                            long total = Integer.valueOf(document.getSize());
-                            File file = new File(savePath+"/"+document.getTitle());
+                .subscribe(response -> {
+                    InputStream is = response.body().byteStream();
+                    byte[] buf = new byte[2048];
+                    int len;
+                    FileOutputStream fos = null;
+                    // 储存下载文件的目录
+                    String savePath = FileConvertUtil.getDocumentFilePath();
+                    Log.i(TAG, "download: savePath = "+savePath);
+                    try {
+                        long total = Integer.valueOf(document.getSize());
+                        File files = new File(savePath);
+                        Log.i(TAG, "download: exists = "+files.exists());
+                        if(!files.exists()){
+                            files.mkdirs();
+                            Log.i(TAG, "download: !file.exists()");
+                            //Log.i(TAG, "download: createNewFile = "+file.createNewFile());
+                        }
+                        File file = new File(savePath+"/document/"+document.getTitle());
+                        Log.i(TAG, "download: createNewFile = "+file.createNewFile());
+                        fos = new FileOutputStream(file);
+                        long sum = 0;
+                        int progress;
+                        while ((len = is.read(buf)) != -1) {
+                            fos.write(buf, 0, len);
+                            sum += len;
+                            progress = (int) (sum * 1.0f / total * 100);
 
-                            file.createNewFile();
-                            fos = new FileOutputStream(file);
-                            long sum = 0;
-                            int progress;
-                            while ((len = is.read(buf)) != -1) {
-                                fos.write(buf, 0, len);
-                                sum += len;
-                                progress = (int) (sum * 1.0f / total * 100);
-
-                                builder.setProgress(100,progress,false);
-                                builder.setContentText("下载"+progress+"%");
-                                manager.notify(documentID,builder.build());
-
-                                broadcastIntent.putExtra(ApiConstant.DOWNLOAD_STATE,"下载 "+progress+"%");
-                                broadcastIntent.putExtra(ApiConstant.DOCUMENT_ID,documentID);
-                                sendBroadcast(broadcastIntent);
-
-                                if(isStop){
-                                    broadcastIntent.putExtra(ApiConstant.DOWNLOAD_STATE,"重新下载");
-                                    broadcastIntent.putExtra(ApiConstant.DOCUMENT_ID,documentID);
-                                    sendBroadcast(broadcastIntent);
-                                    Log.i(TAG, "accept: 取消下载");
-                                    return;
-                                }
-                            }
-
-                            builder.setContentText(document.getTitle() +" 下载完成");
-                            //设置进度为不确定，用于模拟安装
+                            builder.setProgress(100,progress,false);
+                            builder.setContentText("下载"+progress+"%");
                             manager.notify(documentID,builder.build());
-                            //manager.cancel(1);
-                            broadcastIntent.putExtra(ApiConstant.DOWNLOAD_STATE,"打开");
+
+                            broadcastIntent.putExtra(ApiConstant.DOWNLOAD_STATE,"下载 "+progress+"%");
                             broadcastIntent.putExtra(ApiConstant.DOCUMENT_ID,documentID);
-                            isUse =false;
                             sendBroadcast(broadcastIntent);
 
-                            fos.flush();
-
-                        } catch (Exception e) {
-                            Log.i(TAG, "saveDocument: "+e.toString());
-                        } finally {
-
-                            try {
-                                if (is != null)
-                                    is.close();
-                            } catch (IOException e) {
-                                Log.i(TAG, "saveDocument: "+e.toString());
-                            }
-                            try {
-                                if (fos != null)
-                                    fos.close();
-                            } catch (IOException e) {
-                                Log.i(TAG, "saveDocument: "+e.toString());
+                            if(isStop){
+                                broadcastIntent.putExtra(ApiConstant.DOWNLOAD_STATE,"重新下载");
+                                broadcastIntent.putExtra(ApiConstant.DOCUMENT_ID,documentID);
+                                sendBroadcast(broadcastIntent);
+                                Log.i(TAG, "accept: 取消下载");
+                                return;
                             }
                         }
+
+                        builder.setContentText(document.getTitle() +" 下载完成");
+                        //设置进度为不确定，用于模拟安装
+                        manager.notify(documentID,builder.build());
+                        //manager.cancel(1);
+                        broadcastIntent.putExtra(ApiConstant.DOWNLOAD_STATE,"打开");
+                        broadcastIntent.putExtra(ApiConstant.DOCUMENT_ID,documentID);
+                        isUse =false;
+                        sendBroadcast(broadcastIntent);
+
+                        fos.flush();
+
+                    } catch (Exception e) {
+                        Log.i(TAG, "download: "+e.toString());
+                    } finally {
+
+                        try {
+                            if (is != null)
+                                is.close();
+                        } catch (IOException e) {
+                            Log.i(TAG, "is.close(): "+e.toString());
+                        }
+
+                        try {
+                            if (fos != null)
+                                fos.close();
+                        } catch (IOException e) {
+                            Log.i(TAG, " fos.close(): "+e.toString());
+                        }
+                        isUse = false;
                     }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        Log.i(TAG, "accept: throwable "+throwable.toString());
-                    }
+                }, throwable -> {
+                    isUse = false;
+                    Log.i(TAG, "accept: throwable "+throwable.toString());
                 });
 
     }

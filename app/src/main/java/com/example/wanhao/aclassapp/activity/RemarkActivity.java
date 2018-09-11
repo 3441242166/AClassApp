@@ -117,7 +117,7 @@ public class RemarkActivity extends TopBarBaseActivity implements IRemarkView {
     }
 
     @Override
-    public void disimissProgress() {
+    public void dismissProgress() {
 
     }
 

@@ -55,8 +55,9 @@ public class DocumentModel {
                     HttpResult< List<Document>> result = new Gson().fromJson(body,new TypeToken<HttpResult< List<Document>>>(){}.getType());
 
                     if(result.getCode().equals(RETURN_SUCCESS)){
-                        //view.loadDataSuccess(result.getMessage());
                         callBack.requestSuccess(result.getData());
+                        addToDB(result.getData(),courseID,ApiConstant.DOCUMENT_EDATA);
+
                     }else{
                         callBack.requestError(new Throwable(result.getMessage()));
                     }
@@ -82,8 +83,8 @@ public class DocumentModel {
                     HttpResult< List<Document>> result = new Gson().fromJson(body,new TypeToken<HttpResult< List<Document>>>(){}.getType());
 
                     if(result.getCode().equals(RETURN_SUCCESS)){
-                        //view.loadDataSuccess(result.getMessage());
                         callBack.requestSuccess(result.getData());
+                        addToDB(result.getData(),courseID,ApiConstant.DOCUMENT_PREVIEW);
                     }else{
                         callBack.requestError(new Throwable(result.getMessage()));
                     }
@@ -92,6 +93,10 @@ public class DocumentModel {
                     Log.i(TAG, "accept: "+throwable);
                 });
 
+    }
+
+    private void addToDB(List<Document> list,String courseId,String type){
+        dao.addDocumentList(list,SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT),courseId,type);
     }
 
 }

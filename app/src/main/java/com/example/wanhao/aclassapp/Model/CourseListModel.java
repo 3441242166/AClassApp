@@ -25,18 +25,17 @@ import io.reactivex.schedulers.Schedulers;
  * Created by wanhao on 2018/2/25.
  */
 
-public class CourseModel implements ICourseModel{
-    private static final String TAG = "CourseModel";
+public class CourseListModel {
+    private static final String TAG = "CourseListModel";
 
     private Context context;
     private CourseDao dao;
 
-    public CourseModel(Context context){
+    public CourseListModel(Context context){
         this.context = context;
         dao = new CourseDao(context);
     }
 
-    @Override
     public void getListDataByDB(final IBaseRequestCallBack<List<Course>> callBack){
         List<Course> list = dao.alterAllCoursse(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT));
         if(list==null || list.size()==0){
@@ -47,16 +46,15 @@ public class CourseModel implements ICourseModel{
     }
 
     @SuppressLint("CheckResult")
-    @Override
     public void getListDataByInternet(final IBaseRequestCallBack<List<Course>> callBack) {
         callBack.beforeRequest();
         CourseService service = RetrofitHelper.get(CourseService.class);
         service.getCourseList(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_TOKEN))
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(responseBodyResponse -> {
                     String body = responseBodyResponse.body().string();
-                    Log.i(TAG, "accept: "+body);
+                    Log.i(TAG, "getListDataByInternet body : "+body);
 
                     HttpResult<List<Course>> result = new Gson().fromJson(body,new TypeToken<HttpResult<List<Course>>>(){}.getType());
 
@@ -74,41 +72,4 @@ public class CourseModel implements ICourseModel{
                 });
     }
 
-    @SuppressLint("CheckResult")
-    @Override
-    public void deleteCourse(final String id, final IBaseRequestCallBack callBack){
-        callBack.beforeRequest();
-
-        ChatDao chatDao = new ChatDao(context);
-        chatDao.deleteAllChat(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT),id);
-
-        CourseService service = RetrofitHelper.get(CourseService.class);
-        service.deleteCourse(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_TOKEN),Integer.valueOf(id))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(responseBodyResponse -> {
-                    String body = responseBodyResponse.body().string();
-                    Log.i(TAG, "accept: "+body);
-
-                    HttpResult<String> result = new Gson().fromJson(body,new TypeToken<HttpResult<String>>(){}.getType());
-
-                    if(result.getCode().equals(ApiConstant.RETURN_SUCCESS)){
-                        callBack.requestSuccess("");
-                        dao.deleteCourse(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT),id);
-                    }else{
-                        callBack.requestError(new Throwable(result.getMessage()));
-                    }
-                }, throwable -> {
-                    Log.i(TAG, "accept: throwable "+throwable);
-                    callBack.requestError(throwable);
-                });
-    }
-}
-
-interface ICourseModel{
-    void getListDataByInternet(IBaseRequestCallBack<List<Course>> callBack);
-
-    void getListDataByDB(IBaseRequestCallBack<List<Course>> callBack);
-
-    void deleteCourse(String id,IBaseRequestCallBack callBack);
 }

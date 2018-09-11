@@ -2,7 +2,6 @@ package com.example.wanhao.aclassapp.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -12,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.config.ApiConstant;
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         initEvent();
     }
 
-    private void initView() {
+    private void initView(){
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.icon_back);
         fragmentList = new ArrayList<>();
@@ -87,27 +87,23 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
     private void initEvent() {
         //viewPager.setNoScroll(true);
-        viewPager.setOverScrollMode(viewPager.OVER_SCROLL_NEVER);
-        navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                invalidateOptionsMenu();
-                switch (item.getItemId()) {
-                    case R.id.main_menu_home:
-                        viewPager.setCurrentItem(0);
-                        return true;
-                    case R.id.main_menu_message:
-                        viewPager.setCurrentItem(1);
-                        return true;
-                    case R.id.main_menu_bbs:
-                        viewPager.setCurrentItem(2);
-                        return true;
-                }
-                return false;
+        viewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);
+        navigation.setOnNavigationItemSelectedListener(item -> {
+            invalidateOptionsMenu();
+            switch (item.getItemId()) {
+                case R.id.main_menu_home:
+                    viewPager.setCurrentItem(0);
+                    return true;
+                case R.id.main_menu_message:
+                    viewPager.setCurrentItem(1);
+                    return true;
+                case R.id.main_menu_my:
+                    viewPager.setCurrentItem(2);
+                    return true;
             }
+            return false;
         });
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -126,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                         navigation.setSelectedItemId(R.id.main_menu_message);
                         break;
                     case 2:
-                        navigation.setSelectedItemId(R.id.main_menu_bbs);
+                        navigation.setSelectedItemId(R.id.main_menu_my);
                         break;
                 }
             }
@@ -208,6 +204,5 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
     }
 }

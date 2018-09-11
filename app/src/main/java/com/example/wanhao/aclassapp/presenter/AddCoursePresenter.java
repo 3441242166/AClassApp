@@ -61,11 +61,11 @@ public class AddCoursePresenter{
                     }else{
                         view.loadDataError(result.getMessage());
                     }
-                    view.disimissProgress();
+                    view.dismissProgress();
                 }, throwable -> {
                     view.loadDataError(ResourcesUtil.getString(R.string.error_internet));
                     Log.i(TAG, "accept: "+throwable);
-                    view.disimissProgress();
+                    view.dismissProgress();
 
                 });
     }

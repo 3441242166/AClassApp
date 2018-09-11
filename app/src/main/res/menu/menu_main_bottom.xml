@@ -9,7 +9,7 @@
         android:icon="@drawable/mainicon_1"
         android:title="资料" />
     <item
-        android:id="@+id/main_menu_bbs"
+        android:id="@+id/main_menu_my"
         android:icon="@drawable/mainicon_2"
         android:title="其他" />
 

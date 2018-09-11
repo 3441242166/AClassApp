@@ -20,7 +20,7 @@ import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.base.BaseApplication;
 import com.example.wanhao.aclassapp.base.BaseTokenActivity;
 import com.example.wanhao.aclassapp.config.ApiConstant;
-import com.example.wanhao.aclassapp.fragment.CourseFragment;
+import com.example.wanhao.aclassapp.fragment.CourseListFragment;
 import com.example.wanhao.aclassapp.presenter.CoursePresenter;
 import com.example.wanhao.aclassapp.util.ActivityCollector;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
@@ -126,7 +126,7 @@ public class CourseActivity extends BaseTokenActivity implements NavigationView.
         switch (resultCode){
             case ApiConstant.ADD_SUCCESS:
                 android.support.v4.app.FragmentManager manager = getSupportFragmentManager();
-                CourseFragment fragment = (CourseFragment) manager.findFragmentById(R.id.ac_course_fragment);
+                CourseListFragment fragment = (CourseListFragment) manager.findFragmentById(R.id.ac_course_fragment);
                 //通过id或者tag可以从manager获取fragment对象，
                 if(data!=null)
                     fragment.onActivityResult(requestCode, resultCode, data);

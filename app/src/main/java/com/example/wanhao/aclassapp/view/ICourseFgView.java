@@ -11,6 +11,4 @@ import java.util.List;
 
 public interface ICourseFgView extends IBaseTokenView<List<Course>> {
 
-    void deleteSucess();
-
 }

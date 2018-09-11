@@ -88,11 +88,11 @@ public class RegisterPresenter {
                     }else{
                         iRegisterView.loadDataError(result.getMessage());
                     }
-                    iRegisterView.disimissProgress();
+                    iRegisterView.dismissProgress();
                 }, throwable -> {
                     Log.i(TAG, "accept: "+throwable);
                     iRegisterView.loadDataError(ResourcesUtil.getString(R.string.error_internet));
-                    iRegisterView.disimissProgress();
+                    iRegisterView.dismissProgress();
                 });
 
     }

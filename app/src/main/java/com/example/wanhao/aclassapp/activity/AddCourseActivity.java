@@ -2,6 +2,7 @@ package com.example.wanhao.aclassapp.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.widget.Button;
@@ -36,6 +37,7 @@ public class AddCourseActivity extends TopBarBaseActivity implements View.OnClic
 
     @Override
     public void onClick(View view) {
+
 
         switch (view.getId()) {
             case R.id.ac_choose_add:
@@ -91,7 +93,7 @@ public class AddCourseActivity extends TopBarBaseActivity implements View.OnClic
     }
 
     @Override
-    public void disimissProgress() {
+    public void dismissProgress() {
         dialog.dismiss();
     }
 

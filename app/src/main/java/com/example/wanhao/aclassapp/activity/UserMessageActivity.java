@@ -32,19 +32,11 @@ public class UserMessageActivity extends TopBarBaseActivity implements IUserMess
     TextView name;
     @BindView(R.id.ac_user_signature)
     TextView signature;
-    @BindView(R.id.ac_user_men)
-    RadioButton btMen;
-    @BindView(R.id.ac_user_women)
-    RadioButton btWomen;
-    @BindView(R.id.ac_user_group)
-    RadioGroup radioGroup;
 
     private User user;
     private UserMessagePresenter presenter;
 
     MaterialDialog dialog;
-
-    boolean isFirst = true;
 
     @Override
     protected int getContentView() {
@@ -96,20 +88,6 @@ public class UserMessageActivity extends TopBarBaseActivity implements IUserMess
 
         imageView.setOnClickListener(view -> presenter.openSelectAvatarDialog());
 
-        radioGroup.setOnCheckedChangeListener((radioGroup, i) -> {
-            switch (i){
-                case R.id.ac_user_men:
-                    user.setGender("男");
-                    break;
-                case R.id.ac_user_women:
-                    user.setGender("女");
-                    break;
-            }
-            if(!isFirst) {
-                presenter.sentUserMessage(user);
-            }
-            isFirst = false;
-        });
     }
 
     @Override
@@ -118,7 +96,7 @@ public class UserMessageActivity extends TopBarBaseActivity implements IUserMess
     }
 
     @Override
-    public void disimissProgress() {
+    public void dismissProgress() {
         dialog.dismiss();
     }
 
@@ -128,15 +106,7 @@ public class UserMessageActivity extends TopBarBaseActivity implements IUserMess
         name.setText(tData.getNickName());
         signature.setText(tData.getSignature());
 
-        if(tData.getGender().equals("女")){
-            btWomen.setChecked(true);
-        }else{
-            btMen.setChecked(true);
-        }
-
         imageView.setClickable(true);
-        btWomen.setClickable(true);
-        btMen.setClickable(true);
         signature.setClickable(true);
         name.setClickable(true);
     }
@@ -145,8 +115,6 @@ public class UserMessageActivity extends TopBarBaseActivity implements IUserMess
     public void loadDataError(String throwable) {
         Toast.makeText(this,throwable,Toast.LENGTH_SHORT).show();
         imageView.setClickable(false);
-        btWomen.setClickable(false);
-        btMen.setClickable(false);
         signature.setClickable(false);
         name.setClickable(false);
     }
@@ -156,11 +124,6 @@ public class UserMessageActivity extends TopBarBaseActivity implements IUserMess
         Toast.makeText(this,"修改成功",Toast.LENGTH_SHORT).show();
         name.setText(user.getNickName());
         signature.setText(user.getSignature());
-        if(user.getGender().equals("女")){
-            btWomen.setChecked(true);
-        }else{
-            btMen.setChecked(true);
-        }
     }
 
     @Override

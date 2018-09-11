@@ -23,7 +23,7 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.example.wanhao.aclassapp.Model.CourseModel;
+import com.example.wanhao.aclassapp.Model.CourseListModel;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.activity.UserMessageActivity;
 import com.example.wanhao.aclassapp.bean.HttpResult;
@@ -59,14 +59,14 @@ public class UserMessagePresenter {
 
     private Context context;
     private IUserMessageView view;
-    private CourseModel model;
+    private CourseListModel model;
     private UserMessageService service;
 
 
     public UserMessagePresenter(Context context, IUserMessageView view){
         this.context = context;
         this.view = view;
-        model = new CourseModel(context);
+        model = new CourseListModel(context);
         service = RetrofitHelper.get(UserMessageService.class);
     }
 
@@ -94,11 +94,11 @@ public class UserMessagePresenter {
                     }else{
                         view.loadDataError(result.getMessage());
                         view.tokenError("token失效，请重新登陆");
-                        view.disimissProgress();
                     }
+                    view.dismissProgress();
                 }, throwable -> {
                     view.loadDataError("获取个人信息失败");
-                    view.disimissProgress();
+                    view.dismissProgress();
                     Log.i(TAG, "accept: "+throwable);
                 });
 
@@ -129,7 +129,7 @@ public class UserMessagePresenter {
                     Log.i(TAG, "sentUserMessage: "+throwable);
                     view.loadDataError(context.getResources().getString(R.string.error_internet));
                 });
-        view.disimissProgress();
+        view.dismissProgress();
     }
 
     @SuppressLint("CheckResult")
@@ -142,10 +142,10 @@ public class UserMessagePresenter {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(responseBodyResponse -> {
                     view.changeUserSucess();
-                    view.disimissProgress();
+                    view.dismissProgress();
                 }, throwable -> {
                     view.loadDataError(context.getResources().getString(R.string.error_internet));
-                    view.disimissProgress();
+                    view.dismissProgress();
                 });
     }
 

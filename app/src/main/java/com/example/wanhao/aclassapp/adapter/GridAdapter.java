@@ -18,8 +18,8 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.Holder> implem
 
     private List<GridBean> courseList;
 
-    private com.example.wanhao.aclassapp.adapter.CourseAdapter.OnItemClickListener onItemClickListener;
-    private com.example.wanhao.aclassapp.adapter.CourseAdapter.OnLongItemClickListener onItemLongClickListener;
+    private OnItemClickListener onItemClickListener;
+    private OnLongItemClickListener onItemLongClickListener;
 
     private View view;
     private Context context;
@@ -72,11 +72,11 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.Holder> implem
         return true;
     }
 
-    public void setOnItemClickListener(com.example.wanhao.aclassapp.adapter.CourseAdapter.OnItemClickListener listener) {
+    public void setOnItemClickListener(OnItemClickListener listener) {
         this.onItemClickListener = listener;
     }
 
-    public void setOnLongItemClickListener(com.example.wanhao.aclassapp.adapter.CourseAdapter.OnLongItemClickListener listener) {
+    public void setOnLongItemClickListener(OnLongItemClickListener listener) {
         this.onItemLongClickListener = listener;
     }
 

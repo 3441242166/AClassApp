@@ -72,7 +72,8 @@ public class LodingActivity extends AppCompatActivity implements View.OnClickLis
                 break;
             case R.id.ac_loding_loding:
                 hideKeyboard();
-                presenter.login(etUsername.getText().toString(),etPassword.getText().toString());
+                //presenter.login(etUsername.getText().toString(),etPassword.getText().toString());
+                startActivity(new Intent(this, MainActivity2.class));
                 break;
             case R.id.ac_loding_forget:
 
@@ -86,7 +87,7 @@ public class LodingActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     @Override
-    public void disimissProgress() {
+    public void dismissProgress() {
         dialog.dismiss();
     }
 

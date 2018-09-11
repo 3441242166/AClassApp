@@ -37,7 +37,7 @@ public abstract class LazyLoadFragment extends Fragment {
         mUnbinder = ButterKnife.bind(this, view);
         isInit = true;
         /**初始化的时候去加载数据**/
-        lazyLoad();
+        isCanLoadData();
         return view;
     }
 
@@ -47,7 +47,7 @@ public abstract class LazyLoadFragment extends Fragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        //isCanLoadData();
+        isCanLoadData();
     }
 
     /**
@@ -104,9 +104,8 @@ public abstract class LazyLoadFragment extends Fragment {
      * @param <T>
      * @return
      */
-    protected <T extends View> T findViewById(int id) {
-
-        return (T) getContentView().findViewById(id);
+    protected <T extends View>  T findViewById(int id) {
+        return getContentView().findViewById(id);
     }
 
     /**

@@ -22,7 +22,7 @@
 
     <fragment
         android:id="@+id/ac_course_fragment"
-        android:name="com.example.wanhao.aclassapp.fragment.CourseFragment"
+        android:name="com.example.wanhao.aclassapp.fragment.CourseListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,113 +7,165 @@
     android:orientation="vertical"
     tools:context="com.example.wanhao.aclassapp.activity.UserMessageActivity">
 
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/ac_user_head"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_gravity="center"
-        android:layout_margin="50dp"
-        android:src="@mipmap/ic_launcher" />
-
-    <View
-        android:background="@color/buttonClickColor0"
-        android:layout_width="match_parent"
-        android:layout_height="15dp"/>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_margin="15dp"
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            tools:context="com.example.wanhao.aclassapp.activity.UserMessageActivity">
 
-            <TextView
+
+            <ImageView
+                android:id="@+id/imageView3"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="昵称"
-                android:textColor="@color/colorBlack"
-                android:textSize="18sp" />
+                android:layout_height="220dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/bck_loding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/ac_user_head"
+                android:layout_width="88dp"
+                android:layout_height="88dp"
+                android:layout_marginBottom="32dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/bck"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/imageView3"
+                app:layout_constraintVertical_bias="1.0" />
 
             <TextView
-                android:layout_marginLeft="30dp"
                 android:id="@+id/ac_user_name"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="16dp"
                 android:text="无名氏"
-                android:textSize="18sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_margin="15dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="性别"
-                android:textColor="@color/colorBlack"
-                android:textSize="18sp" />
-
-            <RadioGroup
-                android:id="@+id/ac_user_group"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:orientation="horizontal">
-
-
-                <RadioButton
-                    android:id="@+id/ac_user_men"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="1"
-                    android:text="男" />
-
-                <RadioButton
-                    android:id="@+id/ac_user_women"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="女" />
-            </RadioGroup>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_margin="15dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="个性签名"
-                android:textColor="@color/colorBlack"
-                android:textSize="18sp" />
+                android:textColor="@color/textNormal"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toTopOf="@+id/ac_user_signature"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/ac_user_head"
+                app:layout_constraintTop_toTopOf="@+id/ac_user_head"
+                app:layout_constraintVertical_bias="1.0" />
 
             <TextView
                 android:id="@+id/ac_user_signature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="你若安好 便是晴天"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/ac_user_head"
+                app:layout_constraintEnd_toEndOf="@+id/ac_user_name" />
+
+
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorWrite">
+
+            <View
+                android:id="@+id/view5"
+                android:layout_width="8dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/blue_btn_bg_color"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="常用功能"
+                app:layout_constraintBottom_toBottomOf="@+id/view5"
+                app:layout_constraintStart_toEndOf="@+id/view5"
+                app:layout_constraintTop_toTopOf="@+id/view5" />
+
+            <View
+                android:id="@+id/view6"
+                style="@style/item_horizontal"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view5" />
+
+            <android.support.v7.widget.RecyclerView
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="30dp"
-                android:layout_weight="2"
-                android:text="没有个性签名"
-                android:textSize="18sp" />
-        </LinearLayout>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view6" />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_marginTop="6dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorWrite">
+
+            <View
+                android:id="@+id/view5"
+                android:layout_width="8dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/blue_btn_bg_color"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="其他功能"
+                app:layout_constraintBottom_toBottomOf="@+id/view5"
+                app:layout_constraintStart_toEndOf="@+id/view5"
+                app:layout_constraintTop_toTopOf="@+id/view5" />
+
+            <View
+                android:id="@+id/view6"
+                style="@style/item_horizontal"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view5" />
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view6" />
+
+        </android.support.constraint.ConstraintLayout>
+
+
     </LinearLayout>
 
 
-</LinearLayout>
+</android.support.v4.widget.NestedScrollView>

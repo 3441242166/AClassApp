@@ -55,12 +55,13 @@ public class BrowseDocumentActivity extends TopBarBaseActivity implements IBrows
     @Override
     protected void init(Bundle savedInstanceState) {
         presenter = new BrowseDocumentPresenter(this,this);
+
         documentID = getIntent().getIntExtra(ApiConstant.DOCUMENT_ID,-1);
-        presenter.checkDocument(String.valueOf(documentID));
+        Log.i(TAG, "init: id = "+documentID);
+        presenter.checkDocument(""+documentID);
 
         initView();
         initEvent();
-
     }
 
     private void initView() {
@@ -70,52 +71,44 @@ public class BrowseDocumentActivity extends TopBarBaseActivity implements IBrows
     }
 
     private void initEvent() {
-        setTopLeftButton(new OnClickListener() {
-            @Override
-            public void onClick() {
-                finish();
-            }
-        });
+        setTopLeftButton(this::finish);
 
         /**
          * NONE     启动下载
          * ING      点击取消
          * FINISH   点击打开文件
          */
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switch (nowState){
-                    case NONE:
-                        presenter.startDownload();
-                        break;
-                    case ING:
-                        //暂停文件
-                        new SweetAlertDialog(BrowseDocumentActivity.this, SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("确定?")
-                                .setContentText("你确定要取消下载吗？")
-                                .setConfirmText("是，取消!")
-                                .setCancelText("不，点错了")
-                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                    @Override
-                                    public void onClick(SweetAlertDialog sDialog) {
-                                        Log.i(TAG, "SweetAlertDialog onClick: ");
-                                        presenter.cancalDownload();
-                                        sDialog.cancel();
-                                    }
-                                })
-                                .show();
-                        break;
-                    case FINISH:
-                        Intent intent = new Intent();
-                        File file = new File(FileConvertUtil.getDocumentFilePath()+"/"+document.getTitle());
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);//设置标记
-                        intent.setAction(Intent.ACTION_VIEW);//动作，查看
-                        intent.setDataAndType(Uri.fromFile(file), FileConvertUtil.getMIMEType(file));//设置类型
-                        startActivity(intent);
-                        // 打开文件
-                        break;
-                }
+        button.setOnClickListener(view -> {
+            switch (nowState){
+                case NONE:
+                    presenter.startDownload();
+                    break;
+                case ING:
+                    //暂停文件
+                    new SweetAlertDialog(BrowseDocumentActivity.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("确定?")
+                            .setContentText("你确定要取消下载吗？")
+                            .setConfirmText("是，取消!")
+                            .setCancelText("不，点错了")
+                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sDialog) {
+                                    Log.i(TAG, "SweetAlertDialog onClick: ");
+                                    presenter.cancalDownload();
+                                    sDialog.cancel();
+                                }
+                            })
+                            .show();
+                    break;
+                case FINISH:
+                    Intent intent = new Intent();
+                    File file = new File(FileConvertUtil.getDocumentFilePath()+"/"+document.getTitle());
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);//设置标记
+                    intent.setAction(Intent.ACTION_VIEW);//动作，查看
+                    intent.setDataAndType(Uri.fromFile(file), FileConvertUtil.getMIMEType(file));//设置类型
+                    startActivity(intent);
+                    // 打开文件
+                    break;
             }
         });
     }
