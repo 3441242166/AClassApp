@@ -1,12 +1,16 @@
 package com.example.wanhao.aclassapp.activity;
 
+import android.graphics.Color;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.customizeview.NoScrollViewPager;
@@ -16,6 +20,7 @@ import com.example.wanhao.aclassapp.fragment.TipFragment;
 import com.example.wanhao.aclassapp.fragment.UserMessageFragment;
 import com.example.wanhao.aclassapp.util.ActivityCollector;
 import com.example.wanhao.aclassapp.util.BottomNavigationViewHelper;
+import com.jaeger.library.StatusBarUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,5 +136,21 @@ public class MainActivity2 extends AppCompatActivity {
         };
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(3);
+    }
+
+    private long exitTime = 0;
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){
+            if((System.currentTimeMillis()-exitTime) > 2000){
+                Toast.makeText(this,"再按一次退出",Toast.LENGTH_SHORT).show();
+                exitTime = System.currentTimeMillis();
+            } else {
+                finish();
+                System.exit(0);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

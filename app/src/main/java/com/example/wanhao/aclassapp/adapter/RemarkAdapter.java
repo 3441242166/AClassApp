@@ -24,20 +24,17 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RemarkAdapter extends BaseMultiItemQuickAdapter<Remark,BaseViewHolder> {
 
-    private List<Remark> data;
     private Context context;
 
     public RemarkAdapter(@Nullable List<Remark> data, Context context) {
         super(data);
         this.context = context;
-        this.data = data;
         addItemType(Remark.NORMAL, R.layout.item_remark);
         addItemType(Remark.SPECIAL, R.layout.item_remark_remark);
     }
 
     @Override
     public void setNewData(@Nullable List<Remark> data) {
-        this.data = data;
         super.setNewData(data);
     }
 
@@ -61,9 +58,9 @@ public class RemarkAdapter extends BaseMultiItemQuickAdapter<Remark,BaseViewHold
                 Glide.with(context).load(cookie).into((CircleImageView) helper.getView(R.id.item_remark_head));
 
                 Remark remark = new Remark();
-                for(int x=0;x<data.size();x++){
-                    if(item.getReply()==data.get(x).getId())
-                        remark = data.get(x);
+                for(int x=0;x<getData().size();x++){
+                    if(item.getReply()==getData().get(x).getId())
+                        remark = getData().get(x);
                 }
                 helper.setText(R.id.item_remark_remark_date,remark.getDate());
                 helper.setText(R.id.item_remark_remark_name, item.getUserNmae().getNickName());

@@ -45,7 +45,7 @@ public class DocumentModel {
         //----------从服务器取数据--------------------
         DocumentService service = RetrofitHelper.get(DocumentService.class);
 
-        service.getDocumentList(SaveDataUtil.getValueFromSharedPreferences(context, ApiConstant.USER_TOKEN),Integer.valueOf(courseID))
+        service.getDocumentList(SaveDataUtil.getValueFromSharedPreferences(context, ApiConstant.USER_TOKEN),courseID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(responseBodyResponse -> {
@@ -73,7 +73,7 @@ public class DocumentModel {
         //----------从服务器取数据--------------------
         DocumentService service = RetrofitHelper.get(DocumentService.class);
 
-        service.getPreviewList(SaveDataUtil.getValueFromSharedPreferences(context, ApiConstant.USER_TOKEN),Integer.valueOf(courseID))
+        service.getPreviewList(SaveDataUtil.getValueFromSharedPreferences(context, ApiConstant.USER_TOKEN),courseID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(responseBodyResponse -> {

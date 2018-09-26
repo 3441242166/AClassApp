@@ -18,7 +18,7 @@ import retrofit2.http.Part;
 
 public interface UserMessageService {
 
-    @GET("profile")
+    @GET("auth/user")
     Observable<Response<ResponseBody>> getProfile(@Header("Authorization") String token);
 
     @POST("profile")

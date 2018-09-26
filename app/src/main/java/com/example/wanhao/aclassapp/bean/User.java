@@ -12,7 +12,9 @@ public class User {
     @SerializedName("avatar")
     private String avatar;
     @SerializedName("role")
-    Role role;
+    private Role role;
+    @SerializedName("password")
+    private String token;
 
     public User(){
         role = new Role();
@@ -56,5 +58,13 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

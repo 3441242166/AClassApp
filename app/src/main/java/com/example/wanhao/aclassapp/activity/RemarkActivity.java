@@ -35,7 +35,7 @@ public class RemarkActivity extends TopBarBaseActivity implements IRemarkView {
     private RemarkPresenter presenter;
     private String courseID;
 
-    private List<Remark> list;
+    private List<Remark> list = new ArrayList<>();
     private RemarkAdapter adapter;
 
     @Override
@@ -48,31 +48,20 @@ public class RemarkActivity extends TopBarBaseActivity implements IRemarkView {
         courseID = getIntent().getStringExtra(ApiConstant.COURSE_ID);
         Log.i(TAG, "init: courseID "+courseID);
         presenter = new RemarkPresenter(this,this);
-        initData();
         initView();
         initEvent();
-        presenter.getRemark(Integer.valueOf(courseID));
-    }
-
-    private void initData() {
-        list = new ArrayList<>();
-
+        presenter.getRemark(courseID);
     }
 
     private void initEvent() {
-        setTopLeftButton(() -> finish());
+        setTopLeftButton(this::finish);
 
         write.setOnClickListener(view -> {
             final EditText editText = new EditText(RemarkActivity.this);
             AlertDialog.Builder builder = new AlertDialog.Builder(RemarkActivity.this);
             builder.setTitle("输入你的回复")
                     .setNegativeButton("取消", null)
-                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            presenter.sendRemark(editText.getText().toString(),Integer.valueOf(courseID),-1);
-                        }
-                    });
+                    .setPositiveButton("确定", (dialogInterface, i) -> presenter.sendRemark(editText.getText().toString(),courseID,-1));
             builder.setView(editText);
             builder.show();
         });
@@ -82,12 +71,7 @@ public class RemarkActivity extends TopBarBaseActivity implements IRemarkView {
             AlertDialog.Builder builder = new AlertDialog.Builder(RemarkActivity.this);
             builder.setTitle("输入你的回复")
                     .setNegativeButton("取消", null)
-                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            presenter.sendRemark(editText.getText().toString(),Integer.valueOf(courseID),list.get(position).getId());
-                        }
-                    });
+                    .setPositiveButton("确定", (dialogInterface, i) -> presenter.sendRemark(editText.getText().toString(),courseID,list.get(position).getId()));
             builder.setView(editText);
             builder.show();
         });
@@ -134,7 +118,7 @@ public class RemarkActivity extends TopBarBaseActivity implements IRemarkView {
 
     @Override
     public void sendRemarkSucess() {
-        presenter.getRemark(Integer.valueOf(courseID));
+        presenter.getRemark(courseID);
     }
 
     @Override

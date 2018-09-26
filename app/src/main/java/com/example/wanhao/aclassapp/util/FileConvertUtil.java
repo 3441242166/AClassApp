@@ -9,7 +9,7 @@ import android.util.Log;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.base.BaseApplication;
 import com.example.wanhao.aclassapp.config.ApiConstant;
-import com.example.wanhao.aclassapp.service.DownService;
+import com.example.wanhao.aclassapp.service.DownDocumentService;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -94,7 +94,7 @@ public class FileConvertUtil {
             "/" + SaveDataUtil.getValueFromSharedPreferences(BaseApplication.getContext(), ApiConstant.COUNT);
 
     public static final String FILE_DOCUMENT_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) +
-            "/" + SaveDataUtil.getValueFromSharedPreferences(BaseApplication.getContext(), ApiConstant.COUNT);
+            "/" + SaveDataUtil.getValueFromSharedPreferences(BaseApplication.getContext(), ApiConstant.COUNT)+"/";
 
     /**
      * 向本地SD卡写网络图片
@@ -144,46 +144,11 @@ public class FileConvertUtil {
         return FILE_DOCUMENT_PATH;
     }
 
-    public static void saveDocument(InputStream is,long size,String title, DownService.DownloadListener downloadListener){
-        byte[] buf = new byte[2048];
-        int len = 0;
-        FileOutputStream fos = null;
-        // 储存下载文件的目录
-        String savePath = FileConvertUtil.getDocumentFilePath();
-        try {
-            long total = size;
-            File file = new File(savePath, title);
-            fos = new FileOutputStream(file);
-            long sum = 0;
-            int progress = 0;
-            while ((len = is.read(buf)) != -1) {
-                fos.write(buf, 0, len);
-                sum += len;
-                progress = (int) (sum * 1.0f / total * 100);
-                Log.i(TAG, "accept: progress "+progress);
-
-            }
-            fos.flush();
-
-        } catch (Exception e) {
-            Log.i(TAG, "saveDocument: "+e.toString());
-        } finally {
-            try {
-                if (is != null)
-                    is.close();
-            } catch (IOException e) {
-                Log.i(TAG, "saveDocument: "+e.toString());
-            }
-            try {
-                if (fos != null)
-                    fos.close();
-            } catch (IOException e) {
-                Log.i(TAG, "saveDocument: "+e.toString());
-            }
-        }
-
-    }
-
+    /**
+     * 根据文件名获取对应图标ID
+     * @param fileName
+     * @return
+     */
     public static int getDocumentImageID(String fileName){
         Log.i(TAG, "getDocumentImageID: fileName "+fileName);
 
@@ -198,12 +163,15 @@ public class FileConvertUtil {
         if(last.equals("txt")){
             return R.drawable.icon_txt;
         }
-
         return 0;
     }
 
+    /**
+     * 获取文件的类型
+     * @param file
+     * @return
+     */
     public static String getMIMEType(File file) {
-
         String type="*/*";
         String fName = file.getName();
         //获取后缀名前的分隔符"."在fName中的位置。
@@ -215,11 +183,28 @@ public class FileConvertUtil {
         if(fileType == null || "".equals(fileType))
             return type;
         //在MIME和文件类型的匹配表中找到对应的MIME类型。
-        for(int i=0;i<MIME_MapTable.length;i++){
-            if(fileType.equals(MIME_MapTable[i][0]))
-                type = MIME_MapTable[i][1];
+        for (String[] aMIME_MapTable : MIME_MapTable) {
+            if (fileType.equals(aMIME_MapTable[0]))
+                type = aMIME_MapTable[1];
         }
         return type;
     }
 
+    /**
+     * 判断文件是否存在 不存在创建目录
+     * @param strFolder
+     * @return
+     */
+    public static boolean isFolderExists(String strFolder) {
+        File file = new File(strFolder);
+        if (!file.exists()) {
+            if (file.mkdirs()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return true;
+
+    }
 }

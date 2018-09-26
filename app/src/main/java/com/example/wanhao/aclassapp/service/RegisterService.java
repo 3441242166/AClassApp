@@ -30,6 +30,6 @@ public interface RegisterService {
 //                                       @Field(ApiConstant.CODE) String code);
 //
 
-    @POST("register")
+    @POST("user")
     Observable<Response<ResponseBody>> register(@Body RequestBody body);
 }

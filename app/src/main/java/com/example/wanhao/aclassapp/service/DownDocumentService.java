@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
@@ -33,11 +34,10 @@ import retrofit2.Response;
  * Created by wanhao on 2018/3/24.
  */
 
-public class DownService extends Service {
-    private static final String TAG = "DownService";
+public class DownDocumentService extends Service {
+    private static final String TAG = "DownDocumentService";
 
     private Document document;
-    private int documentID;
 
     Notification.Builder builder;
     NotificationManager manager;
@@ -64,27 +64,14 @@ public class DownService extends Service {
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
         Log.i(TAG, "onStartCommand: ");
-
-//        int choose = 0;
-//        switch (choose){
-//            case 0:
-//                break;
-//            case 1:
-//                break;
-//            case 2:
-//                break;
-//            case 3:
-//                break;
-//        }
-
         //如果有任务正在进行
         if(isUse) {
             Toast.makeText(this,"已有一个任务在进行,清稍后重试",Toast.LENGTH_SHORT).show();
             return super.onStartCommand(intent, flags, startId);
         }
+
         //如果没有任务进行 则获取文件id 启动下载
-        documentID = intent.getIntExtra(ApiConstant.DOCUMENT_ID, -1);
-        document = new DocumentDao(this).alterDocument(String.valueOf(documentID), SaveDataUtil.getValueFromSharedPreferences(this, ApiConstant.COUNT));
+        document = (Document) intent.getSerializableExtra(ApiConstant.DOCUMENT);
         initNotification();
 
         download();
@@ -100,7 +87,7 @@ public class DownService extends Service {
         builder.setContentText("正在下载");
 
         manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(documentID, builder.build());
+        manager.notify(document.getId(), builder.build());
         builder.setProgress(100,0,false);
 
     }
@@ -109,13 +96,13 @@ public class DownService extends Service {
     private void download(){
         isUse = true;
 
-        Log.i(TAG, "download: courseID  "+document.getCourseID()+"  documentID  "+documentID);
+        Log.i(TAG, "download: courseID  "+document.getCourseID()+"  documentID  "+document.getId());
 
         DocumentService service = RetrofitHelper.get(DocumentService.class);
 
-        service.downloadDocument(SaveDataUtil.getValueFromSharedPreferences(this,ApiConstant.USER_TOKEN),Integer.valueOf(document.getCourseID()),documentID)
+        service.downloadDocument(SaveDataUtil.getValueFromSharedPreferences(this,ApiConstant.USER_TOKEN),document.getCourseID(),document.getId())
                 .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
                     InputStream is = response.body().byteStream();
                     byte[] buf = new byte[2048];
@@ -128,16 +115,19 @@ public class DownService extends Service {
                         long total = Integer.valueOf(document.getSize());
                         File files = new File(savePath);
                         Log.i(TAG, "download: exists = "+files.exists());
+
                         if(!files.exists()){
                             files.mkdirs();
                             Log.i(TAG, "download: !file.exists()");
                             //Log.i(TAG, "download: createNewFile = "+file.createNewFile());
                         }
+
                         File file = new File(savePath+"/document/"+document.getTitle());
                         Log.i(TAG, "download: createNewFile = "+file.createNewFile());
                         fos = new FileOutputStream(file);
                         long sum = 0;
                         int progress;
+
                         while ((len = is.read(buf)) != -1) {
                             fos.write(buf, 0, len);
                             sum += len;
@@ -145,15 +135,15 @@ public class DownService extends Service {
 
                             builder.setProgress(100,progress,false);
                             builder.setContentText("下载"+progress+"%");
-                            manager.notify(documentID,builder.build());
+                            manager.notify(document.getId(),builder.build());
 
                             broadcastIntent.putExtra(ApiConstant.DOWNLOAD_STATE,"下载 "+progress+"%");
-                            broadcastIntent.putExtra(ApiConstant.DOCUMENT_ID,documentID);
+                            broadcastIntent.putExtra(ApiConstant.DOCUMENT_ID,document.getId());
                             sendBroadcast(broadcastIntent);
 
                             if(isStop){
                                 broadcastIntent.putExtra(ApiConstant.DOWNLOAD_STATE,"重新下载");
-                                broadcastIntent.putExtra(ApiConstant.DOCUMENT_ID,documentID);
+                                broadcastIntent.putExtra(ApiConstant.DOCUMENT_ID,document.getId());
                                 sendBroadcast(broadcastIntent);
                                 Log.i(TAG, "accept: 取消下载");
                                 return;
@@ -162,10 +152,10 @@ public class DownService extends Service {
 
                         builder.setContentText(document.getTitle() +" 下载完成");
                         //设置进度为不确定，用于模拟安装
-                        manager.notify(documentID,builder.build());
+                        manager.notify(document.getId(),builder.build());
                         //manager.cancel(1);
                         broadcastIntent.putExtra(ApiConstant.DOWNLOAD_STATE,"打开");
-                        broadcastIntent.putExtra(ApiConstant.DOCUMENT_ID,documentID);
+                        broadcastIntent.putExtra(ApiConstant.DOCUMENT_ID,document.getId());
                         isUse =false;
                         sendBroadcast(broadcastIntent);
 
@@ -202,64 +192,6 @@ public class DownService extends Service {
         super.onDestroy();
         isStop = true;
     }
-
-    //    public  void show(){
-//
-//
-//        //下载以及安装线程模拟
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                for(int i=0;i<100;i++){
-//                    builder.setProgress(100,i,false);
-//                    manager.notify(1,builder.build());
-//                    //下载进度提示
-//                    builder.setContentText("下载"+i+"%");
-//                    broadcastIntent.putExtra(ApiConstant.DOWNLOAD_STATE,ApiConstant.DOWNLOAD_STATE_ING);
-//                    broadcastIntent.putExtra(ApiConstant.Document_ID,documentID);
-//                    sendBroadcast(broadcastIntent);
-//                    try {
-//                        Thread.sleep(50);//演示休眠50毫秒
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//                //下载完成后更改标题以及提示信息
-//                //builder.setContentTitle("开始安装");
-//                builder.setContentText("安装中...");
-//                //设置进度为不确定，用于模拟安装
-//                builder.setProgress(0,0,true);
-//                manager.notify(1,builder.build());
-////                manager.cancel(NO_3);//设置关闭通知栏
-//                manager.cancel(1);
-//                broadcastIntent.putExtra(ApiConstant.DOWNLOAD_STATE,ApiConstant.DOWNLOAD_STATE_FINISH);
-//                broadcastIntent.putExtra(ApiConstant.Document_ID,documentID);
-//                isUse =false;
-//                sendBroadcast(broadcastIntent);
-//            }
-//        }).start();
-//
-//
-//        ProgressListener listener = new ProgressListener() {
-//            @Override
-//            public void onProgress(ProgressInfo progressInfo) {
-//                if(progressInfo.isFinish()){
-//                    broadcastIntent.putExtra(ApiConstant.DOWNLOAD_STATE,ApiConstant.DOWNLOAD_STATE_FINISH);
-//                    broadcastIntent.putExtra(ApiConstant.Document_ID,documentID);
-//                    isUse =false;
-//                    sendBroadcast(broadcastIntent);
-//                }
-//                builder.setContentText("下载"+progressInfo.getPercent()+"%");
-//            }
-//
-//            @Override
-//            public void onError(long id, Exception e) {
-//
-//            }
-//        };
-//
-//        ProgressManager.getInstance().addResponseListener("", listener);
-//    }
 
     private void startDownload(){
 

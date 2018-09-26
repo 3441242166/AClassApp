@@ -2,21 +2,25 @@ package com.example.wanhao.aclassapp.bean;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Created by wanhao on 2018/3/7.
  */
 
-public class Document {
-    @SerializedName("id")
+public class Document implements Serializable{
+    @SerializedName("file_id")
     private int id;
-    @SerializedName("position")
+    @SerializedName("file_name")
     private String title;
     @SerializedName("size")
     private String size;
-    @SerializedName("author")
+    @SerializedName("file_author")
     private String user;
-    @SerializedName("date")
+    @SerializedName("file_date")
     private String date;
+    @SerializedName("fileFormat")
+    private String type;
 
     private String courseID;
 
@@ -66,5 +70,13 @@ public class Document {
 
     public void setCourseID(String courseID) {
         this.courseID = courseID;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

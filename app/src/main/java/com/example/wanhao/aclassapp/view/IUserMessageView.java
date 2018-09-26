@@ -10,7 +10,7 @@ import com.example.wanhao.aclassapp.bean.User;
  */
 
 public interface IUserMessageView extends IBaseTokenView<User> {
-    void changeUserSucess();
+    void changeUserSuccess();
 
     void showImage(Bitmap bitmap);
 }

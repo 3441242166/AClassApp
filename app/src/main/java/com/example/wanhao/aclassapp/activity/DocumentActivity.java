@@ -29,10 +29,10 @@ public class DocumentActivity extends TopBarBaseActivity implements IDocumentVie
     RecyclerView recyclerView;
 
     private DocumentAdapter adapter;
-    private List<Document> list;
 
     private DocumentPresenter presenter;
-    private DocumentDialog dialog;
+
+    private String courseID;
 
     @Override
     protected int getContentView() {
@@ -44,11 +44,11 @@ public class DocumentActivity extends TopBarBaseActivity implements IDocumentVie
         presenter = new DocumentPresenter(this,this);
         initView();
         initEvent();
-        presenter.getListByCourse();
+        courseID = getIntent().getStringExtra(ApiConstant.COURSE_ID);
+        presenter.getListByInternet(courseID);
     }
 
     private void initView() {
-        dialog = new DocumentDialog(this);
 
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL));
         recyclerView.addItemDecoration(new ColorDividerItemDecoration());
@@ -59,18 +59,16 @@ public class DocumentActivity extends TopBarBaseActivity implements IDocumentVie
     }
 
     private void initEvent() {
-        setTopLeftButton(() -> finish());
+        setTopLeftButton(this::finish);
 
-        setTopRightButton("筛选", () -> dialog.show());
-        
         adapter.setOnItemClickListener((adapter, view, position) -> {
             Log.i(TAG, "onItemClick: ");
             Intent intent = new Intent(DocumentActivity.this,BrowseDocumentActivity.class);
-            intent.putExtra(ApiConstant.DOCUMENT_ID,list.get(position).getId());
+            intent.putExtra(ApiConstant.DOCUMENT,this.adapter.getData().get(position));
+            intent.putExtra(ApiConstant.COURSE_ID,courseID);
             startActivity(intent);
         });
 
-        dialog.setOnSelectListener((i, j) -> presenter.sortAndGroup(i,j));
     }
 
     @Override
@@ -92,7 +90,6 @@ public class DocumentActivity extends TopBarBaseActivity implements IDocumentVie
 
     @Override
     public void loadDataSuccess(List<Document> tData) {
-        list = tData;
         adapter.setNewData(tData);
     }
 

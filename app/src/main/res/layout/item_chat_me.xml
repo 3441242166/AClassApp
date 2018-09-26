@@ -1,47 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:gravity="top"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:gravity="top">
 
-    <LinearLayout
+
+    <TextView
+        android:id="@+id/item_char_me_name"
+        android:layout_width="77dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:gravity="right"
+        android:text="wanhao"
+        app:layout_constraintEnd_toStartOf="@+id/item_char_me_head"
+        app:layout_constraintTop_toTopOf="@+id/item_char_me_head" />
+
+    <TextView
+        android:id="@+id/item_char_me_content"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="100dp"
-        android:layout_marginRight="10dp"
-        android:layout_weight="7"
-        android:orientation="vertical">
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/text_chat"
+        android:gravity="right"
+        android:text="this it content , lalala"
+        android:textColor="@color/colorBlack"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/item_char_me_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/item_char_me_name" />
 
-        <TextView
-            android:id="@+id/item_char_me_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="right"
-            android:text="wanhao" />
-
-        <TextView
-            android:id="@+id/item_char_me_content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/text_chat"
-            android:gravity="right"
-            android:text="this it content , lalala"
-            android:textColor="@color/colorBlack"
-            android:textSize="16sp" />
-    </LinearLayout>
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/item_char_me_head"
-        android:layout_width="0dp"
+        android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_margin="5dp"
-        android:layout_weight="1"
-        android:src="@color/colorBlack" />
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:src="@color/colorBlack"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

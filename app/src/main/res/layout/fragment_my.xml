@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:overScrollMode="never"
     tools:context="com.example.wanhao.aclassapp.activity.UserMessageActivity">
 
     <LinearLayout
@@ -13,6 +14,7 @@
         android:orientation="vertical">
 
         <android.support.constraint.ConstraintLayout
+            android:id="@+id/fg_my_headlayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -20,7 +22,7 @@
 
 
             <ImageView
-                android:id="@+id/imageView3"
+                android:id="@+id/fg_my_bck"
                 android:layout_width="0dp"
                 android:layout_height="220dp"
                 android:scaleType="centerCrop"
@@ -31,42 +33,43 @@
 
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/ac_user_head"
+                android:id="@+id/fg_my_head"
                 android:layout_width="88dp"
                 android:layout_height="88dp"
                 android:layout_marginBottom="32dp"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="32dp"
                 android:layout_marginTop="8dp"
-                android:src="@drawable/bck"
+                android:src="@drawable/icon_head"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/imageView3"
+                app:layout_constraintTop_toTopOf="@+id/fg_my_bck"
                 app:layout_constraintVertical_bias="1.0" />
 
             <TextView
-                android:id="@+id/ac_user_name"
+                android:id="@+id/fg_my_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="32dp"
                 android:text="无名氏"
-                android:textColor="@color/textNormal"
-                android:textSize="24sp"
-                app:layout_constraintBottom_toTopOf="@+id/ac_user_signature"
+                android:textColor="@color/textWrite"
+                android:textSize="28sp"
+                app:layout_constraintBottom_toTopOf="@+id/fg_my_signature"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toEndOf="@+id/ac_user_head"
-                app:layout_constraintTop_toTopOf="@+id/ac_user_head"
+                app:layout_constraintStart_toEndOf="@+id/fg_my_head"
+                app:layout_constraintTop_toTopOf="@+id/fg_my_head"
                 app:layout_constraintVertical_bias="1.0" />
 
             <TextView
-                android:id="@+id/ac_user_signature"
+                android:id="@+id/fg_my_signature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="你若安好 便是晴天"
+                android:textColor="@color/secondWrite"
                 android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="@+id/ac_user_head"
-                app:layout_constraintEnd_toEndOf="@+id/ac_user_name" />
+                app:layout_constraintBottom_toBottomOf="@+id/fg_my_head"
+                app:layout_constraintEnd_toEndOf="@+id/fg_my_name" />
 
 
         </android.support.constraint.ConstraintLayout>
@@ -107,6 +110,8 @@
                 app:layout_constraintTop_toBottomOf="@+id/view5" />
 
             <android.support.v7.widget.RecyclerView
+                android:overScrollMode="never"
+                android:id="@+id/fg_my_usually"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -124,7 +129,7 @@
             android:background="@color/colorWrite">
 
             <View
-                android:id="@+id/view5"
+                android:id="@+id/view7"
                 android:layout_width="8dp"
                 android:layout_height="20dp"
                 android:layout_marginStart="16dp"
@@ -134,33 +139,35 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/textView8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:text="其他功能"
-                app:layout_constraintBottom_toBottomOf="@+id/view5"
-                app:layout_constraintStart_toEndOf="@+id/view5"
-                app:layout_constraintTop_toTopOf="@+id/view5" />
+                app:layout_constraintBottom_toBottomOf="@+id/view7"
+                app:layout_constraintStart_toEndOf="@+id/view7"
+                app:layout_constraintTop_toTopOf="@+id/view7" />
 
             <View
-                android:id="@+id/view6"
+                android:id="@+id/view9"
                 style="@style/item_horizontal"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/view5" />
+                app:layout_constraintTop_toBottomOf="@+id/view7" />
 
             <android.support.v7.widget.RecyclerView
+                android:overScrollMode="never"
+                android:id="@+id/fg_my_other"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/view6" />
+                app:layout_constraintTop_toBottomOf="@+id/view9" />
 
         </android.support.constraint.ConstraintLayout>
 

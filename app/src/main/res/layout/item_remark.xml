@@ -1,53 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:orientation="horizontal">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/item_remark_head"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:src="@color/colorPrimary" />
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/item_remark_head"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:src="@color/colorPrimary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:layout_marginLeft="20dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/item_remark_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="万浩"
-                android:textColor="@color/colorBlack"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/item_remark_date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="2017-01-03" />
-        </LinearLayout>
-
-    </LinearLayout>
 
     <TextView
-        android:layout_marginLeft="60dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:id="@+id/item_remark_contant"
-        android:layout_width="match_parent"
+        android:id="@+id/item_remark_name"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="万浩"
+        android:textColor="@color/colorBlack"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@+id/item_remark_head"
+        app:layout_constraintTop_toTopOf="@+id/item_remark_head" />
+
+    <TextView
+        android:id="@+id/item_remark_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2017-01-03"
+        app:layout_constraintStart_toStartOf="@+id/item_remark_name"
+        app:layout_constraintTop_toBottomOf="@+id/item_remark_name" />
+
+
+    <TextView
+        android:id="@+id/item_remark_contant"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
         android:text="这个老师课教的真好"
         android:textColor="@color/colorBlack"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/item_remark_date"
+        app:layout_constraintTop_toBottomOf="@+id/item_remark_date" />
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.wanhao.aclassapp.activity.LodingActivity;
 import com.example.wanhao.aclassapp.util.ActivityCollector;
+
+import javax.security.auth.login.LoginException;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -37,6 +40,7 @@ public abstract class LazyLoadFragment extends Fragment {
         mUnbinder = ButterKnife.bind(this, view);
         isInit = true;
         /**初始化的时候去加载数据**/
+        Log.i(TAG, "onCreateView: "+ "  class: "+getClass().getName());
         isCanLoadData();
         return view;
     }
@@ -47,6 +51,7 @@ public abstract class LazyLoadFragment extends Fragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
+        Log.i(TAG, "setUserVisibleHint: "+isVisibleToUser + "  class: "+getClass().getName());
         isCanLoadData();
     }
 
@@ -60,8 +65,8 @@ public abstract class LazyLoadFragment extends Fragment {
         if (!isInit) {
             return;
         }
-
-        if (getUserVisibleHint()) {
+        // 可见 并且 未加载过
+        if (getUserVisibleHint() && !isLoad) {
             lazyLoad();
             isLoad = true;
         } else {
@@ -72,7 +77,7 @@ public abstract class LazyLoadFragment extends Fragment {
     }
 
     /**
-     * 视图销毁的时候将Fragment是否初始化的状态变为false
+     * 视图销毁的时候将Fragment是否初始化的状态变为false宿舍
      */
     @Override
     public void onDestroyView() {

@@ -57,7 +57,7 @@ public class LodingPresenter{
         iLoginView.showProgress();
 
         Map<String,String> map = new HashMap<>();
-        map.put("username", phoneNum);
+        map.put("user_name", phoneNum);
         map.put("password", password);
 
         RetrofitHelper.get(LodingService.class).login(GsonUtils.toBody(map))
@@ -67,12 +67,12 @@ public class LodingPresenter{
                     String body = responseBodyResponse.body().string();
                     Log.i(TAG, "accept: "+body);
 
-                    HttpResult<Role> result = new Gson().fromJson(body,new TypeToken<HttpResult<Role>>(){}.getType());
+                    HttpResult<lodingResult> result = new Gson().fromJson(body,new TypeToken<HttpResult<lodingResult>>(){}.getType());
 
                     if(result.getCode().equals(RETURN_SUCCESS)){
-                        Role role = result.getData();
-                        SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.USER_TOKEN, role.getToken());
-                        SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.USER_ROLE, role.getRole());
+                        lodingResult role = result.getData();
+                        SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.USER_TOKEN, role.token);
+                        SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.USER_ROLE, role.user);
                         SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.COUNT, phoneNum);
                         SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.PASSWORD, password);
                         SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.TOKEN_TIME, DateUtil.getNowDateString());
@@ -94,4 +94,8 @@ public class LodingPresenter{
         iLoginView.initData(count,password);
     }
 
+    class lodingResult{
+        public String user;
+        public String token;
+    }
 }

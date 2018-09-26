@@ -68,6 +68,19 @@ public class RetrofitHelper {
                 .retryOnConnectionFailure(true)
                 .connectTimeout(5, TimeUnit.SECONDS);
 
+//         .addInterceptor(chain -> {
+//            Request request = chain.request()
+//                    .newBuilder()
+//                    .addHeader("Content-Type", "application/json; charset=UTF-8")
+////                                .addHeader("Connection", "keep-alive")
+////                                .addHeader("Accept", "*/*")
+////                                .addHeader("Access-Control-Allow-Origin", "*")
+////                                .addHeader("Access-Control-Allow-Headers", "X-Requested-With")
+////                                .addHeader("Vary", "Accept-Encoding")
+//                    .build();
+//            return chain.proceed(request);
+//        })
+
         return new Retrofit.Builder().baseUrl(ApiConstant.BASE_URL)
                 .client(builder.build())
                 .addConverterFactory(GsonConverterFactory.create())

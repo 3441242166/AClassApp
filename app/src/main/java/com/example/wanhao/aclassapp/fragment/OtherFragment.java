@@ -60,28 +60,13 @@ public class OtherFragment extends LazyLoadFragment {
 
     private void initView() {
 
-        adapter=new GridAdapter(getActivity());
-        adapter.setData(dataList);
+        adapter=new GridAdapter(dataList,getActivity());
         gridView.setHasFixedSize(true);
         gridView.setLayoutManager(new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL));
         gridView.setAdapter(adapter);
     }
 
     private void initEvent() {
-
-        adapter.setOnItemClickListener((view, position) -> {
-            Intent intent;
-            switch (position){
-                case 0:
-                    intent = new Intent(getActivity(), RemarkActivity.class);
-                    intent.putExtra(ApiConstant.COURSE_ID,courseID);
-                    startActivity(intent);
-                    break;
-                case 1:
-                    startActivity(new Intent(getContext(), HomeWorkActivity.class));
-                    break;
-            }
-        });
 
     }
 }

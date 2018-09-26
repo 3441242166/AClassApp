@@ -20,6 +20,7 @@ import com.example.wanhao.aclassapp.presenter.BrowseDocumentPresenter;
 import com.example.wanhao.aclassapp.util.FileConvertUtil;
 import com.example.wanhao.aclassapp.util.FileSizeUtil;
 import com.example.wanhao.aclassapp.view.IBrowseDocumentView;
+import com.liulishuo.filedownloader.BaseDownloadTask;
 
 import java.io.File;
 
@@ -38,8 +39,9 @@ public class BrowseDocumentActivity extends TopBarBaseActivity implements IBrows
 
     private DownloadReceiver mBroadcastReceiver;
     private BrowseDocumentPresenter presenter;
-    private int documentID;
+
     private Document document;
+    private String courseID;
 
     public enum STATE{
         NONE,ING,FINISH
@@ -55,10 +57,9 @@ public class BrowseDocumentActivity extends TopBarBaseActivity implements IBrows
     @Override
     protected void init(Bundle savedInstanceState) {
         presenter = new BrowseDocumentPresenter(this,this);
-
-        documentID = getIntent().getIntExtra(ApiConstant.DOCUMENT_ID,-1);
-        Log.i(TAG, "init: id = "+documentID);
-        presenter.checkDocument(""+documentID);
+        Intent intent = getIntent();
+        document = (Document) intent.getSerializableExtra(ApiConstant.DOCUMENT);
+        courseID = intent.getStringExtra(ApiConstant.COURSE_ID);
 
         initView();
         initEvent();
@@ -81,7 +82,7 @@ public class BrowseDocumentActivity extends TopBarBaseActivity implements IBrows
         button.setOnClickListener(view -> {
             switch (nowState){
                 case NONE:
-                    presenter.startDownload();
+                    presenter.startDownload(document);
                     break;
                 case ING:
                     //暂停文件
@@ -94,7 +95,7 @@ public class BrowseDocumentActivity extends TopBarBaseActivity implements IBrows
                                 @Override
                                 public void onClick(SweetAlertDialog sDialog) {
                                     Log.i(TAG, "SweetAlertDialog onClick: ");
-                                    presenter.cancalDownload();
+                                    presenter.cancalDownload(document);
                                     sDialog.cancel();
                                 }
                             })
@@ -134,16 +135,16 @@ public class BrowseDocumentActivity extends TopBarBaseActivity implements IBrows
             public void onDownloadStateChange(String state,int ID) {
                 Log.i(TAG, "onDownloadStateChange: state "+state);
                 //  检测是否和下载中文件ID相同
-                if(documentID==ID){
-                    button.setText(state);
-                    if(state.equals("打开")){
-                        nowState = STATE.FINISH;
-                    }else if(state.equals("重新下载")){
-                        nowState = STATE.NONE;
-                    }else{
-                        nowState = STATE.ING;
-                    }
-                }
+//                if(documentID==ID){
+//                    button.setText(state);
+//                    if(state.equals("打开")){
+//                        nowState = STATE.FINISH;
+//                    }else if(state.equals("重新下载")){
+//                        nowState = STATE.NONE;
+//                    }else{
+//                        nowState = STATE.ING;
+//                    }
+//                }
 
             }
         });
@@ -168,12 +169,22 @@ public class BrowseDocumentActivity extends TopBarBaseActivity implements IBrows
     }
 
     @Override
+    public void setProgress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+
+    }
+
+    @Override
+    public void downError(Throwable e) {
+
+    }
+
+    @Override
     public void tokenError(String msg) {
         tokenAbate(msg);
     }
 
     @Override
-    public void documentState(STATE state) {
+    public void setDocumentState(STATE state) {
         Log.i(TAG, "setState: ");
         nowState = state;
         switch (state){

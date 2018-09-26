@@ -42,10 +42,10 @@ public class CourseAdapter extends BaseQuickAdapter<Course,BaseViewHolder> {
         helper.setText(R.id.item_course_parent, item.getParent());
         helper.setText(R.id.item_course_number,"一共有 "+item.getNum()+" 人");
 
-        GlideUrl cookie = new GlideUrl(ApiConstant.BASE_URL+"course/"+item.getId()+"/picture"
-                , new LazyHeaders.Builder().addHeader("Authorization", SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_TOKEN)).build());
-        Glide.with(context).load(cookie).crossFade().into((ImageView) helper.getView(R.id.item_course_img));
+//        GlideUrl cookie = new GlideUrl(item.getImgUrl()
+//                , new LazyHeaders.Builder().addHeader("Authorization", SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_TOKEN)).build());
+//        Glide.with(context).load(cookie).crossFade().into((ImageView) helper.getView(R.id.item_course_img));
 
-        Glide.with(context).load("").crossFade().into((ImageView) helper.getView(R.id.item_course_img));
+        Glide.with(context).load(item.getImgUrl()).crossFade().into((ImageView) helper.getView(R.id.item_course_img));
     }
 }

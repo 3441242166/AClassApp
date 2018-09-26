@@ -5,89 +5,153 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.adapter.GridAdapter;
+import com.example.wanhao.aclassapp.adapter.SettingAdapter;
+import com.example.wanhao.aclassapp.base.BaseTokenActivity;
 import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
+import com.example.wanhao.aclassapp.bean.GridBean;
 import com.example.wanhao.aclassapp.bean.User;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.UserMessagePresenter;
+import com.example.wanhao.aclassapp.util.ColorDividerItemDecoration;
 import com.example.wanhao.aclassapp.util.DialogUtil;
 import com.example.wanhao.aclassapp.util.FileConvertUtil;
+import com.example.wanhao.aclassapp.util.MyItemDecoration;
 import com.example.wanhao.aclassapp.view.IUserMessageView;
 
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class UserMessageActivity extends TopBarBaseActivity implements IUserMessageView{
-    @BindView(R.id.ac_user_head)
-    CircleImageView imageView;
-    @BindView(R.id.ac_user_name)
+public class UserMessageActivity extends BaseTokenActivity implements IUserMessageView{
+    @BindView(R.id.ac_usermessage_head)
+    ImageView head;
+    @BindView(R.id.ac_usermessage_name)
     TextView name;
-    @BindView(R.id.ac_user_signature)
-    TextView signature;
+    @BindView(R.id.ac_usermessage_first)
+    RecyclerView mainRecycler;
+    @BindView(R.id.ac_usermessage_secand)
+    RecyclerView otherRecycler;
+    @BindView(R.id.ac_usermessage_toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.ac_usermessage_scroll)
+    NestedScrollView scrollView;
 
-    private User user;
+    private static final String[] MAIN_TITLE = {"账号", "个性签名", "昵称", "身份"};
+    private static final String[] OTHER_TITLE = {"学号", "学校", "性别", "邮箱", "地区", "EmptyView", "DragAndSwipe", "ItemClick", "ExpandableItem", "DataBinding", "UpFetchData"};
+
+    private ArrayList<SettingAdapter.SettingBean> mainList;
+    private ArrayList<SettingAdapter.SettingBean> otherList;
+    private SettingAdapter mainAdapter;
+    private SettingAdapter otherAdapter;
+
     private UserMessagePresenter presenter;
 
     MaterialDialog dialog;
 
-    @Override
-    protected int getContentView() {
-        return R.layout.activity_user_message;
-    }
 
     @Override
-    protected void init(Bundle savedInstanceState) {
-        presenter = new UserMessagePresenter(this,this);
-        setTitle("我的信息");
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_usermessage);
+        ButterKnife.bind(this);
+        presenter = new UserMessagePresenter(this, this);
 
         dialog = DialogUtil.waitDialog(this);
 
+        initData();
+        initView();
         initEvent();
-        presenter.init();
+        //presenter.init();
+    }
+
+    private void initData() {
+        mainList = new ArrayList<>();
+        otherList = new ArrayList<>();
+
+        for (String title : MAIN_TITLE) {
+            SettingAdapter.SettingBean bean = new SettingAdapter.SettingBean(title);
+            bean.content = title;
+            mainList.add(bean);
+        }
+
+        for (String title : OTHER_TITLE) {
+            SettingAdapter.SettingBean bean = new SettingAdapter.SettingBean(title);
+            bean.content = title;
+            otherList.add(bean);
+        }
+    }
+
+    private void initView() {
+        mainRecycler.setLayoutManager(new LinearLayoutManager(this));
+        otherRecycler.setLayoutManager(new LinearLayoutManager(this));
+
+        mainRecycler.setNestedScrollingEnabled(false);
+        otherRecycler.setNestedScrollingEnabled(false);
+
+        mainRecycler.addItemDecoration(new ColorDividerItemDecoration());
+        otherRecycler.addItemDecoration(new ColorDividerItemDecoration());
+
+        mainAdapter = new SettingAdapter(mainList,this);
+        otherAdapter = new SettingAdapter(otherList,this);
+
+        mainRecycler.setAdapter(mainAdapter);
+        otherRecycler.setAdapter(otherAdapter);
     }
 
     private void initEvent(){
-        setTopLeftButton(UserMessageActivity.this::finish);
 
         name.setOnClickListener(view -> {
-            final EditText editText = new EditText(UserMessageActivity.this);
-            AlertDialog.Builder builder = new AlertDialog.Builder(UserMessageActivity.this);
-            builder.setTitle("输入你的昵称")
-                .setNegativeButton("取消", null)
-                .setPositiveButton("确定", (dialogInterface, i) -> {
-                    user.setNickName(editText.getText().toString());
-                    presenter.sentUserMessage(user);
-                });
-            builder.setView(editText);
-            builder.show();
+
         });
 
-        signature.setOnClickListener(view -> {
-            final EditText editText = new EditText(UserMessageActivity.this);
-            AlertDialog.Builder builder = new AlertDialog.Builder(UserMessageActivity.this);
-            builder.setTitle("输入你的个性签名")
-                    .setNegativeButton("取消", null)
-                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            user.setSignature(editText.getText().toString());
-                            presenter.sentUserMessage(user);
-                        }
-                    });
-            builder.setView(editText);
-            builder.show();
-        });
 
-        imageView.setOnClickListener(view -> presenter.openSelectAvatarDialog());
+        head.setOnClickListener(view->{
 
+            }
+        );
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_usermessage, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home){
+            finish();
+        }
+        else if (item.getItemId() == R.id.menu_1){
+
+        }else {
+
+        }
+
+        return true; // true 告诉系统我们自己处理了点击事件
     }
 
     @Override
@@ -102,33 +166,22 @@ public class UserMessageActivity extends TopBarBaseActivity implements IUserMess
 
     @Override
     public void loadDataSuccess(User tData) {
-        user = tData;
-        name.setText(tData.getNickName());
-        signature.setText(tData.getSignature());
 
-        imageView.setClickable(true);
-        signature.setClickable(true);
-        name.setClickable(true);
     }
 
     @Override
     public void loadDataError(String throwable) {
-        Toast.makeText(this,throwable,Toast.LENGTH_SHORT).show();
-        imageView.setClickable(false);
-        signature.setClickable(false);
-        name.setClickable(false);
+
     }
 
     @Override
-    public void changeUserSucess() {
-        Toast.makeText(this,"修改成功",Toast.LENGTH_SHORT).show();
-        name.setText(user.getNickName());
-        signature.setText(user.getSignature());
+    public void changeUserSuccess() {
+
     }
 
     @Override
     public void showImage(Bitmap bitmap) {
-        imageView.setImageBitmap(bitmap);
+
     }
 
     @Override
@@ -143,7 +196,7 @@ public class UserMessageActivity extends TopBarBaseActivity implements IUserMess
                     if (extras != null) {
                         //获得拍的照片
                         Bitmap bitmap = extras.getParcelable("data");
-                        imageView.setImageBitmap(bitmap);
+                        head.setImageBitmap(bitmap);
                         Uri uri = FileConvertUtil.saveBitmapToLocal(ApiConstant.USER_AVATAR_NAME,bitmap);
                         presenter.onSelectImage(uri);
                     }

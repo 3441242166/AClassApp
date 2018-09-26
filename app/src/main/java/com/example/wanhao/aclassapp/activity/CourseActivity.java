@@ -21,7 +21,7 @@ import com.example.wanhao.aclassapp.base.BaseApplication;
 import com.example.wanhao.aclassapp.base.BaseTokenActivity;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.fragment.CourseListFragment;
-import com.example.wanhao.aclassapp.presenter.CoursePresenter;
+import com.example.wanhao.aclassapp.presenter.CoursePresenters;
 import com.example.wanhao.aclassapp.util.ActivityCollector;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.ICourseView;
@@ -41,7 +41,7 @@ public class CourseActivity extends BaseTokenActivity implements NavigationView.
     private CircleImageView headImage;
     private TextView nameText;
 
-    private CoursePresenter presenter;
+    private CoursePresenters presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +53,7 @@ public class CourseActivity extends BaseTokenActivity implements NavigationView.
     }
 
     private void init(){
-        presenter = new CoursePresenter(this,this);
+        presenter = new CoursePresenters(this,this);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");

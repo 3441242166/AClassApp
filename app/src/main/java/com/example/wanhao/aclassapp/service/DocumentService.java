@@ -14,18 +14,18 @@ import retrofit2.http.Streaming;
 
 public interface DocumentService {
 
-    @GET("course/{courseId}/data/edata")
-    Observable<Response<ResponseBody>> getDocumentList(@Header("Authorization") String token, @Path("courseId") int courseId);
+    @GET("course/{courseId}/all")
+    Observable<Response<ResponseBody>> getDocumentList(@Header("Authorization") String token, @Path("courseId") String courseId);
 
     @GET("course/{courseId}/data/preview")
-    Observable<Response<ResponseBody>> getPreviewList(@Header("Authorization") String token, @Path("courseId") int courseId);
+    Observable<Response<ResponseBody>> getPreviewList(@Header("Authorization") String token, @Path("courseId") String courseId);
 
     @Streaming
     @GET("course/{courseId}/data/edata/{eDataID}")
-    Observable<Response<ResponseBody>> downloadDocument(@Header("Authorization") String token, @Path("courseId") int courseId, @Path("eDataID") int eDataID);
+    Observable<Response<ResponseBody>> downloadDocument(@Header("Authorization") String token, @Path("courseId") String courseId, @Path("eDataID") int eDataID);
 
     @Streaming
     @GET("course/{courseId}/data/preview/{previewID}")
-    Observable<Response<ResponseBody>> downloadPreview(@Header("Authorization") String token, @Path("courseId") int courseId, @Path("previewID") int previewID);
+    Observable<Response<ResponseBody>> downloadPreview(@Header("Authorization") String token, @Path("courseId") String courseId, @Path("previewID") int previewID);
 
 }

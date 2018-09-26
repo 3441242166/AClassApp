@@ -11,11 +11,11 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface HomeworkService {
-    @GET("homeworks/{courseId}")
-    Observable<Response<ResponseBody>> getHomeworkList(@Header("Authorization") String token, @Path("courseId") String courseId);
+    @GET("course/{course_id}/homework/titles")
+    Observable<Response<ResponseBody>> getHomeworkList(@Header("Authorization") String token, @Path("course_id") String courseId);
 
-    @GET("homework/{courseId}/{quizId}")
-    Observable<Response<ResponseBody>> getQuestionList(@Header("Authorization") String token, @Path("courseId") String courseId);
+    @GET("course/{course_id}/homework/{title}")
+    Observable<Response<ResponseBody>> getQuestionList(@Header("Authorization") String token, @Path("course_id") String courseId,@Path("title") String title);
 
 //    @POST("course/{courseId}/{quizId}")
 //    Observable<Response<ResponseBody>> postAnswer(@Header("Authorization") String token, @Path("courseId") String courseId,@Path("quizId") String quizId, @Body RequestBody body);

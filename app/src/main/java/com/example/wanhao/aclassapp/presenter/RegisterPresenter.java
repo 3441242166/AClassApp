@@ -69,12 +69,12 @@ public class RegisterPresenter {
 
         iRegisterView.showProgress();
 
-        Map<String,String> map = new HashMap<>();
-        map.put(ApiConstant.USER_NAME, phoneNum);
-        map.put(ApiConstant.PASSWORD, password);
-        map.put(ApiConstant.USER_ROLE, "student");
+        loginBean bean = new loginBean();
+        bean.user_name = phoneNum;
+        bean.password = password;
+        bean.role.setRole("student");
 
-        RetrofitHelper.get(RegisterService.class).register(GsonUtils.toBody(map))
+        RetrofitHelper.get(RegisterService.class).register(GsonUtils.toBody(bean))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(responseBodyResponse -> {
@@ -94,6 +94,17 @@ public class RegisterPresenter {
                     iRegisterView.loadDataError(ResourcesUtil.getString(R.string.error_internet));
                     iRegisterView.dismissProgress();
                 });
+
+    }
+
+    static class loginBean{
+        String user_name;
+        String password;
+        Role role;
+
+        loginBean(){
+            role = new Role();
+        }
 
     }
 }

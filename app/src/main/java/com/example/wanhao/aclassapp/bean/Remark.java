@@ -11,11 +11,11 @@ public class Remark implements MultiItemEntity {
 
     public static final int NORMAL = 0;
     public static final int SPECIAL = 1;
-    @SerializedName("id")
+    @SerializedName("comment_id")
     private int id;
     @SerializedName("content")
     private String content;
-    @SerializedName("date")
+    @SerializedName("comment_date")
     private String date;
     @SerializedName("reply")
     private int reply;

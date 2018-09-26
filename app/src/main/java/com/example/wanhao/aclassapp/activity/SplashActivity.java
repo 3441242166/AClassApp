@@ -15,8 +15,8 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
-
+        //setContentView(R.layout.activity_splash);
+        //goLoding();
         presenter = new SplashPresenter(this,this);
         presenter.loding();
     }
@@ -29,7 +29,7 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
 
     @Override
     public void goCourse() {
-        startActivity(new Intent(this,CourseActivity.class));
+        startActivity(new Intent(this,MainActivity2.class));
         finish();
     }
 }

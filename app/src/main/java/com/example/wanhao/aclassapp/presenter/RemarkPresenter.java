@@ -9,6 +9,7 @@ import com.example.wanhao.aclassapp.bean.Remark;
 import com.example.wanhao.aclassapp.bean.RemarkRequset;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.RemarkService;
+import com.example.wanhao.aclassapp.util.GsonUtils;
 import com.example.wanhao.aclassapp.util.RetrofitHelper;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.IRemarkView;
@@ -16,7 +17,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -39,7 +42,7 @@ public class RemarkPresenter {
     }
 
     @SuppressLint("CheckResult")
-    public void getRemark(int courseID){
+    public void getRemark(String courseID){
         Log.i(TAG, "getRemark: courseID "+courseID);
         RemarkService service = RetrofitHelper.get(RemarkService.class);
 
@@ -74,12 +77,13 @@ public class RemarkPresenter {
     }
 
     @SuppressLint("CheckResult")
-    public void sendRemark(String remark, int courseID, int replyID){
+    public void sendRemark(String remark, String courseID, int replyID){
         Log.i(TAG, "sendRemark: ");
         RemarkRequset remarkRequset = new RemarkRequset(replyID,remark);
 
         String json = new Gson().toJson(remarkRequset);
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+
         RequestBody requestBody = RequestBody.create(JSON, json);
         Log.i(TAG, "sendRemark: json  "+json);
         RemarkService service = RetrofitHelper.get(RemarkService.class);

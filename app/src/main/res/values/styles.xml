@@ -13,6 +13,13 @@
 
     </style>
 
+    <style name="SplashTheme" parent="AppTheme">
+        <!-- 欢迎页背景引用刚才写好的 -->
+        <item name="android:windowBackground">@drawable/splash</item>
+        <item name="android:windowFullscreen">true</item>
+        <!-- <item name="android:windowIsTranslucent">true</item> --> <!-- 透明背景不要了 -->
+    </style>
+
     <style name="TextLabel" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Label color in TRUE state and bar color FALSE and TRUE State -->
         <item name="colorControlActivated">#FFCC00</item>
@@ -35,10 +42,16 @@
     </style>
 
     <style name="item_horizontal">
-        <item name="android:layout_margin">8dp</item>
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_marginRight">8dp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">0.5dp</item>
         <item name="android:background">#e9e9e9</item>
+    </style>
+
+    <style name="animTranslate">
+                 <item name="android:windowEnterAnimation">@anim/modal_in</item>
+                 <item name="android:windowExitAnimation">@anim/modal_out</item>
     </style>
 
 </resources>

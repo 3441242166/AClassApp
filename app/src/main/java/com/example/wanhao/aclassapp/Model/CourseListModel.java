@@ -7,6 +7,7 @@ import android.util.Log;
 import com.example.wanhao.aclassapp.SQLite.ChatDao;
 import com.example.wanhao.aclassapp.SQLite.CourseDao;
 import com.example.wanhao.aclassapp.base.IBaseRequestCallBack;
+import com.example.wanhao.aclassapp.bean.CourseListData;
 import com.example.wanhao.aclassapp.bean.HttpResult;
 import com.example.wanhao.aclassapp.bean.Course;
 import com.example.wanhao.aclassapp.config.ApiConstant;
@@ -20,6 +21,7 @@ import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import io.realm.Realm;
 
 /**
  * Created by wanhao on 2018/2/25.
@@ -29,19 +31,26 @@ public class CourseListModel {
     private static final String TAG = "CourseListModel";
 
     private Context context;
-    private CourseDao dao;
 
     public CourseListModel(Context context){
         this.context = context;
-        dao = new CourseDao(context);
     }
 
     public void getListDataByDB(final IBaseRequestCallBack<List<Course>> callBack){
-        List<Course> list = dao.alterAllCoursse(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT));
-        if(list==null || list.size()==0){
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+
+        List<Course> list = realm.where(Course.class)
+                .findAll();
+
+        realm.commitTransaction();
+
+        // 如果本地数据库为空 则从网络获取数据
+        if(list == null || list.size()==0){
             getListDataByInternet(callBack);
             return;
         }
+
         callBack.requestSuccess(list);
     }
 
@@ -56,12 +65,19 @@ public class CourseListModel {
                     String body = responseBodyResponse.body().string();
                     Log.i(TAG, "getListDataByInternet body : "+body);
 
-                    HttpResult<List<Course>> result = new Gson().fromJson(body,new TypeToken<HttpResult<List<Course>>>(){}.getType());
+                    HttpResult<CourseListData> result = new Gson().fromJson(body,new TypeToken<HttpResult<CourseListData>>(){}.getType());
 
                     if(result.getCode().equals(ApiConstant.RETURN_SUCCESS)){
-                        List<Course> list = result.getData();
-                        dao.deleteAllCourse(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT));
-                        dao.addCourseList(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT),list);
+                        List<Course> list = result.getData().getList();
+//                        Realm realm = Realm.getDefaultInstance();
+//                        realm.beginTransaction();
+//
+//                        for(Course course:list){
+//                            realm.copyToRealm(course);
+//                        }
+//
+//                        realm.commitTransaction();
+
                         callBack.requestSuccess(list);
                     }else{
                         callBack.requestError(new Throwable(result.getMessage()));

@@ -16,7 +16,7 @@ public class ColorDividerItemDecoration extends RecyclerView.ItemDecoration {
     public ColorDividerItemDecoration() {
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
-        mPaint.setColor(Color.RED);
+        mPaint.setColor(Color.rgb(225,225,225));
     }
 
     @Override

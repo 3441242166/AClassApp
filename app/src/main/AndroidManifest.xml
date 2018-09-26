@@ -8,7 +8,6 @@
     <!-- if you want to load images from a file OR from the internet -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
 
     <application
         android:name=".base.BaseApplication"
@@ -19,30 +18,39 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
-        <activity android:name=".activity.SplashActivity">
+        <activity android:name=".activity.SplashActivity"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.RegisterActivity" />
+        <activity android:name=".activity.RegisterActivity"
+            android:theme="@style/AppTheme"/>
         <activity
             android:name=".activity.CourseActivity"
             android:label="@string/title_activity_course"
             android:theme="@style/AppTheme" />
         <activity
+            android:theme="@style/AppTheme"
             android:name=".activity.AddCourseActivity"
             android:parentActivityName=".activity.CourseActivity" />
-        <activity android:name=".activity.MainActivity" />
-        <activity android:name=".activity.LodingActivity" />
-        <activity android:name=".activity.UserMessageActivity" />
-        <activity android:name=".activity.RemarkActivity" />
-        <activity android:name=".activity.DocumentActivity" />
-        <activity android:name=".activity.BrowseDocumentActivity" />
+        <activity android:name=".activity.MainActivity"
+            android:theme="@style/AppTheme"/>
+        <activity android:name=".activity.LodingActivity"
+            android:theme="@style/AppTheme"/>
+        <activity android:name=".activity.UserMessageActivity"
+            android:theme="@style/AppTheme"/>
+        <activity android:name=".activity.RemarkActivity"
+            android:theme="@style/AppTheme"/>
+        <activity android:name=".activity.DocumentActivity"
+            android:theme="@style/AppTheme"/>
+        <activity android:name=".activity.BrowseDocumentActivity"
+            android:theme="@style/AppTheme"/>
 
         <service
-            android:name=".service.DownService"
+            android:name=".service.DownDocumentService"
             android:enabled="true"
             android:exported="false" />
 
@@ -55,7 +63,9 @@
         <activity android:name=".activity.DoHomeworkActivity" />
         <activity android:name=".activity.AssignmentActivity" />
         <activity android:name=".activity.MainActivity2" />
-        <activity android:name=".activity.CourseActivity2"></activity>
+        <activity android:name=".activity.CourseActivity2"
+            android:windowSoftInputMode="adjustPan">
+        </activity>
     </application>
 
 </manifest>

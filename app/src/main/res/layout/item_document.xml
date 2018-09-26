@@ -1,64 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="150dp"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="10dp"
-        android:layout_weight="3"
-        android:orientation="horizontal">
 
-        <ImageView
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginRight="10dp"
-            android:id="@+id/item_document_image"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            app:srcCompat="@mipmap/ic_launcher" />
+    <ImageView
+        android:id="@+id/item_document_image"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/ic_launcher" />
 
-        <TextView
-            android:layout_margin="5dp"
-            android:id="@+id/item_document_name"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:text="动态规划课件"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+    <TextView
+        android:maxEms="7"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:id="@+id/item_document_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text="动态规划课件"
+        android:textAllCaps="false"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/item_document_image"
+        app:layout_constraintTop_toTopOf="@+id/item_document_image" />
 
-    </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_weight="1"
-        android:orientation="horizontal">
+    <TextView
+        android:id="@+id/item_document_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="left|center"
+        android:text="3.45MB  来自万浩老师"
+        app:layout_constraintBottom_toBottomOf="@+id/item_document_image"
+        app:layout_constraintStart_toStartOf="@+id/item_document_name"
+        app:layout_constraintTop_toBottomOf="@+id/item_document_name"
+        app:layout_constraintVertical_bias="1.0" />
 
-        <TextView
-            android:id="@+id/item_document_size"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
-            android:layout_weight="1"
-            android:gravity="left|center"
-            android:text="3.45MB  来自万浩老师" />
+    <TextView
+        android:id="@+id/item_document_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:gravity="center"
+        android:text="17-12-26"
+        app:layout_constraintBottom_toBottomOf="@+id/item_document_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/item_document_name"
+        app:layout_constraintTop_toTopOf="@+id/item_document_name" />
 
-        <TextView
-            android:id="@+id/item_document_time"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="17-12-26" />
-    </LinearLayout>
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

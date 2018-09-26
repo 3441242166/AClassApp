@@ -49,4 +49,11 @@ public class GsonUtils {
         return RequestBody.create(JSON, json);
     }
 
+    public static <K,V>RequestBody toBody(Object object){
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        String json = toJson(object);
+        Log.i(TAG, "toBody: "+ json);
+        return RequestBody.create(JSON, json);
+    }
+
 }

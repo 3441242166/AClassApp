@@ -2,21 +2,29 @@ package com.example.wanhao.aclassapp.bean;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
 /**
  * Created by wanhao on 2018/2/24.
  */
 
-public class Course {
-    @SerializedName("id")
-    String id;
-    @SerializedName("name")
+public class Course extends RealmObject implements Serializable{
+    @PrimaryKey
+    @SerializedName("course_id")
+    private String id;
+    @SerializedName("course_name")
     private String name;
-    @SerializedName("major")
+    @SerializedName("college")
     private String parent;
-    @SerializedName("count")
+    @SerializedName("student_sum")
     private String num;
     @SerializedName("picture")
     private String imgUrl;
+    @SerializedName("code")
+    private String code;
 
     public String getName() {
         return name;
@@ -56,5 +64,13 @@ public class Course {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }

@@ -72,8 +72,8 @@ public class LodingActivity extends AppCompatActivity implements View.OnClickLis
                 break;
             case R.id.ac_loding_loding:
                 hideKeyboard();
-                //presenter.login(etUsername.getText().toString(),etPassword.getText().toString());
-                startActivity(new Intent(this, MainActivity2.class));
+                presenter.login(etUsername.getText().toString(),etPassword.getText().toString());
+                //startActivity(new Intent(this, MainActivity2.class));
                 break;
             case R.id.ac_loding_forget:
 
@@ -93,7 +93,7 @@ public class LodingActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void loadDataSuccess(String tData) {
-        startActivity(new Intent(this, CourseActivity.class));
+        startActivity(new Intent(this, MainActivity2.class));
         Toast.makeText(this,tData, Toast.LENGTH_SHORT).show();
         finish();
     }

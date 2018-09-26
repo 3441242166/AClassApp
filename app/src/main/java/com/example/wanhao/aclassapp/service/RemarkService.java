@@ -17,8 +17,8 @@ import retrofit2.http.Path;
 public interface RemarkService {
 
     @GET("course/{courseID}/comment")
-    Observable<Response<ResponseBody>> getRemark(@Header("Authorization") String token, @Path("courseID") int courseId);
+    Observable<Response<ResponseBody>> getRemark(@Header("Authorization") String token, @Path("courseID") String courseId);
 
-    @POST("course/{courseID}/comment")
-    Observable<Response<ResponseBody>> sendRemark(@Header("Authorization") String token, @Path("courseID") int courseId, @Body RequestBody body);
+    @POST("auth/course/{courseID}/comment")
+    Observable<Response<ResponseBody>> sendRemark(@Header("Authorization") String token, @Path("courseID") String courseId, @Body RequestBody body);
 }

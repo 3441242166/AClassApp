@@ -2,8 +2,14 @@ package com.example.wanhao.aclassapp.presenter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.example.wanhao.aclassapp.bean.HttpResult;
 import com.example.wanhao.aclassapp.bean.User;
 import com.example.wanhao.aclassapp.config.ApiConstant;
@@ -17,6 +23,8 @@ import com.google.gson.reflect.TypeToken;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.example.wanhao.aclassapp.config.ApiConstant.BASE_URL;
+import static com.example.wanhao.aclassapp.config.ApiConstant.HEAD_URL;
 import static com.example.wanhao.aclassapp.config.ApiConstant.RETURN_SUCCESS;
 
 public class UserMessageFgPresenter {
@@ -32,8 +40,12 @@ public class UserMessageFgPresenter {
 
     @SuppressLint("CheckResult")
     public void init(){
-        UserMessageService service  = RetrofitHelper.get(UserMessageService.class);
+        User user = new User();
+        user.setNickName(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_NAME));
+        user.setSignature(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_SIGNATURE));
+        view.setUserMessage(user);
 
+        UserMessageService service  = RetrofitHelper.get(UserMessageService.class);
         service.getProfile(SaveDataUtil.getValueFromSharedPreferences(context, ApiConstant.USER_TOKEN))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -46,17 +58,23 @@ public class UserMessageFgPresenter {
                     if(result.getCode().equals(RETURN_SUCCESS)){
                         view.setUserMessage(result.getData());
                         SaveDataUtil.saveToSharedPreferences(context,ApiConstant.USER_NAME,result.getData().getNickName());
+                        SaveDataUtil.saveToSharedPreferences(context,ApiConstant.USER_SIGNATURE,result.getData().getSignature());
                     }else{
-//                        view.loadDataError(result.getMessage());
-//                        view.tokenError("token失效，请重新登陆");
+
                     }
-                    //view.dismissProgress();
                 }, throwable -> {
-//                    view.loadDataError("获取个人信息失败");
-//                    view.dismissProgress();
                     Log.i(TAG, "accept: "+throwable);
                 });
+        getHeadImage();
+    }
+
+    @SuppressLint("CheckResult")
+    public void getHeadImage(){
+        GlideUrl cookie = new GlideUrl(HEAD_URL
+                , new LazyHeaders.Builder().addHeader("Authorization", SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_TOKEN)).build());
+        view.setUserHead(cookie);
 
     }
+
 
 }

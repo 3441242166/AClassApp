@@ -1,101 +1,67 @@
 package com.example.wanhao.aclassapp.presenter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.util.Log;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.PopupWindow;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.model.LazyHeaders;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.example.wanhao.aclassapp.bean.HttpResult;
-import com.example.wanhao.aclassapp.bean.User;
-import com.example.wanhao.aclassapp.config.ApiConstant;
-import com.example.wanhao.aclassapp.service.UserMessageService;
-import com.example.wanhao.aclassapp.util.RetrofitHelper;
-import com.example.wanhao.aclassapp.util.SaveDataUtil;
-import com.example.wanhao.aclassapp.view.ICourseView;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.activity.DocumentActivity;
+import com.example.wanhao.aclassapp.activity.HomeWorkActivity;
+import com.example.wanhao.aclassapp.activity.RemarkActivity;
+import com.example.wanhao.aclassapp.adapter.GridAdapter;
+import com.example.wanhao.aclassapp.bean.GridBean;
+import com.example.wanhao.aclassapp.util.PopupUtil;
+import com.example.wanhao.aclassapp.view.CourseView;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
-
-import static com.example.wanhao.aclassapp.config.ApiConstant.BASE_URL;
-import static com.example.wanhao.aclassapp.config.ApiConstant.RETURN_SUCCESS;
-
-/**
- * Created by wanhao on 2018/3/5.
- */
+import java.util.ArrayList;
 
 public class CoursePresenter {
     private static final String TAG = "CoursePresenter";
 
-    private ICourseView iCourseView;
-    private Context mContext;
+    private Context context;
+    private CourseView view;
 
-    public CoursePresenter(ICourseView iCourseView, Context context) {
-        this.iCourseView = iCourseView;
-        this.mContext = context;
+    public CoursePresenter(Context context, CourseView view){
+        this.context  = context;
+        this.view = view;
     }
 
-    public void getData(){
-        getHeadImage();
-        getUserMessage();
-    }
+    private static final String[] OTHER_TITLE = {"留言版", "课后作业", "课堂文件", "公告", "课程信息", "聊天纪录", "Em...."};
+    private static final int[] OTHER_IMG = {R.mipmap.gv_animation, R.mipmap.gv_multipleltem, R.mipmap.gv_header_and_footer, R.mipmap.gv_pulltorefresh, R.mipmap.gv_section, R.mipmap.gv_empty, R.mipmap.gv_drag_and_swipe};
+    private static final Class[] CLASSES = {RemarkActivity.class,HomeWorkActivity.class,DocumentActivity.class,RemarkActivity.class,RemarkActivity.class,RemarkActivity.class,RemarkActivity.class};
 
-    private void getHeadImage(){
-
-        GlideUrl cookie = new GlideUrl(BASE_URL+"avatar"
-                , new LazyHeaders.Builder().addHeader("Authorization", SaveDataUtil.getValueFromSharedPreferences(mContext,ApiConstant.USER_TOKEN)).build());
-        Glide.with(mContext)
-                .load(cookie)
-                .asBitmap()
-                .into(target);
-    }
-
-    private SimpleTarget<Bitmap> target = new SimpleTarget<Bitmap>(50,50) {
-        @Override
-        public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
-            iCourseView.setHead(resource);
+    public void openSelectAvatarDialog(){
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog_course_more, null);
+        final PopupWindow popupWindow = PopupUtil.getPopupWindow(context,view);
+        //设置点击事件
+        RecyclerView recyclerView = view.findViewById(R.id.dialog_course_recycler);
+        recyclerView.setLayoutManager(new GridLayoutManager(context, 4));
+        ArrayList<GridBean> otherList = new ArrayList<>();
+        for(int x=0;x<OTHER_TITLE.length;x++){
+            GridBean bean= new GridBean(OTHER_IMG[x],OTHER_TITLE[x]);
+            otherList.add(bean);
         }
-    };
-
-    @SuppressLint("CheckResult")
-    private void getUserMessage(){
-        UserMessageService service = RetrofitHelper.get(UserMessageService.class);
-
-        service.getProfile(SaveDataUtil.getValueFromSharedPreferences(mContext, ApiConstant.USER_TOKEN))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(responseBodyResponse -> {
-                    String body = responseBodyResponse.body().string();
-                    Log.i(TAG, "accept: "+body);
-
-                    HttpResult<User> result = new Gson().fromJson(body,new TypeToken<HttpResult<User>>(){}.getType());
-
-                    if(result.getCode().equals(RETURN_SUCCESS)){
-                        iCourseView.setName(result.getData().getNickName());
-                    }else{
-                        iCourseView.tokenError();
-                    }
-
-//                    JsonObject obj = new JsonParser().parse(body).getAsJsonObject();
-//                    if(obj.get("status")==null){
-//                        User result = new Gson().fromJson(body,User.class);
-//                        iCourseView.setName(result.getNickName());
-//                    }else if(obj.get("status").getAsString().equals(ApiConstant.RETURN_ERROR)){
-//                        Log.i(TAG, "accept: token error");
-//                        iCourseView.tokenError();
-//                        return;
-//                    }
-
-                }, throwable -> {
-                    iCourseView.setName(SaveDataUtil.getValueFromSharedPreferences(mContext, ApiConstant.USER_NAME));
-                    Log.i(TAG, "getUserMessage: "+throwable);
-                });
-
+        GridAdapter adapter = new GridAdapter(otherList,context);
+        adapter.setOnItemClickListener((adapter1, view1, position) -> {
+            Toast.makeText(context,""+position,Toast.LENGTH_SHORT).show();
+            this.view.startActivity(CLASSES[position],null);
+            popupWindow.dismiss();
+        });
+        recyclerView.setAdapter(adapter);
+        View parent = LayoutInflater.from(context).inflate(R.layout.content_course, null);
+        //显示PopupWindow
+        popupWindow.setAnimationStyle(R.style.animTranslate);
+        popupWindow.showAtLocation(parent, Gravity.BOTTOM, 0, 0);
     }
+
 }

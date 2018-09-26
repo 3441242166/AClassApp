@@ -51,10 +51,11 @@ public class CourseListPresenter {
                 view.loadDataSuccess(callBack);
             }
         };
+
         if(isDB)
-            model.getListDataByInternet(callBack);
-        else
             model.getListDataByDB(callBack);
+        else
+            model.getListDataByInternet(callBack);
     }
 
 

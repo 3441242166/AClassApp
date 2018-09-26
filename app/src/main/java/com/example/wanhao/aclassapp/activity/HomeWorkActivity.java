@@ -9,6 +9,7 @@ import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.adapter.HomeworkAdapter;
 import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
 import com.example.wanhao.aclassapp.bean.Homework;
+import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.HomeworkPresenter;
 import com.example.wanhao.aclassapp.view.IHomeworkView;
 
@@ -25,6 +26,8 @@ public class HomeWorkActivity extends TopBarBaseActivity implements IHomeworkVie
 
     HomeworkAdapter adapter = new HomeworkAdapter(null);
 
+    private String courseID;
+
     @Override
     protected int getContentView() {
         return R.layout.activity_homework;
@@ -32,6 +35,7 @@ public class HomeWorkActivity extends TopBarBaseActivity implements IHomeworkVie
 
     @Override
     protected void init(Bundle savedInstanceState) {
+        courseID = getIntent().getStringExtra(ApiConstant.COURSE_ID);
         initView();
         initEvent();
     }
@@ -47,7 +51,7 @@ public class HomeWorkActivity extends TopBarBaseActivity implements IHomeworkVie
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL));
         recyclerView.setAdapter(adapter);
 
-        presenter.getHomeworkList("");
+        presenter.getHomeworkList(courseID);
     }
 
     @Override

@@ -121,7 +121,7 @@ public class UserMessagePresenter {
 
                     HttpResult<Role> result = new Gson().fromJson(body,new TypeToken<HttpResult<Role>>(){}.getType());
                     if(result.getCode().equals(ApiConstant.RETURN_SUCCESS)){
-                        view.changeUserSucess();
+                        view.changeUserSuccess();
                     }else{
                         view.loadDataError(result.getMessage());
                     }
@@ -141,7 +141,7 @@ public class UserMessagePresenter {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(responseBodyResponse -> {
-                    view.changeUserSucess();
+                    view.changeUserSuccess();
                     view.dismissProgress();
                 }, throwable -> {
                     view.loadDataError(context.getResources().getString(R.string.error_internet));
@@ -180,7 +180,7 @@ public class UserMessagePresenter {
                 openGallery();
                 popupWindow.dismiss(); });
 
-        View parent = LayoutInflater.from(context).inflate(R.layout.activity_user_message, null);
+        View parent = LayoutInflater.from(context).inflate(R.layout.fragment_my, null);
         //显示PopupWindow
         popupWindow.showAtLocation(parent, Gravity.BOTTOM, 0, 0);
     }
