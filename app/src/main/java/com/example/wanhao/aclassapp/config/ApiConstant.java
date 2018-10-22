@@ -5,27 +5,26 @@ package com.example.wanhao.aclassapp.config;
  */
 
 public class ApiConstant {
-    //public static final String BASE_URL = "https://api.fc.xd.style/";
-    //public static final String CHAT_URL = "wss://api.fc.xd.style/im/websocket";
     public static final String BASE_URL = "http://2056jc0993.iok.la:45532/";
+    public static final String DOCUMENT_URL = "http://2056jc0993.iok.la:45113/";
     public static final String HEAD_URL = BASE_URL+"auth/avatar";
     public static final String CHAT_URL = "wss://2056jc0993.iok.la:45532/im/websocket";
 
-
     public final static String RETURN_SUCCESS ="200";
     public final static String RETURN_ERROR ="FAILED";
-
     /**********************储存token的时间************************/
     public static final String TOKEN_TIME = "token_time";
     public static final String USER_TOKEN = "token";
     public static final String USER_ROLE = "role";
-    public static final String COUNT = "count";
+    public static final String USER_COUNT = "count";
     public static final String PASSWORD = "password";
     public static final String USER_NAME = "username";
     public static final String USER_SIGNATURE = "signature";
     /*********************文件命名相关********************************/
     public static final String  FILE_NAME = "fzkt";
 
+    public static final int ADD_COURSE = 1;
+    public static final String RESULT_ADD = "add_result";
     public static final int ADD_SUCCESS = 1;
     public static final int ADD_ERROR = 0;
     /**********************ActivityForResult的请求码************************/
@@ -47,11 +46,22 @@ public class ApiConstant {
     public static final String DOCUMENT_TYPE = "document_type";
     public static final String DOCUMENT_EDATA = "edata";
     public static final String DOCUMENT_PREVIEW = "preview";
+    /**********************下载有关Key************************/
+    public static final String DOWNLOAD_ID = "download_id";
+    public static final String DOWNLOAD_ACTION = "com.example.wanhao.aclassapp.download_action";
+    /**********************Notification 有关************************/
+    public static final String CHANNE_DOWNED_NAME = "下载通知信息";
+    public static final String CHANNE_DOWNED_ID = "1";
+    /**********************broadcast 有关************************/
+    public static final String DOWNED_BEAN= "downloadBean";
+    public static final String DOWNED_STATE = "state";
+    public static final String DOWNED_PROCESS = "process";
+    public static final String DOWNED_FINISH = "finish";
+    public static final String DOWNED_ING = "ing";
+    public static final String DOWNED_BEGIN = "begin";
+    public static final String DOWNED_ID = "id";
 
-    /**********************广播有关Key************************/
-    public static final String DOWNLOAD_STATE = "download_state";
-
-    /**********************Remark Adapter Type************************/
-
-
+    public enum DOWNLOAD_STATE{
+        NONE,ING,STOP,FINISH
+    }
 }

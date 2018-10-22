@@ -28,18 +28,19 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.5" />
 
-    <RadioGroup
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_qustion_title">
 
-        <RadioButton
+        <CheckBox
             android:id="@+id/item_qustion_a"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -49,7 +50,7 @@
             android:text="我觉得不行"
             android:textSize="18dp" />
 
-        <RadioButton
+        <CheckBox
             android:id="@+id/item_qustion_b"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -59,7 +60,7 @@
             android:text="我觉得很好"
             android:textSize="18dp" />
 
-        <RadioButton
+        <CheckBox
             android:id="@+id/item_qustion_c"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -70,7 +71,7 @@
             android:text="我觉得很辣鸡"
             android:textSize="18dp" />
 
-        <RadioButton
+        <CheckBox
             android:id="@+id/item_qustion_d"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -80,7 +81,8 @@
             android:text="我觉得OK"
             android:textSize="18dp" />
 
-    </RadioGroup>
+
+    </LinearLayout>
 
 
 </android.support.constraint.ConstraintLayout>

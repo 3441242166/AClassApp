@@ -22,6 +22,5 @@ public class HomeworkAdapter extends BaseQuickAdapter<Homework,BaseViewHolder> {
         helper.setText(R.id.item_homework_title,item.getTitle());
         helper.setText(R.id.item_homework_date, item.getDate());
 
-
     }
 }

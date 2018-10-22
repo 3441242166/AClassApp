@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.bean.HttpResult;
-import com.example.wanhao.aclassapp.bean.Role;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.LodingService;
 import com.example.wanhao.aclassapp.util.DateUtil;
@@ -73,7 +72,7 @@ public class LodingPresenter{
                         lodingResult role = result.getData();
                         SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.USER_TOKEN, role.token);
                         SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.USER_ROLE, role.user);
-                        SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.COUNT, phoneNum);
+                        SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.USER_COUNT, phoneNum);
                         SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.PASSWORD, password);
                         SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.TOKEN_TIME, DateUtil.getNowDateString());
                         iLoginView.loadDataSuccess("登陆成功");
@@ -89,7 +88,7 @@ public class LodingPresenter{
     }
 
     public void init() {
-        String count = SaveDataUtil.getValueFromSharedPreferences(mContext,ApiConstant.COUNT);
+        String count = SaveDataUtil.getValueFromSharedPreferences(mContext,ApiConstant.USER_COUNT);
         String password = SaveDataUtil.getValueFromSharedPreferences(mContext,ApiConstant.PASSWORD);
         iLoginView.initData(count,password);
     }

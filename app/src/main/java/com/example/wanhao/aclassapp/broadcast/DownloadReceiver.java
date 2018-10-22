@@ -5,28 +5,30 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.example.wanhao.aclassapp.config.ApiConstant;
+import com.example.wanhao.aclassapp.service.DownDocumentService;
+
+import java.io.Serializable;
+
+import static com.example.wanhao.aclassapp.config.ApiConstant.DOWNED_BEAN;
 
 public class DownloadReceiver extends BroadcastReceiver {
     private static final String TAG = "DownloadReceiver";
 
-    private onDownloadStateChangeLinser stateChangeLinser;
+    private onDownloadStateChangeListener stateChangeListener;
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        // TODO: This method is called when the BroadcastReceiver is receiving
-        // an Intent broadcast.
-        if(stateChangeLinser!=null) {
-            stateChangeLinser.onDownloadStateChange(intent.getStringExtra(ApiConstant.DOWNLOAD_STATE),intent.getIntExtra(ApiConstant.DOCUMENT_ID,-1));
+        if(stateChangeListener!=null && intent!= null) {
+            stateChangeListener.onDownloadStateChange((DownDocumentService.DownLoadBean) intent.getSerializableExtra(DOWNED_BEAN));
         }
-
     }
 
-    public interface onDownloadStateChangeLinser{
-        void onDownloadStateChange(String state, int ID);
+    public interface onDownloadStateChangeListener{
+        void onDownloadStateChange(DownDocumentService.DownLoadBean data);
     }
 
-    public void setDownloadStateChangeLinser(onDownloadStateChangeLinser linser){
-        this.stateChangeLinser = linser;
+    public void setDownloadStateChangeListener(onDownloadStateChangeListener listener){
+        this.stateChangeListener = listener;
     }
 
 }

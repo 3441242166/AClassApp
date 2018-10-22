@@ -1,6 +1,7 @@
 package com.example.wanhao.aclassapp.view;
 
 import com.example.wanhao.aclassapp.activity.BrowseDocumentActivity;
+import com.example.wanhao.aclassapp.base.IBaseTokenView;
 import com.example.wanhao.aclassapp.bean.Document;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 
@@ -9,15 +10,5 @@ import com.liulishuo.filedownloader.BaseDownloadTask;
  */
 
 public interface IBrowseDocumentView {
-
-    void setDocumentState(BrowseDocumentActivity.STATE state);
-
-    void setDocument(Document document);
-
-    void setProgress(BaseDownloadTask task, int soFarBytes, int totalBytes);
-
-    void downError(Throwable e);
-
     void tokenError(String msg);
-
 }

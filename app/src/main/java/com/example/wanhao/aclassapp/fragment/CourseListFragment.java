@@ -2,11 +2,10 @@ package com.example.wanhao.aclassapp.fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -15,12 +14,11 @@ import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.example.wanhao.aclassapp.R;
-import com.example.wanhao.aclassapp.activity.CourseActivity2;
+import com.example.wanhao.aclassapp.activity.AddCourseActivity;
+import com.example.wanhao.aclassapp.activity.CourseActivity;
 import com.example.wanhao.aclassapp.adapter.CourseAdapter;
-import com.example.wanhao.aclassapp.adapter.GridAdapter;
 import com.example.wanhao.aclassapp.base.LazyLoadFragment;
 import com.example.wanhao.aclassapp.bean.Course;
-import com.example.wanhao.aclassapp.bean.GridBean;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.CourseListPresenter;
 import com.example.wanhao.aclassapp.util.PopupUtil;
@@ -41,9 +39,10 @@ public class CourseListFragment extends LazyLoadFragment implements ICourseFgVie
 
     @BindView(R.id.fg_course_recycler)
     RecyclerView recyclerView;
-
     @BindView(R.id.fg_course_refresh)
     PullToRefreshView refreshView;
+    @BindView(R.id.fg_course_add)
+    FloatingActionButton fab;
 
     private CourseListPresenter presenter;
     private CourseAdapter adapter;
@@ -67,13 +66,12 @@ public class CourseListFragment extends LazyLoadFragment implements ICourseFgVie
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL));
         //------------------------------------------------------------------------------------------
-//        List<Course> courseList = new ArrayList<>();
-//        for(int x=0;x<10;x++){
-//            Course temp = new Course();
-//            temp.setCode("1");
-//            courseList.add(temp);
-//        }
-//        adapter.setNewData(courseList);
+        List<Course> courseList = new ArrayList<>();
+        for(int x=0;x<10;x++){
+            Course temp = new Course();
+            courseList.add(temp);
+        }
+        adapter.setNewData(courseList);
         //------------------------------------------------------------------------------------------
         recyclerView.setAdapter(adapter);
     }
@@ -81,7 +79,7 @@ public class CourseListFragment extends LazyLoadFragment implements ICourseFgVie
     private void initEvent(){
 
         adapter.setOnItemClickListener((adapter, view, position) -> {
-            Intent intent = new Intent(getActivity(), CourseActivity2.class);
+            Intent intent = new Intent(getActivity(), CourseActivity.class);
             intent.putExtra(ApiConstant.COURSE_ID,this.adapter.getData().get(position));
             startActivity(intent);
         });
@@ -89,6 +87,10 @@ public class CourseListFragment extends LazyLoadFragment implements ICourseFgVie
         adapter.setOnItemLongClickListener((adapter, view, position) -> {
             openDialog(view);
             return true;
+        });
+
+        fab.setOnClickListener(v -> {
+            startActivityForResult(new Intent(getContext(), AddCourseActivity.class),ApiConstant.ADD_COURSE);
         });
 
         refreshView.setOnRefreshListener(() -> refreshView.postDelayed(() -> presenter.upDataList(false), 500));
@@ -114,7 +116,9 @@ public class CourseListFragment extends LazyLoadFragment implements ICourseFgVie
         });
 
         //显示PopupWindow
-        popupWindow.showAsDropDown(parent);
+        Toast.makeText(getContext(),""+parent.getWidth(),Toast.LENGTH_SHORT).show();
+        popupWindow.showAsDropDown(parent,parent.getWidth()/2,-parent.getHeight()/3);
+        //popupWindow.showAtLocation(parent,1,1,1);
     }
 
     @Override
@@ -140,5 +144,16 @@ public class CourseListFragment extends LazyLoadFragment implements ICourseFgVie
     @Override
     public void tokenError(String msg) {
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case ApiConstant.ADD_COURSE:
+                if(resultCode == ApiConstant.ADD_SUCCESS){
+                    presenter.upDataList(false);
+                }
+        }
     }
 }

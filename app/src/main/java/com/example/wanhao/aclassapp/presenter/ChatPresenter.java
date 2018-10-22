@@ -5,7 +5,6 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.example.wanhao.aclassapp.SQLite.ChatDao;
 import com.example.wanhao.aclassapp.bean.ChatBean;
 import com.example.wanhao.aclassapp.bean.ChatResult;
 import com.example.wanhao.aclassapp.config.ApiConstant;
@@ -46,14 +45,12 @@ public class ChatPresenter {
     private String courseID;
     private StompHeader authorizationHeader;
 
-    private ChatDao dao;
     private MyThread thread;
 
     public ChatPresenter(Context context,ChatView chatView,String courseID){
         this.chatView = chatView;
         this.context = context;
         this.courseID = courseID;
-        dao = new ChatDao(context);
         init();
     }
 
@@ -108,13 +105,11 @@ public class ChatPresenter {
     }
 
     public void getHistoryMessage(){
-        List<ChatBean> list = dao.alterChatBean(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT),courseID,0,0);
-        chatView.getHistoryMessage(list);
+
     }
 
     public void addChat(ChatBean chatBean){
-        Log.i(TAG, "addChat: chatContent "+chatBean.getContent());
-        dao.addchat(chatBean,SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT),courseID);
+
     }
 
     public void sendMessage(String message){
@@ -158,8 +153,7 @@ public class ChatPresenter {
     }
 
     public void deleteChat(int chatId){
-        dao.deleteChat(String.valueOf(chatId),SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT),courseID);
-        chatView.newNewMessage(null);
+
     }
 
     public void stopThread(){

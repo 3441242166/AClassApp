@@ -2,6 +2,7 @@ package com.example.wanhao.aclassapp.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
@@ -42,6 +43,7 @@ public class DocumentActivity extends TopBarBaseActivity implements IDocumentVie
     @Override
     protected void init(Bundle savedInstanceState) {
         presenter = new DocumentPresenter(this,this);
+
         initView();
         initEvent();
         courseID = getIntent().getStringExtra(ApiConstant.COURSE_ID);
@@ -63,6 +65,7 @@ public class DocumentActivity extends TopBarBaseActivity implements IDocumentVie
 
         adapter.setOnItemClickListener((adapter, view, position) -> {
             Log.i(TAG, "onItemClick: ");
+            presenter.checkDocument(this.adapter.getData().get(position));
             Intent intent = new Intent(DocumentActivity.this,BrowseDocumentActivity.class);
             intent.putExtra(ApiConstant.DOCUMENT,this.adapter.getData().get(position));
             intent.putExtra(ApiConstant.COURSE_ID,courseID);
@@ -70,13 +73,6 @@ public class DocumentActivity extends TopBarBaseActivity implements IDocumentVie
         });
 
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ActivityCollector.removeActivity(this);
-    }
-
 
     @Override
     public void showProgress() {

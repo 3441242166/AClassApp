@@ -31,16 +31,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class UserMessageFragment extends LazyLoadFragment implements IUserMessageFgView{
     private static final String TAG = "UserMessageFragment";
 
-    private static final String[] USUALLY_TITLE = {"Animation", "MultipleItem", "Header/Footer", "PullToRefresh"};
+    private static final String[] USUALLY_TITLE = {"文件", "通知", "作业", "我的收藏"};
     private static final int[] USUALLY_IMG = {R.mipmap.gv_animation, R.mipmap.gv_multipleltem, R.mipmap.gv_header_and_footer, R.mipmap.gv_pulltorefresh};
 
-    private static final String[] OTHER_TITLE = {"Animation", "MultipleItem", "Header/Footer", "PullToRefresh", "Section", "EmptyView", "DragAndSwipe", "ItemClick", "ExpandableItem", "DataBinding", "UpFetchData"};
+    private static final String[] OTHER_TITLE = {"一", "一", "一", "一", "一", "设置", "退出登陆", "一", "一", "一", "一"};
     private static final int[] OTHER_IMG = {R.mipmap.gv_animation, R.mipmap.gv_multipleltem, R.mipmap.gv_header_and_footer, R.mipmap.gv_pulltorefresh, R.mipmap.gv_section, R.mipmap.gv_empty, R.mipmap.gv_drag_and_swipe, R.mipmap.gv_item_click, R.mipmap.gv_expandable, R.mipmap.gv_databinding,R.mipmap.gv_multipleltem};
+    // 版本检查  退出登录  修改密码
 
     private ArrayList<GridBean> usuallyList;
     private ArrayList<GridBean> otherList;
-    private GridAdapter usuallyAdapter;
-    private GridAdapter otherAdapter;
 
     @BindView(R.id.fg_my_bck)
     ImageView bck;
@@ -67,10 +66,10 @@ public class UserMessageFragment extends LazyLoadFragment implements IUserMessag
 
     @Override
     protected void lazyLoad() {
-        initData();
-        init();
-        presenter.init();
-        initEvent();
+        //presenter = new UserMessageFgPresenter(getContext(),this);
+        //init();
+        //initEvent();
+        int main = 0;
     }
 
     private void initData() {
@@ -89,18 +88,19 @@ public class UserMessageFragment extends LazyLoadFragment implements IUserMessag
     }
 
     private void init() {
-        presenter = new UserMessageFgPresenter(getContext(),this);
+        initData();
+
         usuallyRecycler.setLayoutManager(new GridLayoutManager(getContext(), 4));
         otherRecycler.setLayoutManager(new GridLayoutManager(getContext(), 4));
 
         usuallyRecycler.setNestedScrollingEnabled(false);
         otherRecycler.setNestedScrollingEnabled(false);
 
-        usuallyAdapter = new GridAdapter(usuallyList,getContext());
-        otherAdapter = new GridAdapter(otherList,getContext());
+        GridAdapter usuallyAdapter = new GridAdapter(usuallyList, getContext());
+        //GridAdapter otherAdapter = new GridAdapter(otherList, getContext());
 
         usuallyRecycler.setAdapter(usuallyAdapter);
-        otherRecycler.setAdapter(otherAdapter);
+        //otherRecycler.setAdapter(otherAdapter);
     }
 
     private void initEvent() {

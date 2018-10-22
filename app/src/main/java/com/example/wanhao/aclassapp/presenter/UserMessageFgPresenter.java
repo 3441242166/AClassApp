@@ -3,6 +3,7 @@ package com.example.wanhao.aclassapp.presenter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.bumptech.glide.Glide;
@@ -36,13 +37,26 @@ public class UserMessageFgPresenter {
     public UserMessageFgPresenter(Context context, IUserMessageFgView view){
         this.context = context;
         this.view = view;
+        init();
     }
 
     @SuppressLint("CheckResult")
     public void init(){
         User user = new User();
-        user.setNickName(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_NAME));
-        user.setSignature(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_SIGNATURE));
+        String name = SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_NAME);
+        String signature = SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_SIGNATURE);
+
+        if(TextUtils.isEmpty(name)){
+            user.setNickName("无名氏");
+        }else {
+            user.setNickName(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_NAME));
+        }
+        if(TextUtils.isEmpty(signature)){
+            user.setSignature("你若安好 便是晴天");
+        }else {
+            user.setSignature(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_SIGNATURE));
+        }
+
         view.setUserMessage(user);
 
         UserMessageService service  = RetrofitHelper.get(UserMessageService.class);
@@ -54,7 +68,6 @@ public class UserMessageFgPresenter {
                     Log.i(TAG, "accept: "+body);
 
                     HttpResult<User> result = new Gson().fromJson(body,new TypeToken<HttpResult<User>>(){}.getType());
-
                     if(result.getCode().equals(RETURN_SUCCESS)){
                         view.setUserMessage(result.getData());
                         SaveDataUtil.saveToSharedPreferences(context,ApiConstant.USER_NAME,result.getData().getNickName());
@@ -65,6 +78,7 @@ public class UserMessageFgPresenter {
                 }, throwable -> {
                     Log.i(TAG, "accept: "+throwable);
                 });
+
         getHeadImage();
     }
 

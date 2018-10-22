@@ -15,6 +15,7 @@ import com.example.wanhao.aclassapp.util.RetrofitHelper;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.IHomeworkView;
 import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
@@ -38,14 +39,6 @@ public class HomeworkPresenter {
 
     @SuppressLint("CheckResult")
     public void getHomeworkList(String courseID){
-//        List<Homework> tData = new ArrayList<>();
-//        for(int x=0;x<10;x++){
-//            Homework homework = new Homework();
-//            homework.setTitle("x = "+x);
-//            homework.setDate(DateUtil.getNowDateString());
-//            tData.add(homework);
-//        }
-//        view.loadDataSuccess(tData);
 
         HomeworkService service = RetrofitHelper.get(HomeworkService.class);
 
@@ -56,10 +49,10 @@ public class HomeworkPresenter {
                     String body = responseBodyResponse.body().string();
                     Log.i(TAG, "accept: "+body);
 
-                    HttpResult<String> result = new Gson().fromJson(body,new TypeToken<HttpResult<String>>(){}.getType());
+                    HttpResult<HomeworkData> result = new Gson().fromJson(body,new TypeToken<HttpResult<HomeworkData>>(){}.getType());
 
                     if(result.getCode().equals(RETURN_SUCCESS)){
-                        //view.loadDataSuccess(result.getMessage());
+                        view.loadDataSuccess(result.getData().list);
                     }else{
                         view.loadDataError(result.getMessage());
                     }
@@ -70,6 +63,9 @@ public class HomeworkPresenter {
 
     }
 
-
+    static class HomeworkData{
+        @SerializedName("titles")
+        public List<Homework> list;
+    }
 
 }

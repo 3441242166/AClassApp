@@ -22,6 +22,8 @@ import com.example.wanhao.aclassapp.view.IAddCourseView;
 
 import butterknife.BindView;
 
+import static com.example.wanhao.aclassapp.config.ApiConstant.RESULT_ADD;
+
 public class AddCourseActivity extends TopBarBaseActivity implements View.OnClickListener, IAddCourseView {
 
     AddCoursePresenter mPresenter;
@@ -37,7 +39,6 @@ public class AddCourseActivity extends TopBarBaseActivity implements View.OnClic
 
     @Override
     public void onClick(View view) {
-
 
         switch (view.getId()) {
             case R.id.ac_choose_add:
@@ -101,7 +102,7 @@ public class AddCourseActivity extends TopBarBaseActivity implements View.OnClic
     public void loadDataSuccess(String tData) {
         Toast.makeText(this,tData, Toast.LENGTH_SHORT).show();
         Intent intent = new Intent();
-        intent.putExtra("result", ApiConstant.ADD_SUCCESS);
+        intent.putExtra(RESULT_ADD, ApiConstant.ADD_SUCCESS);
         setResult(ApiConstant.ADD_SUCCESS, intent);
         finish();
     }

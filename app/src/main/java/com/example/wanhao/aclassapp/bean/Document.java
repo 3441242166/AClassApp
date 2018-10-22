@@ -21,6 +21,8 @@ public class Document implements Serializable{
     private String date;
     @SerializedName("fileFormat")
     private String type;
+    @SerializedName("position")
+    private String path;
 
     private String courseID;
 
@@ -78,5 +80,13 @@ public class Document implements Serializable{
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 }

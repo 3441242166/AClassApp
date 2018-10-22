@@ -36,7 +36,7 @@ public class CoursePresenter {
         this.view = view;
     }
 
-    private static final String[] OTHER_TITLE = {"留言版", "课后作业", "课堂文件", "公告", "课程信息", "聊天纪录", "Em...."};
+    private static final String[] OTHER_TITLE = {"留言版", "课后作业", "课堂文件", "公告", "课程信息", "聊天纪录", "课堂签到"};
     private static final int[] OTHER_IMG = {R.mipmap.gv_animation, R.mipmap.gv_multipleltem, R.mipmap.gv_header_and_footer, R.mipmap.gv_pulltorefresh, R.mipmap.gv_section, R.mipmap.gv_empty, R.mipmap.gv_drag_and_swipe};
     private static final Class[] CLASSES = {RemarkActivity.class,HomeWorkActivity.class,DocumentActivity.class,RemarkActivity.class,RemarkActivity.class,RemarkActivity.class,RemarkActivity.class};
 

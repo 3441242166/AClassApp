@@ -8,11 +8,13 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.adapter.HomeworkAdapter;
 import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
+import com.example.wanhao.aclassapp.bean.ChatBean;
 import com.example.wanhao.aclassapp.bean.Homework;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.HomeworkPresenter;
 import com.example.wanhao.aclassapp.view.IHomeworkView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -43,12 +45,26 @@ public class HomeWorkActivity extends TopBarBaseActivity implements IHomeworkVie
     private void initEvent() {
         setTopLeftButton(this::finish);
 
-        adapter.setOnItemClickListener((adapter, view, position) -> startActivity(new Intent(HomeWorkActivity.this,DoHomeworkActivity.class)));
+        adapter.setOnItemClickListener((adapter, view, position) -> {
+            Intent intent  = new Intent(HomeWorkActivity.this, DoHomeworkActivity.class);
+            intent.putExtra("homework",this.adapter.getData().get(position));
+            intent.putExtra("courseID",courseID);
+            startActivity(intent);
+        });
     }
 
     private void initView() {
         setTitle("数据库习题库");
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL));
+
+//        List<Homework> chat = new ArrayList<>();
+//
+//        for(int x=0;x<16;x++){
+//            Homework chatBean = new Homework();
+//            chat.add(chatBean);
+//        }
+//        adapter.setNewData(chat);
+
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
         recyclerView.setAdapter(adapter);
 
         presenter.getHomeworkList(courseID);

@@ -1,21 +1,21 @@
 package com.example.wanhao.aclassapp.util;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.base.BaseApplication;
+import com.example.wanhao.aclassapp.bean.Document;
 import com.example.wanhao.aclassapp.config.ApiConstant;
-import com.example.wanhao.aclassapp.service.DownDocumentService;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 public class FileConvertUtil {
     private static final String TAG = "FileConvertUtil";
@@ -89,12 +89,11 @@ public class FileConvertUtil {
     };
 
     //文件保存的路径
-    public static final String FILE_IMAGE_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) +
+    private static final String FILE_IMAGE_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) +
             "/classroom" +
-            "/" + SaveDataUtil.getValueFromSharedPreferences(BaseApplication.getContext(), ApiConstant.COUNT);
+            "/" + SaveDataUtil.getValueFromSharedPreferences(BaseApplication.getContext(), ApiConstant.USER_COUNT);
 
-    public static final String FILE_DOCUMENT_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) +
-            "/" + SaveDataUtil.getValueFromSharedPreferences(BaseApplication.getContext(), ApiConstant.COUNT)+"/";
+    private static final String FILE_DOCUMENT_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/";
 
     /**
      * 向本地SD卡写网络图片
@@ -140,10 +139,6 @@ public class FileConvertUtil {
         return null;
     }
 
-    public static String getDocumentFilePath(){
-        return FILE_DOCUMENT_PATH;
-    }
-
     /**
      * 根据文件名获取对应图标ID
      * @param fileName
@@ -157,12 +152,19 @@ public class FileConvertUtil {
 
         Log.i(TAG, "getDocumentImageID: 后缀 "+last);
 
-        if(last.equals("pdf")){
-            return R.drawable.icon_pdf;
+        switch (last){
+            case "pdf":
+                return R.drawable.icon_pdf;
+            case "txt":
+                return R.drawable.icon_txt;
+            case "mp3":
+                return R.drawable.icon_pdf;
+            case "mp4":
+                return R.drawable.icon_pdf;
+            case "doc":
+                return R.drawable.icon_pdf;
         }
-        if(last.equals("txt")){
-            return R.drawable.icon_txt;
-        }
+
         return 0;
     }
 
@@ -178,7 +180,7 @@ public class FileConvertUtil {
         int dotIndex = fName.lastIndexOf(".");
         if(dotIndex < 0)
             return type;
-    /* 获取文件的后缀名 */
+        /* 获取文件的后缀名 */
         String fileType = fName.substring(dotIndex,fName.length()).toLowerCase();
         if(fileType == null || "".equals(fileType))
             return type;
@@ -207,4 +209,14 @@ public class FileConvertUtil {
         return true;
 
     }
+
+    public static String getFileDocumentPath(){
+        String path = FILE_DOCUMENT_PATH + ApiConstant.FILE_NAME + "/" + SaveDataUtil.getValueFromSharedPreferences(BaseApplication.getContext(),ApiConstant.USER_COUNT)+ "/";
+        return path;
+    }
+
+    public static Uri getUriForFile(Context context, File file) {
+        return FileProvider.getUriForFile(context, "com.example.wanhao.aclassapp.fileProvider", file);
+    }
+
 }

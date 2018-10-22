@@ -12,6 +12,6 @@ import retrofit2.http.Path;
  */
 
 public interface AddCourseService {
-    @GET("course/{courseId}/join")
+    @GET("auth/course/{courseId}/join")
     Observable<Response<ResponseBody>> addCourse(@Header("Authorization") String token, @Path("courseId") int courseId);
 }

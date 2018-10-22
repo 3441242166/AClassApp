@@ -1,34 +1,51 @@
 package com.example.wanhao.aclassapp.service;
 
-import android.annotation.SuppressLint;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
-import android.widget.Toast;
+import android.util.SparseArray;
 
 import com.example.wanhao.aclassapp.R;
-import com.example.wanhao.aclassapp.SQLite.DocumentDao;
+import com.example.wanhao.aclassapp.activity.BrowseDocumentActivity;
 import com.example.wanhao.aclassapp.bean.Document;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.util.FileConvertUtil;
-import com.example.wanhao.aclassapp.util.RetrofitHelper;
-import com.example.wanhao.aclassapp.util.SaveDataUtil;
+import com.example.wanhao.aclassapp.util.NotificationUtils;
+import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.liulishuo.filedownloader.FileDownloadListener;
+import com.liulishuo.filedownloader.FileDownloader;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
-import retrofit2.Response;
+import static com.example.wanhao.aclassapp.config.ApiConstant.BASE_URL;
+import static com.example.wanhao.aclassapp.config.ApiConstant.CHANNE_DOWNED_ID;
+import static com.example.wanhao.aclassapp.config.ApiConstant.CHANNE_DOWNED_NAME;
+import static com.example.wanhao.aclassapp.config.ApiConstant.DOCUMENT;
+import static com.example.wanhao.aclassapp.config.ApiConstant.DOCUMENT_ID;
+import static com.example.wanhao.aclassapp.config.ApiConstant.DOCUMENT_URL;
+import static com.example.wanhao.aclassapp.config.ApiConstant.DOWNED_BEAN;
+import static com.example.wanhao.aclassapp.config.ApiConstant.DOWNED_BEGIN;
+import static com.example.wanhao.aclassapp.config.ApiConstant.DOWNED_FINISH;
+import static com.example.wanhao.aclassapp.config.ApiConstant.DOWNED_ID;
+import static com.example.wanhao.aclassapp.config.ApiConstant.DOWNED_ING;
+import static com.example.wanhao.aclassapp.config.ApiConstant.DOWNED_PROCESS;
+import static com.example.wanhao.aclassapp.config.ApiConstant.DOWNED_STATE;
+import static com.example.wanhao.aclassapp.util.FileConvertUtil.isFolderExists;
+import static com.example.wanhao.aclassapp.util.NotificationUtils.createNotificationChanne;
 
 /**
  * Created by wanhao on 2018/3/24.
@@ -37,15 +54,8 @@ import retrofit2.Response;
 public class DownDocumentService extends Service {
     private static final String TAG = "DownDocumentService";
 
-    private Document document;
-
-    Notification.Builder builder;
-    NotificationManager manager;
+    private NotificationManager manager;
     private Intent broadcastIntent;
-    //  标记是否有任务在进行
-    private boolean isUse;
-
-    private boolean isStop;
 
     @Nullable
     @Override
@@ -56,161 +66,153 @@ public class DownDocumentService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        broadcastIntent = new Intent(ApiConstant.DOWNLOAD_STATE);
-        isUse = false;
-        isStop = false;
+        broadcastIntent = new Intent(ApiConstant.DOWNLOAD_ACTION);
+        manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
         Log.i(TAG, "onStartCommand: ");
-        //如果有任务正在进行
-        if(isUse) {
-            Toast.makeText(this,"已有一个任务在进行,清稍后重试",Toast.LENGTH_SHORT).show();
+
+        if(intent == null){
             return super.onStartCommand(intent, flags, startId);
         }
 
-        //如果没有任务进行 则获取文件id 启动下载
-        document = (Document) intent.getSerializableExtra(ApiConstant.DOCUMENT);
-        initNotification();
+        Document document = (Document) intent.getSerializableExtra(DOCUMENT);
+        int taskID = intent.getIntExtra(ApiConstant.DOWNLOAD_ID,-1);
 
-        download();
-        //show();
+        if(taskID != -1){
+            Log.i(TAG, "onStartCommand: StopTask");
+            FileDownloader.getImpl().pause(taskID);
+            return super.onStartCommand(intent, flags, startId);
+        }
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            startDownload(document);
+        else
+            startDownloadBelow(document);
+
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private void initNotification(){
-        builder = new Notification.Builder(this);
-
-        builder.setSmallIcon(R.drawable.icon_pdf);
-        builder.setContentTitle(document.getTitle());
-        builder.setContentText("正在下载");
-
-        manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(document.getId(), builder.build());
-        builder.setProgress(100,0,false);
+    public void startDownloadBelow(Document document){
 
     }
 
-    @SuppressLint("CheckResult")
-    private void download(){
-        isUse = true;
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void startDownload(Document document){
 
-        Log.i(TAG, "download: courseID  "+document.getCourseID()+"  documentID  "+document.getId());
+        String path = FileConvertUtil.getFileDocumentPath();
+        Log.i(TAG, "startDownload: path = "+path);
 
-        DocumentService service = RetrofitHelper.get(DocumentService.class);
+        if(!isFolderExists(path)){
+            Log.i(TAG, "startDownload: 创建目录失败");
+            return;
+        }
 
-        service.downloadDocument(SaveDataUtil.getValueFromSharedPreferences(this,ApiConstant.USER_TOKEN),document.getCourseID(),document.getId())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(response -> {
-                    InputStream is = response.body().byteStream();
-                    byte[] buf = new byte[2048];
-                    int len;
-                    FileOutputStream fos = null;
-                    // 储存下载文件的目录
-                    String savePath = FileConvertUtil.getDocumentFilePath();
-                    Log.i(TAG, "download: savePath = "+savePath);
-                    try {
-                        long total = Integer.valueOf(document.getSize());
-                        File files = new File(savePath);
-                        Log.i(TAG, "download: exists = "+files.exists());
+        NotificationManager notificationManager= (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        createNotificationChanne(CHANNE_DOWNED_ID, CHANNE_DOWNED_NAME, NotificationManager.IMPORTANCE_HIGH,notificationManager);
 
-                        if(!files.exists()){
-                            files.mkdirs();
-                            Log.i(TAG, "download: !file.exists()");
-                            //Log.i(TAG, "download: createNewFile = "+file.createNewFile());
-                        }
+        Notification.Builder builder = new Notification.Builder(this,CHANNE_DOWNED_ID);
+        Notification.Builder finishBuilder = new Notification.Builder(this,CHANNE_DOWNED_ID);
 
-                        File file = new File(savePath+"/document/"+document.getTitle());
-                        Log.i(TAG, "download: createNewFile = "+file.createNewFile());
-                        fos = new FileOutputStream(file);
-                        long sum = 0;
-                        int progress;
+        Intent documentIntent = new Intent(this, BrowseDocumentActivity.class);
+        documentIntent.putExtra(ApiConstant.DOCUMENT,document);
+        PendingIntent mainPendingIntent = PendingIntent.getActivity(this, 0, documentIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                        while ((len = is.read(buf)) != -1) {
-                            fos.write(buf, 0, len);
-                            sum += len;
-                            progress = (int) (sum * 1.0f / total * 100);
+        builder.setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(document.getTitle())
+                .setAutoCancel(true)
+                .setContentIntent(mainPendingIntent);
 
-                            builder.setProgress(100,progress,false);
-                            builder.setContentText("下载"+progress+"%");
-                            manager.notify(document.getId(),builder.build());
+        finishBuilder.setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(document.getTitle())
+                .setAutoCancel(true)
+                .setContentIntent(mainPendingIntent);
 
-                            broadcastIntent.putExtra(ApiConstant.DOWNLOAD_STATE,"下载 "+progress+"%");
-                            broadcastIntent.putExtra(ApiConstant.DOCUMENT_ID,document.getId());
-                            sendBroadcast(broadcastIntent);
 
-                            if(isStop){
-                                broadcastIntent.putExtra(ApiConstant.DOWNLOAD_STATE,"重新下载");
-                                broadcastIntent.putExtra(ApiConstant.DOCUMENT_ID,document.getId());
-                                sendBroadcast(broadcastIntent);
-                                Log.i(TAG, "accept: 取消下载");
-                                return;
-                            }
-                        }
+        FileDownloader.getImpl().create(DOCUMENT_URL+"?path="+document.getPath())
+                .setPath(path+document.getTitle())
+                .setListener(new FileDownloadListener() {
+                    @Override
+                    protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                        Log.i(TAG, "pending: ");
+                        //等待，已经进入下载队列
+                        int present = soFarBytes*100/Integer.valueOf(document.getSize());
+                        broadcastIntent.putExtra(DOWNED_BEAN,new DownLoadBean(task.getId(),document.getId(), ApiConstant.DOWNLOAD_STATE.ING,present+"%"));
+                        sendBroadcast(broadcastIntent);
+                    }
 
-                        builder.setContentText(document.getTitle() +" 下载完成");
-                        //设置进度为不确定，用于模拟安装
-                        manager.notify(document.getId(),builder.build());
-                        //manager.cancel(1);
-                        broadcastIntent.putExtra(ApiConstant.DOWNLOAD_STATE,"打开");
-                        broadcastIntent.putExtra(ApiConstant.DOCUMENT_ID,document.getId());
-                        isUse =false;
+                    @Override
+                    protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                        //下载进度回调
+                        Log.i(TAG, "progress: soFarByt = "+soFarBytes + " totalBytes = "+totalBytes + " taskID = "+task.getId());
+                        int present = soFarBytes*100/Integer.valueOf(document.getSize());
+                        builder.setContentText("已下载 "+present+"%")
+                            .setProgress(100, present, false);
+                        notificationManager.notify(task.getId(),builder.build());
+
+                        broadcastIntent.putExtra(DOWNED_BEAN,new DownLoadBean(task.getId(),document.getId(), ApiConstant.DOWNLOAD_STATE.ING,present+"%"));
+                        sendBroadcast(broadcastIntent);
+                    }
+
+                    @Override
+                    protected void completed(BaseDownloadTask task) {
+                        Log.i(TAG, "completed: ");
+                        //完成整个下载过程
+                        finishBuilder.setContentText("下载完成");
+
+                        notificationManager.notify(task.getId(),finishBuilder.build());
+
+                        broadcastIntent.putExtra(DOWNED_BEAN,new DownLoadBean(task.getId(),document.getId(), ApiConstant.DOWNLOAD_STATE.FINISH,"完成"));
                         sendBroadcast(broadcastIntent);
 
-                        fos.flush();
-
-                    } catch (Exception e) {
-                        Log.i(TAG, "download: "+e.toString());
-                    } finally {
-
-                        try {
-                            if (is != null)
-                                is.close();
-                        } catch (IOException e) {
-                            Log.i(TAG, "is.close(): "+e.toString());
-                        }
-
-                        try {
-                            if (fos != null)
-                                fos.close();
-                        } catch (IOException e) {
-                            Log.i(TAG, " fos.close(): "+e.toString());
-                        }
-                        isUse = false;
                     }
-                }, throwable -> {
-                    isUse = false;
-                    Log.i(TAG, "accept: throwable "+throwable.toString());
-                });
 
+                    @Override
+                    protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                        Log.i(TAG, "paused: ");
+                        //暂停下载
+                        finishBuilder.setContentText("下载暂停 重新下载");
+
+                        notificationManager.notify(task.getId(),finishBuilder.build());
+
+                        broadcastIntent.putExtra(DOWNED_BEAN,new DownLoadBean(task.getId(),document.getId(), ApiConstant.DOWNLOAD_STATE.STOP,"重新下载"));
+                        sendBroadcast(broadcastIntent);
+                    }
+
+                    @Override
+                    protected void error(BaseDownloadTask task, Throwable e) {
+                        Log.i(TAG, "error: " + e);
+
+                        finishBuilder.setContentText("下载出错 重新下载");
+                        notificationManager.notify(task.getId(),finishBuilder.build());
+
+                        broadcastIntent.putExtra(DOWNED_BEAN,new DownLoadBean(task.getId(),document.getId(), ApiConstant.DOWNLOAD_STATE.NONE,"出错"));
+                        sendBroadcast(broadcastIntent);
+                    }
+
+                    @Override
+                    protected void warn(BaseDownloadTask task) {
+                        //在下载队列中(正在等待/正在下载)已经存在相同下载连接与相同存储路径的任务
+                        Log.i(TAG, "warn: ");
+                        broadcastIntent.putExtra(DOWNED_BEAN,new DownLoadBean(task.getId(),document.getId(), ApiConstant.DOWNLOAD_STATE.NONE,"警告"));
+                        sendBroadcast(broadcastIntent);
+                    }
+                }).start();
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        isStop = true;
+    public static class DownLoadBean implements Serializable{
+        public int taskID;
+        public int documentID;
+        public ApiConstant.DOWNLOAD_STATE state;
+        public String message;
+
+        DownLoadBean(int taskID, int documentID, ApiConstant.DOWNLOAD_STATE state, String message){
+            this.taskID = taskID;
+            this.documentID = documentID;
+            this.message = message;
+            this.state = state;
+        }
     }
-
-    private void startDownload(){
-
-    }
-
-    private void stopDownload(){
-
-    }
-
-    private void finishDownload(){
-
-    }
-
-    private void continueDownload(){
-
-    }
-
-    public interface DownloadListener{
-        void OnDownloadListener(int progress);
-    }
-
 }

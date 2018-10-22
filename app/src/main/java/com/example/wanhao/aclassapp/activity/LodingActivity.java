@@ -3,7 +3,6 @@ package com.example.wanhao.aclassapp.activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -26,8 +25,6 @@ import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import cn.pedant.SweetAlert.ProgressHelper;
-import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class LodingActivity extends AppCompatActivity implements View.OnClickListener,ILodingView {
     private static final String TAG = "LodingActivity";
@@ -73,7 +70,7 @@ public class LodingActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.ac_loding_loding:
                 hideKeyboard();
                 presenter.login(etUsername.getText().toString(),etPassword.getText().toString());
-                //startActivity(new Intent(this, MainActivity2.class));
+                //startActivity(new Intent(this, MainActivity.class));
                 break;
             case R.id.ac_loding_forget:
 
@@ -93,7 +90,7 @@ public class LodingActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void loadDataSuccess(String tData) {
-        startActivity(new Intent(this, MainActivity2.class));
+        startActivity(new Intent(this, MainActivity.class));
         Toast.makeText(this,tData, Toast.LENGTH_SHORT).show();
         finish();
     }

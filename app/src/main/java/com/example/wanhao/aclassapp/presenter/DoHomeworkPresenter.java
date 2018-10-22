@@ -10,6 +10,7 @@ import com.example.wanhao.aclassapp.bean.HttpResult;
 import com.example.wanhao.aclassapp.bean.Question;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.HomeworkService;
+import com.example.wanhao.aclassapp.util.GsonUtils;
 import com.example.wanhao.aclassapp.util.ResourcesUtil;
 import com.example.wanhao.aclassapp.util.RetrofitHelper;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
@@ -20,11 +21,14 @@ import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Consumer;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Response;
 
 import static com.example.wanhao.aclassapp.config.ApiConstant.RETURN_SUCCESS;
 
@@ -40,25 +44,25 @@ public class DoHomeworkPresenter {
     }
 
     @SuppressLint("CheckResult")
-    public void getHomeworkList(String courseID){
-        List<Question> data = getData();
-        Log.i(TAG, "getHomeworkList: size = "+ data.size());
-        view.loadDataSuccess(data);
-
+    public void getHomeworkList(String courseID,String homeworkID){
 
         HomeworkService service = RetrofitHelper.get(HomeworkService.class);
 
-        service.getHomeworkList(SaveDataUtil.getValueFromSharedPreferences(context, ApiConstant.USER_TOKEN),courseID)
+        service.getQuestionList(SaveDataUtil.getValueFromSharedPreferences(context, ApiConstant.USER_TOKEN),courseID,homeworkID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(responseBodyResponse -> {
                     String body = responseBodyResponse.body().string();
                     Log.i(TAG, "accept: "+body);
 
-                    HttpResult<String> result = new Gson().fromJson(body,new TypeToken<HttpResult<String>>(){}.getType());
+                    HttpResult<QusetionData> result = new Gson().fromJson(body,new TypeToken<HttpResult<QusetionData>>(){}.getType());
 
                     if(result.getCode().equals(RETURN_SUCCESS)){
-                        //view.loadDataSuccess(result.getMessage());
+                        List<Question> homeworks = result.getData().homeworks;
+                        for(Question question:homeworks){
+                            question.init();
+                        }
+                        view.loadDataSuccess(homeworks);
                     }else{
                         view.loadDataError(result.getMessage());
                     }
@@ -68,52 +72,61 @@ public class DoHomeworkPresenter {
                 });
     }
 
-    public void postAnwser(List<Homework> list,String courseID){
+    @SuppressLint("CheckResult")
+    public void postAnswer(List<Question> list){
+        String data = getErrorString(list);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"),data);
 
         HomeworkService service = RetrofitHelper.get(HomeworkService.class);
+        String token = SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_TOKEN);
+        Log.i(TAG, "postAnswer: token = "+token);
 
-        for(int x=0;x<list.size();x++){
-            HashMap<String,String> map = new HashMap<>();
-            //map.put("answer",list.get(x).getUserChoose());
-            String json = new Gson().toJson(map);
-            Log.i(TAG, "postAnwser: json = "+json);
-            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-            RequestBody body = RequestBody.create(JSON, json);
+        service.postAnswer(token,requestBody)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(responseBodyResponse -> {
+                    Log.i(TAG, "postAnswer: "+responseBodyResponse.errorBody().string());
+                    Log.i(TAG, "postAnswer: "+responseBodyResponse.message());
+                    String response = responseBodyResponse.body().string();
+                    Log.i(TAG, "postAnswer: "+response);
 
-
-//            service.postAnswer(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_TOKEN),courseID,String.valueOf(list.get(x).getId()),body)
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(new io.reactivex.functions.Consumer<Response<ResponseBody>>() {
-//                        @Override
-//                        public void accept(Response<ResponseBody> responseBodyResponse) throws Exception {
-//                            view.loadDataError("提交成功");
-//                        }
-//                    }, new Consumer<Throwable>() {
-//                        @Override
-//                        public void accept(Throwable throwable) throws Exception {
-//                            Log.i(TAG, "accept: "+throwable);
-//                            view.loadDataError("提交成功");
-//                        }
-//                    });
-        }
+                    view.loadDataError("提交成功");
+                }, throwable -> {
+                    Log.i(TAG, "postAnswer: "+throwable.toString());
+                });
 
     }
 
-    List<Question> getData(){
-
-        List<Question> data = new ArrayList<>();
-
-        String[] ar = new String[]{"a:b:c:d","1:2:3:4","q:w:e:r"};
-        for(int x=0;x<20;x++){
-            Question temp = new Question();
-            temp.setQuestion(String.valueOf(x));
-            temp.setAnswer(ar[x%3]);
-            temp.transfrom();
-            data.add(temp);
+    private String getErrorString(List<Question> list){
+        StringBuilder builder = new StringBuilder();
+        for(Question question :list){
+            String answer = question.getAnswer();
+            boolean[] choose = question.getChooses();
+            StringBuilder chooseStr = new StringBuilder();
+            for(int x=0;x<choose.length;x++){
+                if(choose[x]){
+                    chooseStr.append((char)('A'+x));
+                }
+            }
+            Log.i(TAG, "getErrorString: chooseStr = "+chooseStr+" answer = "+answer);
+            if(!chooseStr.toString().equals(answer)){
+                builder.append(question.getId()).append(",");
+            }
         }
 
-        return data;
+        if(builder.length()>0) {
+            builder.deleteCharAt(builder.length() - 1);
+        }
+        Log.i(TAG, "getErrorString: final = "+builder.toString());
+        return builder.toString();
+    }
+
+    static class QusetionData{
+        List<Question> homeworks;
+    }
+
+    static class QuestionSend{
+        String errorList;
     }
 
 }

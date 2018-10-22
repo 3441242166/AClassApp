@@ -4,9 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
-import com.example.wanhao.aclassapp.SQLite.DocumentDao;
-import com.example.wanhao.aclassapp.bean.Course;
-import com.example.wanhao.aclassapp.bean.CourseListData;
 import com.example.wanhao.aclassapp.bean.Document;
 import com.example.wanhao.aclassapp.bean.HttpResult;
 import com.example.wanhao.aclassapp.config.ApiConstant;
@@ -31,23 +28,19 @@ public class DocumentPresenter {
 
     private IDocumentView view;
     private Context context;
-    private DocumentDao dao;
 
     public DocumentPresenter(IDocumentView view, Context context) {
         this.view = view;
         this.context = context;
-        dao = new DocumentDao(context);
     }
 
     public void getListByCourse(){
-        List<Document> list =  dao.alterAllDocument(SaveDataUtil.getValueFromSharedPreferences(context, ApiConstant.COUNT));
-        view.loadDataSuccess(list);
+
+
     }
 
     @SuppressLint("CheckResult")
     public void getListByInternet(String courseID){
-        List<Document> list =  dao.alterAllDocument(SaveDataUtil.getValueFromSharedPreferences(context, ApiConstant.COUNT));
-
 
         DocumentService service = RetrofitHelper.get(DocumentService.class);
 
@@ -59,7 +52,6 @@ public class DocumentPresenter {
                     Log.i(TAG, "getDocumentList body : "+body);
 
                     HttpResult<List<Document>> result = new Gson().fromJson(body,new TypeToken<HttpResult<List<Document>>>(){}.getType());
-
 
                     if(result.getCode().equals(ApiConstant.RETURN_SUCCESS)){
                         List<Document> temp = result.getData();
@@ -75,10 +67,13 @@ public class DocumentPresenter {
                     Log.i(TAG, "accept: "+throwable);
                 });
 
-        view.loadDataSuccess(list);
+    }
+
+    public void checkDocument(Document document){
+
     }
 
     class DocumentList{
-        public List<Document> list;
+
     }
 }

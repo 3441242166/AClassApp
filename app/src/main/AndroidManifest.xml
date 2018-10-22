@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:Android="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.wanhao.aclassapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- if you want to load images from a file OR from the internet -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:name=".base.BaseApplication"
@@ -18,7 +19,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
-        <activity android:name=".activity.SplashActivity"
+        <activity
+            android:name=".activity.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,28 +28,34 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.RegisterActivity"
-            android:theme="@style/AppTheme"/>
         <activity
-            android:name=".activity.CourseActivity"
-            android:label="@string/title_activity_course"
+            android:name=".activity.RegisterActivity"
             android:theme="@style/AppTheme" />
         <activity
-            android:theme="@style/AppTheme"
             android:name=".activity.AddCourseActivity"
-            android:parentActivityName=".activity.CourseActivity" />
-        <activity android:name=".activity.MainActivity"
-            android:theme="@style/AppTheme"/>
-        <activity android:name=".activity.LodingActivity"
-            android:theme="@style/AppTheme"/>
-        <activity android:name=".activity.UserMessageActivity"
-            android:theme="@style/AppTheme"/>
-        <activity android:name=".activity.RemarkActivity"
-            android:theme="@style/AppTheme"/>
-        <activity android:name=".activity.DocumentActivity"
-            android:theme="@style/AppTheme"/>
-        <activity android:name=".activity.BrowseDocumentActivity"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activity.LodingActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activity.UserMessageActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activity.RemarkActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activity.DocumentActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activity.BrowseDocumentActivity"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".activity.HomeWorkActivity" />
+        <activity android:name=".activity.DoHomeworkActivity" />
+        <activity android:name=".activity.AssignmentActivity" />
+        <activity android:name=".activity.MainActivity" />
+        <activity
+            android:name=".activity.CourseActivity"
+            android:windowSoftInputMode="adjustPan" />
 
         <service
             android:name=".service.DownDocumentService"
@@ -57,15 +65,20 @@
         <receiver
             android:name=".broadcast.DownloadReceiver"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="false" />
 
-        <activity android:name=".activity.HomeWorkActivity" />
-        <activity android:name=".activity.DoHomeworkActivity" />
-        <activity android:name=".activity.AssignmentActivity" />
-        <activity android:name=".activity.MainActivity2" />
-        <activity android:name=".activity.CourseActivity2"
-            android:windowSoftInputMode="adjustPan">
-        </activity>
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.example.wanhao.aclassapp.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <activity android:name=".activity.CourseMessageActivity" />
+        <activity android:name=".activity.SignActivity"></activity>
     </application>
 
 </manifest>

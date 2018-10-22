@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.presenter.SplashPresenter;
 import com.example.wanhao.aclassapp.view.ISplashView;
 
@@ -15,8 +14,6 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_splash);
-        //goLoding();
         presenter = new SplashPresenter(this,this);
         presenter.loding();
     }
@@ -29,7 +26,7 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
 
     @Override
     public void goCourse() {
-        startActivity(new Intent(this,MainActivity2.class));
+        startActivity(new Intent(this,MainActivity.class));
         finish();
     }
 }

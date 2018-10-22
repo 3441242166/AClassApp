@@ -22,8 +22,9 @@ public class DateFragment extends LazyLoadFragment{
 
     GridAdapter menuAdapter;
 
-    private static String[] title = {};
-    private static int[] imgs={};
+    private static final String[] OTHER_TITLE = {"Animation", "MultipleItem", "Header/Footer", "PullToRefresh", "Section", "设置", "退出登陆", "ItemClick"};
+    private static final int[] OTHER_IMG = {R.mipmap.gv_animation, R.mipmap.gv_multipleltem, R.mipmap.gv_header_and_footer, R.mipmap.gv_pulltorefresh, R.mipmap.gv_section, R.mipmap.gv_empty, R.mipmap.gv_drag_and_swipe, R.mipmap.gv_item_click};
+
 
     @Override
     protected int setContentView() {
@@ -37,10 +38,10 @@ public class DateFragment extends LazyLoadFragment{
 
     private void initView() {
         List<GridBean> menuList = new ArrayList<>();
-        for(int x=0;x<title.length;x++){
-            menuList.add(new GridBean(imgs[x],title[x]));
+        for(int x=0;x<OTHER_TITLE.length;x++){
+            menuList.add(new GridBean(OTHER_IMG[x],OTHER_TITLE[x]));
         }
-        menuRecycler.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        menuRecycler.setLayoutManager(new GridLayoutManager(getContext(), 4));
         menuAdapter = new GridAdapter(menuList,getContext());
         menuRecycler.setAdapter(menuAdapter);
     }

@@ -1,6 +1,8 @@
 package com.example.wanhao.aclassapp.bean;
 
-import java.util.ArrayList;
+import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -8,22 +10,92 @@ import java.util.List;
  * Created by wanhao on 2018/4/9.
  */
 
-public class Question {
+public class Question implements MultiItemEntity {
 
-    private String question;
-
+    public static final int SIGLE = 0;
+    public static final int MORE = 1;
+    @SerializedName("homework_id")
+    private int id;
+    @SerializedName("homework_content")
+    private String content;
+    @SerializedName("homework_answer")
     private String answer;
+    @SerializedName("question_type")
+    private String questionType;
 
-    private List<String> list;
+    private int type;
+    private String[] answers;
+    private boolean[] chooses;
+    private String qusetion;
 
-    private int choose;
+    public void init(){
+        if(questionType.equals("单选题")){
+            type = SIGLE;
+        }else {
+            type = MORE;
+        }
 
-    public String getQuestion() {
-        return question;
+        answers = new String[4];
+        chooses = new boolean[4];
+
+        String[] ar = content.split("##");
+        qusetion = ar[0];
+
+        String[] temp = ar[1].split("\\$\\$");
+        for(int x=0;x<temp.length;x++){
+            answers[x] = temp[x];
+        }
     }
 
-    public void setQuestion(String question) {
-        this.question = question;
+    public void setAnswer(int pos){
+        if(type == MORE){
+            chooses[pos] = !chooses[pos];
+        }else {
+            for(int x=0;x<chooses.length;x++){
+                chooses[x] = false;
+            }
+            chooses[pos] = true;
+        }
+    }
+
+    public String[] getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(String[] answers) {
+        this.answers = answers;
+    }
+
+    public boolean[] getChooses() {
+        return chooses;
+    }
+
+    public void setChooses(boolean[] chooses) {
+        this.chooses = chooses;
+    }
+
+    public String getQusetion() {
+        return qusetion;
+    }
+
+    public void setQusetion(String qusetion) {
+        this.qusetion = qusetion;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public String getAnswer() {
@@ -34,25 +106,24 @@ public class Question {
         this.answer = answer;
     }
 
-    public List<String> getList() {
-        return list;
+    public String getQuestionType() {
+        return questionType;
     }
 
-    public void setList(List<String> list) {
-        this.list = list;
+    public void setQuestionType(String questionType) {
+        this.questionType = questionType;
     }
 
-    public int getChoose() {
-        return choose;
+    public int getType() {
+        return type;
     }
 
-    public void setChoose(int choose) {
-        this.choose = choose;
+    public void setType(int type) {
+        this.type = type;
     }
 
-    public void transfrom(){
-        String[] ar = answer.split(":");
-        list = Arrays.asList(ar);
+    @Override
+    public int getItemType() {
+        return type;
     }
-
 }

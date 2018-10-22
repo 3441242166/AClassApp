@@ -1,25 +1,29 @@
 package com.example.wanhao.aclassapp.activity;
 
 import android.content.Intent;
-import android.os.Bundle;
+import android.graphics.Color;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.customizeview.NoScrollViewPager;
-import com.example.wanhao.aclassapp.fragment.DocumentFragment;
-import com.example.wanhao.aclassapp.fragment.MainFragment;
-import com.example.wanhao.aclassapp.fragment.OtherFragment;
+import com.example.wanhao.aclassapp.fragment.CourseListFragment;
+import com.example.wanhao.aclassapp.fragment.DateFragment;
+import com.example.wanhao.aclassapp.fragment.TipFragment;
+import com.example.wanhao.aclassapp.fragment.UserMessageFragment;
 import com.example.wanhao.aclassapp.util.ActivityCollector;
+import com.example.wanhao.aclassapp.util.BottomNavigationViewHelper;
+import com.jaeger.library.StatusBarUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,73 +38,44 @@ public class MainActivity extends AppCompatActivity {
     BottomNavigationView navigation;
     @BindView(R.id.ac_main_viewpager)
     NoScrollViewPager viewPager;
-    @BindView(R.id.fg_other_toolbar)
-    Toolbar toolbar;
 
+    CourseListFragment courseFragment;
+    DateFragment dateFragment;
+    TipFragment tipFragment;
+    UserMessageFragment userMessageFragment;
 
-    private OtherFragment otherFragment;
-    private DocumentFragment documentFragment;
-    private MainFragment mainFragment;
     private List<Fragment> fragmentList;
     private FragmentPagerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main2);
         ActivityCollector.addActivity(this);
         ButterKnife.bind(this);
-        initView();
+
+        init();
         initEvent();
-    }
-
-    private void initView(){
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.icon_back);
-        fragmentList = new ArrayList<>();
-        mainFragment = new MainFragment();
-        otherFragment = new OtherFragment();
-        documentFragment = new DocumentFragment();
-
-        Bundle bundle = new Bundle();
-        bundle.putString(ApiConstant.COURSE_ID,getIntent().getStringExtra(ApiConstant.COURSE_ID));//这里的values就是我们要传的值
-        mainFragment.setArguments(bundle);
-        otherFragment.setArguments(bundle);
-        documentFragment.setArguments(bundle);
-
-        fragmentList.add(mainFragment);
-        fragmentList.add(documentFragment);
-        fragmentList.add(otherFragment);
-
-        adapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
-            @Override
-            public Fragment getItem(int position) {
-                return fragmentList.get(position);
-            }
-            @Override
-            public int getCount() {
-                return fragmentList.size();
-            }
-        };
-        viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(5);
 
     }
 
     private void initEvent() {
-        //viewPager.setNoScroll(true);
         viewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);
+
         navigation.setOnNavigationItemSelectedListener(item -> {
             invalidateOptionsMenu();
             switch (item.getItemId()) {
                 case R.id.main_menu_home:
                     viewPager.setCurrentItem(0);
                     return true;
-                case R.id.main_menu_message:
+                case R.id.main_menu_date:
                     viewPager.setCurrentItem(1);
                     return true;
-                case R.id.main_menu_my:
+                case R.id.main_menu_message:
                     viewPager.setCurrentItem(2);
+                    return true;
+                case R.id.main_menu_my:
+                    viewPager.setCurrentItem(3);
                     return true;
             }
             return false;
@@ -119,9 +94,12 @@ public class MainActivity extends AppCompatActivity {
                         navigation.setSelectedItemId(R.id.main_menu_home);
                         break;
                     case 1:
-                        navigation.setSelectedItemId(R.id.main_menu_message);
+                        navigation.setSelectedItemId(R.id.main_menu_date);
                         break;
                     case 2:
+                        navigation.setSelectedItemId(R.id.main_menu_message);
+                        break;
+                    case 3:
                         navigation.setSelectedItemId(R.id.main_menu_my);
                         break;
                 }
@@ -132,77 +110,60 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        Log.i(TAG, "onPrepareOptionsMenu: ");
-        // 动态设置ToolBar状态
-        switch (viewPager.getCurrentItem()) {
-            case 0:
-                menu.findItem(R.id.main_toolbar_one).setVisible(true);
-                menu.findItem(R.id.main_toolbar_two).setVisible(false);
-                menu.findItem(R.id.main_toolbar_three).setVisible(false);
-                break;
-            case 1:
-                menu.findItem(R.id.main_toolbar_one).setVisible(false);
-                menu.findItem(R.id.main_toolbar_two).setVisible(true);
-                menu.findItem(R.id.main_toolbar_three).setVisible(false);
-                break;
-            case 2:
-                menu.findItem(R.id.main_toolbar_one).setVisible(false);
-                menu.findItem(R.id.main_toolbar_two).setVisible(false);
-                menu.findItem(R.id.main_toolbar_three).setVisible(true);
-                break;
-        }
-        return super.onPrepareOptionsMenu(menu);
+    private void init() {
+        fragmentList = new ArrayList<>();
+        courseFragment = new CourseListFragment();
+        userMessageFragment = new UserMessageFragment();
+        tipFragment = new TipFragment();
+        dateFragment = new DateFragment();
+
+        fragmentList.add(courseFragment);
+        fragmentList.add(dateFragment);
+        fragmentList.add(tipFragment);
+        fragmentList.add(userMessageFragment);
+
+        BottomNavigationViewHelper.disableShiftMode(navigation);
+
+        adapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
+            @Override
+            public Fragment getItem(int position) {
+                return fragmentList.get(position);
+            }
+            @Override
+            public int getCount() {
+                return fragmentList.size();
+            }
+        };
+        viewPager.setAdapter(adapter);
+        viewPager.setOffscreenPageLimit(3);
     }
 
+    private long exitTime = 0;
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        if (id == android.R.id.home){
-            finish();
-        }
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.main_toolbar_one) {
-
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){
+            if((System.currentTimeMillis()-exitTime) > 2000){
+                Toast.makeText(this,"再按一次退出",Toast.LENGTH_SHORT).show();
+                exitTime = System.currentTimeMillis();
+            } else {
+                finish();
+                System.exit(0);
+            }
             return true;
         }
-        if (id == R.id.main_toolbar_two) {
-            startActivity(new Intent(MainActivity.this,DocumentActivity.class));
-            return true;
-        }
-        if (id == R.id.main_toolbar_three) {
-
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        //Toolbar 必须在onCreate()之后设置标题文本，否则默认标签将覆盖我们的设置
-        if (toolbar != null) {
-            toolbar.setTitle(getIntent().getStringExtra(ApiConstant.COURSE_NAME));
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+        for(Fragment fragment:fragmentList){
+            fragment.onActivityResult(requestCode, resultCode, data);
         }
-    }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 }

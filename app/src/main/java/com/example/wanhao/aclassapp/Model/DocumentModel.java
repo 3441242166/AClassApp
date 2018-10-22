@@ -5,7 +5,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.wanhao.aclassapp.R;
-import com.example.wanhao.aclassapp.SQLite.DocumentDao;
 import com.example.wanhao.aclassapp.base.IBaseRequestCallBack;
 import com.example.wanhao.aclassapp.bean.HttpResult;
 import com.example.wanhao.aclassapp.bean.Document;
@@ -32,11 +31,11 @@ public class DocumentModel {
     private static final String TAG = "DocumentModel";
 
     private Context context;
-    private DocumentDao dao;
+
 
     public DocumentModel(Context context){
         this.context = context;
-        dao = new DocumentDao(context);
+
     }
 
     @SuppressLint("CheckResult")
@@ -96,7 +95,7 @@ public class DocumentModel {
     }
 
     private void addToDB(List<Document> list,String courseId,String type){
-        dao.addDocumentList(list,SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.COUNT),courseId,type);
+
     }
 
 }

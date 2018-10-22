@@ -36,20 +36,20 @@ public class ChatAdapter extends BaseMultiItemQuickAdapter<ChatBean,BaseViewHold
 
     @Override
     protected void convert(BaseViewHolder helper, ChatBean item) {
-        GlideUrl cookie = new GlideUrl(item.getUser().getAvatar()
-                , new LazyHeaders.Builder().addHeader("Authorization", SaveDataUtil.getValueFromSharedPreferences(context, ApiConstant.USER_TOKEN)).build());
+//        GlideUrl cookie = new GlideUrl(item.getUser().getAvatar()
+//                , new LazyHeaders.Builder().addHeader("Authorization", SaveDataUtil.getValueFromSharedPreferences(context, ApiConstant.USER_TOKEN)).build());
 
         Log.i(TAG, "convert: type "+ helper.getItemViewType());
         switch (helper.getItemViewType()) {
             case ChatBean.ME:
-                helper.setText(R.id.item_char_me_name,item.getUser().getNickName());
-                helper.setText(R.id.item_char_me_content, item.getContent());
-                Glide.with(context).load(cookie).into((CircleImageView) helper.getView(R.id.item_char_me_head));
+//                helper.setText(R.id.item_char_me_name,item.getUser().getNickName());
+//                helper.setText(R.id.item_char_me_content, item.getContent());
+//                Glide.with(context).load(cookie).into((CircleImageView) helper.getView(R.id.item_char_me_head));
                 break;
             case ChatBean.OTHER:
-                helper.setText(R.id.item_char_other_name,item.getUser().getNickName());
-                helper.setText(R.id.item_char_other_content, item.getContent());
-                Glide.with(context).load(cookie).into((CircleImageView) helper.getView(R.id.item_char_other_head));
+//                helper.setText(R.id.item_char_other_name,item.getUser().getNickName());
+//                helper.setText(R.id.item_char_other_content, item.getContent());
+//                Glide.with(context).load(cookie).into((CircleImageView) helper.getView(R.id.item_char_other_head));
                 break;
         }
 
