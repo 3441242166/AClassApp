@@ -1,11 +1,8 @@
 package com.example.wanhao.aclassapp.activity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -15,7 +12,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.wanhao.aclassapp.R;
-import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.customizeview.NoScrollViewPager;
 import com.example.wanhao.aclassapp.fragment.CourseListFragment;
 import com.example.wanhao.aclassapp.fragment.DateFragment;
@@ -23,8 +19,6 @@ import com.example.wanhao.aclassapp.fragment.TipFragment;
 import com.example.wanhao.aclassapp.fragment.UserMessageFragment;
 import com.example.wanhao.aclassapp.util.ActivityCollector;
 import com.example.wanhao.aclassapp.util.BottomNavigationViewHelper;
-import com.jaeger.library.StatusBarUtil;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,13 +44,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.activity_main);
         ActivityCollector.addActivity(this);
         ButterKnife.bind(this);
 
         init();
         initEvent();
-
     }
 
     private void initEvent() {

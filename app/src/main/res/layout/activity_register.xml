@@ -67,7 +67,7 @@
                         android:inputType="number"
                         android:paddingBottom="2dp"
                         android:textColor="#FFCC00"
-                        android:textCursorDrawable="@drawable/bg_input_cursor_2"
+                        android:textCursorDrawable="@drawable/shape_input_cursor_2"
                         android:textSize="13sp" />
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
@@ -93,7 +93,7 @@
                         android:inputType="textPassword"
                         android:paddingBottom="2dp"
                         android:textColor="#FFCC00"
-                        android:textCursorDrawable="@drawable/bg_input_cursor_2"
+                        android:textCursorDrawable="@drawable/shape_input_cursor_2"
                         android:textSize="13sp" />
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
@@ -120,7 +120,7 @@
                         android:inputType="number"
                         android:paddingBottom="2dp"
                         android:textColor="#FFCC00"
-                        android:textCursorDrawable="@drawable/bg_input_cursor_2"
+                        android:textCursorDrawable="@drawable/shape_input_cursor_2"
                         android:maxLength="4"
                         android:textSize="13sp" />
                 </android.support.design.widget.TextInputLayout>
@@ -155,7 +155,7 @@
                     android:id="@+id/ac_register_loding"
                     android:layout_width="150dp"
                     android:layout_height="50dp"
-                    android:background="@drawable/bt_shape"
+                    android:background="@drawable/shape_button"
                     android:stateListAnimator="@drawable/state_list_animator_z"
                     android:text="注册"
                     android:textColor="#2fa881"/>
@@ -172,7 +172,7 @@
         android:layout_alignTop="@id/ac_register_cardview"
         android:layout_marginEnd="-20dp"
         android:layout_marginTop="25dp"
-        android:src="@drawable/plus_x"
+        android:src="@drawable/icon_plus_x"
         android:transitionName="loginFab"
         app:fabSize="normal" />
 

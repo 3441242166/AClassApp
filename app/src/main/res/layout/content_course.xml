@@ -3,6 +3,7 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ac_course_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,11 +11,10 @@
         android:id="@+id/ac_course_input"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:ems="10"
         android:hint="enter"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/ac_course_send"
         app:layout_constraintStart_toStartOf="parent"
         app:met_clearButton="true"
         app:met_hideUnderline="true" />
@@ -24,6 +24,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/secondWrite"
+        android:transcriptMode="alwaysScroll"
         app:layout_constraintBottom_toTopOf="@+id/ac_course_input"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,7 +41,18 @@
         android:clickable="true"
         app:layout_constraintBottom_toTopOf="@+id/ac_course_input"
         app:layout_constraintEnd_toEndOf="@+id/ac_course_list"
-        app:srcCompat="@drawable/icon_back" />
+        android:src="@drawable/icon_plus" />
+
+    <Button
+        android:id="@+id/ac_course_send"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_send"
+        android:text="Send"
+        android:textColor="@color/textWrite"
+        app:layout_constraintBottom_toBottomOf="@+id/ac_course_input"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ac_course_input" />
 
 
 </android.support.constraint.ConstraintLayout>

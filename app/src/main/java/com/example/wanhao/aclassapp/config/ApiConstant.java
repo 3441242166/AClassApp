@@ -5,10 +5,11 @@ package com.example.wanhao.aclassapp.config;
  */
 
 public class ApiConstant {
-    public static final String BASE_URL = "http://2056jc0993.iok.la:45532/";
-    public static final String DOCUMENT_URL = "http://2056jc0993.iok.la:45113/";
+    public static final String BASE_URL = "http://toppest.ink:8086/";
+    public static final String DOCUMENT_URL = "http://toppest.ink:8085/";
+
     public static final String HEAD_URL = BASE_URL+"auth/avatar";
-    public static final String CHAT_URL = "wss://2056jc0993.iok.la:45532/im/websocket";
+    public static final String CHAT_URL = "ws://toppest.ink:8086/im/websocket";
 
     public final static String RETURN_SUCCESS ="200";
     public final static String RETURN_ERROR ="FAILED";
@@ -17,12 +18,11 @@ public class ApiConstant {
     public static final String USER_TOKEN = "token";
     public static final String USER_ROLE = "role";
     public static final String USER_COUNT = "count";
-    public static final String PASSWORD = "password";
+    public static final String USER_PASSWORD = "password";
     public static final String USER_NAME = "username";
     public static final String USER_SIGNATURE = "signature";
     /*********************文件命名相关********************************/
     public static final String  FILE_NAME = "fzkt";
-
     public static final int ADD_COURSE = 1;
     public static final String RESULT_ADD = "add_result";
     public static final int ADD_SUCCESS = 1;
@@ -38,8 +38,10 @@ public class ApiConstant {
 
     /**********************Course有关Key************************/
     public static final String COURSE_NAME = "course_name";
+    public static final String COURSE_BEAN = "course_bean";
     public static final String COURSE_ID = "course_id";
-    public static final String COURSE= "course";
+    public static final String COURSE_MESSAGE = "course_message";
+    public static final String COURSE_ACTION= "com.example.wanhao.aclassapp.im";
     /**********************Document有关Key************************/
     public static final String DOCUMENT = "document";
     public static final String DOCUMENT_ID = "document_id";
@@ -52,6 +54,9 @@ public class ApiConstant {
     /**********************Notification 有关************************/
     public static final String CHANNE_DOWNED_NAME = "下载通知信息";
     public static final String CHANNE_DOWNED_ID = "1";
+
+    public static final String CHANNE_IM_NAME = "聊天通知信息";
+    public static final String CHANNE_IM_ID = "2";
     /**********************broadcast 有关************************/
     public static final String DOWNED_BEAN= "downloadBean";
     public static final String DOWNED_STATE = "state";

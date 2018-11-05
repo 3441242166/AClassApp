@@ -6,10 +6,8 @@ import android.util.Log;
 
 import com.example.wanhao.aclassapp.bean.HttpResult;
 import com.example.wanhao.aclassapp.bean.Remark;
-import com.example.wanhao.aclassapp.bean.RemarkRequset;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.RemarkService;
-import com.example.wanhao.aclassapp.util.GsonUtils;
 import com.example.wanhao.aclassapp.util.RetrofitHelper;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.IRemarkView;
@@ -17,9 +15,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -108,5 +104,17 @@ public class RemarkPresenter {
                 });
 
     }
+
+    static class RemarkRequset {
+        String content;
+        int reply;
+
+        public RemarkRequset(int reply,String content){
+            this.reply = reply;
+            this.content = content;
+        }
+
+    }
+
 
 }

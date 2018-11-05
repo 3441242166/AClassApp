@@ -5,7 +5,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.wanhao.aclassapp.base.IBaseRequestCallBack;
-import com.example.wanhao.aclassapp.bean.CourseListData;
 import com.example.wanhao.aclassapp.bean.HttpResult;
 import com.example.wanhao.aclassapp.bean.Course;
 import com.example.wanhao.aclassapp.config.ApiConstant;
@@ -29,22 +28,23 @@ public class CourseListModel {
     private static final String TAG = "CourseListModel";
 
     private Context context;
+    private Realm realm = Realm.getDefaultInstance();
 
     public CourseListModel(Context context){
         this.context = context;
     }
 
     public void getListDataByDB(final IBaseRequestCallBack<List<Course>> callBack){
-        Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
-
+        String count = SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_COUNT);
         List<Course> list = realm.where(Course.class)
+                .equalTo("userCount",count)
                 .findAll();
 
         realm.commitTransaction();
 
         // 如果本地数据库为空 则从网络获取数据
-        if(list == null || list.size()==0){
+        if(list == null || list.size() == 0){
             getListDataByInternet(callBack);
             return;
         }
@@ -54,6 +54,7 @@ public class CourseListModel {
 
     @SuppressLint("CheckResult")
     public void getListDataByInternet(final IBaseRequestCallBack<List<Course>> callBack) {
+        String count = SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_COUNT);
         callBack.beforeRequest();
         CourseService service = RetrofitHelper.get(CourseService.class);
         service.getCourseList(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_TOKEN))
@@ -66,15 +67,14 @@ public class CourseListModel {
                     HttpResult<CourseListData> result = new Gson().fromJson(body,new TypeToken<HttpResult<CourseListData>>(){}.getType());
 
                     if(result.getCode().equals(ApiConstant.RETURN_SUCCESS)){
-                        List<Course> list = result.getData().getList();
-//                        Realm realm = Realm.getDefaultInstance();
-//                        realm.beginTransaction();
-//
-//                        for(Course course:list){
-//                            realm.copyToRealm(course);
-//                        }
-//
-//                        realm.commitTransaction();
+                        List<Course> list = result.getData().courses;
+
+                        realm.beginTransaction();
+                        for(Course course:list){
+                            course.setUserCount(count);
+                            realm.copyToRealmOrUpdate(course);
+                        }
+                        realm.commitTransaction();
 
                         callBack.requestSuccess(list);
                     }else{
@@ -85,5 +85,10 @@ public class CourseListModel {
                     Log.i(TAG, "accept: "+throwable);
                 });
     }
+
+    static class CourseListData {
+        List<Course> courses;
+    }
+
 
 }

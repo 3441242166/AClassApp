@@ -1,5 +1,6 @@
 package com.example.wanhao.aclassapp.activity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.RegisterPresenter;
 import com.example.wanhao.aclassapp.util.DialogUtil;
 import com.example.wanhao.aclassapp.view.IRegisterView;
@@ -22,6 +24,9 @@ import com.example.wanhao.aclassapp.view.IRegisterView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+
+import static com.example.wanhao.aclassapp.config.ApiConstant.RESULT_ADD;
+import static com.example.wanhao.aclassapp.config.Constant.RESULT_SUCESS;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener,IRegisterView {
     private static final String TAG = "RegisterActivity";
@@ -72,9 +77,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.ac_register_loding:
-                registerPresenter.register(etUsername.getText().toString()
-                ,etPassword.getText().toString()
-                ,etCode.getText().toString());
+                registerPresenter.register(
+                        etUsername.getText().toString(),
+                        etPassword.getText().toString(),
+                        etCode.getText().toString());
                 break;
             case R.id.ac_register_getcode:
                 registerPresenter.getVerificationCode(etUsername.getText().toString(), tvCode, timer);
@@ -83,6 +89,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 onBackPressed();
                 break;
         }
+
     }
 
     @Override
@@ -98,6 +105,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void loadDataSuccess(String tData) {
         Toast.makeText(this,"注册成功", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent();
+        intent.putExtra(ApiConstant.USER_COUNT,etUsername.getText().toString());
+        intent.putExtra(ApiConstant.USER_PASSWORD,etPassword.getText().toString());
+        setResult(RESULT_SUCESS, intent);
+        finish();
     }
 
     @Override

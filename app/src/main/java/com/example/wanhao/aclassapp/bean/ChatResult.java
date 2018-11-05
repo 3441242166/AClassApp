@@ -5,8 +5,8 @@ import com.google.gson.annotations.SerializedName;
 public class ChatResult {
     @SerializedName("message")
     ChatBean message;
-    @SerializedName("status")
-    String status;
+    @SerializedName("code")
+    String code;
 
     public ChatBean getMessage() {
         return message;
@@ -17,10 +17,10 @@ public class ChatResult {
     }
 
     public String getStatus() {
-        return status;
+        return code;
     }
 
     public void setStatus(String status) {
-        this.status = status;
+        this.code = status;
     }
 }

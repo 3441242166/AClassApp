@@ -18,22 +18,26 @@
         app:layout_constraintTop_toTopOf="@+id/item_char_me_head" />
 
     <TextView
+        android:lineSpacingMultiplier="1.2"
         android:id="@+id/item_char_me_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/text_chat"
+        android:background="@drawable/shape_chat_me"
         android:gravity="right"
-        android:text="this it content , lalala"
-        android:textColor="@color/colorBlack"
+        android:maxEms="14"
+        android:text="啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊"
+        android:textAlignment="viewStart"
+        android:textColor="@color/textWrite"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/item_char_me_name"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/item_char_me_name" />
+        app:layout_constraintTop_toBottomOf="@+id/item_char_me_name"
+        tools:ignore="RtlCompat" />
 
 
     <de.hdodenhof.circleimageview.CircleImageView

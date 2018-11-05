@@ -14,4 +14,6 @@ import retrofit2.http.Header;
 public interface TokenService {
     @GET("check")
     Observable<Response<ResponseBody>> check(@Header("Authorization") String token);
+    @GET("auth/im/user")
+    Observable<Response<ResponseBody>> getIMToken(@Header("Authorization") String token);
 }

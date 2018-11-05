@@ -1,5 +1,6 @@
 package com.example.wanhao.aclassapp.activity;
 
+import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.LodingPresenter;
 import com.example.wanhao.aclassapp.util.DialogUtil;
 import com.example.wanhao.aclassapp.view.ILodingView;
@@ -25,6 +27,9 @@ import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.example.wanhao.aclassapp.config.Constant.REGISTER_CODE;
+import static com.example.wanhao.aclassapp.config.Constant.RESULT_SUCESS;
 
 public class LodingActivity extends AppCompatActivity implements View.OnClickListener,ILodingView {
     private static final String TAG = "LodingActivity";
@@ -60,11 +65,13 @@ public class LodingActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ac_loding_fab:
-                startActivity(new Intent(this, RegisterActivity.class), ActivityOptions.makeSceneTransitionAnimation(this,
+                Intent intent = new Intent(this, RegisterActivity.class);
+                startActivityForResult(intent,REGISTER_CODE, ActivityOptions.makeSceneTransitionAnimation(this,
                         fab, fab.getTransitionName()).toBundle());
                 break;
             case R.id.ac_loding_loding:
@@ -104,6 +111,22 @@ public class LodingActivity extends AppCompatActivity implements View.OnClickLis
     public void initData(String count, String password) {
         etPassword.setText(password);
         etUsername.setText(count);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == REGISTER_CODE){
+
+            if(resultCode == RESULT_SUCESS){
+                String count = data.getStringExtra(ApiConstant.USER_COUNT);
+                String password = data.getStringExtra(ApiConstant.USER_PASSWORD);
+                presenter.login(count,password);
+            }
+
+        }
+
     }
 
     private void hideKeyboard() {

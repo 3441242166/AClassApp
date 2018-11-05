@@ -35,7 +35,7 @@
         tools:ignore="MissingConstraints" />
 
     <Button
-        android:background="@drawable/bt_download"
+        android:background="@drawable/shape_download"
         android:id="@+id/ac_browse_button"
         android:layout_width="180dp"
         android:layout_height="wrap_content"

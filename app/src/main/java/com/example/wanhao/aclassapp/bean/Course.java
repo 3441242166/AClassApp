@@ -26,6 +26,10 @@ public class Course extends RealmObject implements Serializable{
     @SerializedName("code")
     private String code;
 
+    private int unReadNum = 0;
+
+    private String userCount;
+
     public String getName() {
         return name;
     }
@@ -72,5 +76,21 @@ public class Course extends RealmObject implements Serializable{
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getUserCount() {
+        return userCount;
+    }
+
+    public void setUserCount(String userCount) {
+        this.userCount = userCount;
+    }
+
+    public int getUnReadNum() {
+        return unReadNum;
+    }
+
+    public void setUnReadNum(int unReadNum) {
+        this.unReadNum = unReadNum;
     }
 }

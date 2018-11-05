@@ -46,7 +46,7 @@ public class RemarkAdapter extends BaseMultiItemQuickAdapter<Remark,BaseViewHold
 
         switch (helper.getItemViewType()) {
             case Remark.NORMAL:
-                Glide.with(context).load(cookie).into((CircleImageView) helper.getView(R.id.item_remark_head));
+                //Glide.with(context).load(cookie).into((CircleImageView) helper.getView(R.id.item_remark_head));
                 helper.setText(R.id.item_remark_date,item.getDate());
                 helper.setText(R.id.item_remark_name, item.getUserNmae().getNickName());
                 helper.setText(R.id.item_remark_contant, item.getContent());
@@ -55,7 +55,7 @@ public class RemarkAdapter extends BaseMultiItemQuickAdapter<Remark,BaseViewHold
                 helper.setText(R.id.item_remark_date,item.getDate());
                 helper.setText(R.id.item_remark_name, item.getUserNmae().getNickName());
                 helper.setText(R.id.item_remark_contant, item.getContent());
-                Glide.with(context).load(cookie).into((CircleImageView) helper.getView(R.id.item_remark_head));
+                //Glide.with(context).load(cookie).into((CircleImageView) helper.getView(R.id.item_remark_head));
 
                 Remark remark = new Remark();
                 for(int x=0;x<getData().size();x++){
@@ -65,7 +65,7 @@ public class RemarkAdapter extends BaseMultiItemQuickAdapter<Remark,BaseViewHold
                 helper.setText(R.id.item_remark_remark_date,remark.getDate());
                 helper.setText(R.id.item_remark_remark_name, item.getUserNmae().getNickName());
                 helper.setText(R.id.item_remark_remark_contant, remark.getContent());
-                Glide.with(context).load(cookie).into((CircleImageView) helper.getView(R.id.item_remark_remark_head));
+               // Glide.with(context).load(cookie).into((CircleImageView) helper.getView(R.id.item_remark_remark_head));
 
                 break;
         }

@@ -2,11 +2,15 @@ package com.example.wanhao.aclassapp.bean;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
+import io.realm.RealmObject;
+
 /**
  * Created by wanhao on 2018/4/11.
  */
 
-public class Role {
+public class Role extends RealmObject implements Serializable{
     @SerializedName("role_id")
     private int roleID;
     @SerializedName("role")

@@ -73,7 +73,7 @@ public class LodingPresenter{
                         SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.USER_TOKEN, role.token);
                         SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.USER_ROLE, role.user);
                         SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.USER_COUNT, phoneNum);
-                        SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.PASSWORD, password);
+                        SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.USER_PASSWORD, password);
                         SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.TOKEN_TIME, DateUtil.getNowDateString());
                         iLoginView.loadDataSuccess("登陆成功");
                     }else{
@@ -89,7 +89,7 @@ public class LodingPresenter{
 
     public void init() {
         String count = SaveDataUtil.getValueFromSharedPreferences(mContext,ApiConstant.USER_COUNT);
-        String password = SaveDataUtil.getValueFromSharedPreferences(mContext,ApiConstant.PASSWORD);
+        String password = SaveDataUtil.getValueFromSharedPreferences(mContext,ApiConstant.USER_PASSWORD);
         iLoginView.initData(count,password);
     }
 

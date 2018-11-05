@@ -4,10 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.example.wanhao.aclassapp.config.ApiConstant;
-import com.example.wanhao.aclassapp.service.DownDocumentService;
-
-import java.io.Serializable;
+import com.example.wanhao.aclassapp.backService.DownDocumentService;
 
 import static com.example.wanhao.aclassapp.config.ApiConstant.DOWNED_BEAN;
 

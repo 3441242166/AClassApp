@@ -6,16 +6,17 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.bean.Course;
 import com.example.wanhao.aclassapp.bean.HttpResult;
 import com.example.wanhao.aclassapp.config.ApiConstant;
-import com.example.wanhao.aclassapp.service.AddCourseService;
+import com.example.wanhao.aclassapp.service.CourseService;
+import com.example.wanhao.aclassapp.util.GsonUtils;
 import com.example.wanhao.aclassapp.util.ResourcesUtil;
 import com.example.wanhao.aclassapp.util.RetrofitHelper;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.IAddCourseView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -45,9 +46,11 @@ public class AddCoursePresenter{
         }
         view.showProgress();
 
-        AddCourseService service = RetrofitHelper.get(AddCourseService.class);
+        Course course = new Course();
+        course.setId(code);
 
-        service.addCourse(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_TOKEN),Integer.parseInt(code))
+        CourseService service = RetrofitHelper.get(CourseService.class);
+        service.addCourse(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_TOKEN), GsonUtils.toBody(course))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(responseBodyResponse -> {
@@ -69,5 +72,7 @@ public class AddCoursePresenter{
 
                 });
     }
+
+
 }
 

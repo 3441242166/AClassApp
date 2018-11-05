@@ -2,9 +2,11 @@ package com.example.wanhao.aclassapp.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,10 +20,15 @@ import com.example.wanhao.aclassapp.activity.AddCourseActivity;
 import com.example.wanhao.aclassapp.activity.CourseActivity;
 import com.example.wanhao.aclassapp.adapter.CourseAdapter;
 import com.example.wanhao.aclassapp.base.LazyLoadFragment;
+import com.example.wanhao.aclassapp.bean.ChatBean;
 import com.example.wanhao.aclassapp.bean.Course;
+import com.example.wanhao.aclassapp.broadcast.CourseReceiver;
+import com.example.wanhao.aclassapp.broadcast.DownloadReceiver;
+import com.example.wanhao.aclassapp.broadcast.MainReceiver;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.CourseListPresenter;
 import com.example.wanhao.aclassapp.util.PopupUtil;
+import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.ICourseFgView;
 import com.yalantis.phoenix.PullToRefreshView;
 
@@ -29,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import io.realm.Realm;
 
 /**
  * Created by wanhao on 2018/2/23.
@@ -46,33 +54,34 @@ public class CourseListFragment extends LazyLoadFragment implements ICourseFgVie
 
     private CourseListPresenter presenter;
     private CourseAdapter adapter;
+    private MainReceiver receiver;
+
+    private Context context;
 
     @Override
     protected int setContentView() {
+        context = getContext();
         return R.layout.fragment_course;
     }
 
     @Override
     protected void lazyLoad() {
-        Log.i(TAG, "lazyLoad: "+getContext());
         presenter = new CourseListPresenter(getContext(),this);
-        adapter  = new CourseAdapter(null,getContext());
-        presenter.upDataList(false);
+
+        receiver = new MainReceiver();
+        IntentFilter filter = new IntentFilter(ApiConstant.COURSE_ACTION);
+        filter.setPriority(888);
+        context.registerReceiver(receiver,filter);
+
         init();
         initEvent();
+        presenter.upDataList(true);
     }
 
     private void init(){
+        adapter  = new CourseAdapter(null,getContext());
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL));
-        //------------------------------------------------------------------------------------------
-        List<Course> courseList = new ArrayList<>();
-        for(int x=0;x<10;x++){
-            Course temp = new Course();
-            courseList.add(temp);
-        }
-        adapter.setNewData(courseList);
-        //------------------------------------------------------------------------------------------
         recyclerView.setAdapter(adapter);
     }
 
@@ -80,8 +89,10 @@ public class CourseListFragment extends LazyLoadFragment implements ICourseFgVie
 
         adapter.setOnItemClickListener((adapter, view, position) -> {
             Intent intent = new Intent(getActivity(), CourseActivity.class);
-            intent.putExtra(ApiConstant.COURSE_ID,this.adapter.getData().get(position));
-            startActivity(intent);
+
+            intent.putExtra(ApiConstant.COURSE_ID,this.adapter.getData().get(position).getId());
+            intent.putExtra(ApiConstant.COURSE_NAME,this.adapter.getData().get(position).getName());
+            startActivityForResult(intent,0);
         });
 
         adapter.setOnItemLongClickListener((adapter, view, position) -> {
@@ -89,15 +100,26 @@ public class CourseListFragment extends LazyLoadFragment implements ICourseFgVie
             return true;
         });
 
-        fab.setOnClickListener(v -> {
-            startActivityForResult(new Intent(getContext(), AddCourseActivity.class),ApiConstant.ADD_COURSE);
-        });
+        fab.setOnClickListener(v -> startActivityForResult(new Intent(getContext(), AddCourseActivity.class),ApiConstant.ADD_COURSE));
 
         refreshView.setOnRefreshListener(() -> refreshView.postDelayed(() -> presenter.upDataList(false), 500));
+
+        receiver.setOnNewMessageListener(data -> {
+            Log.i(TAG, "onNewMessage: content = " + data.getContent());
+            Realm realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+
+            Course course = realm.where(Course.class)
+                    .equalTo("id",data.getCourseID()+"")
+                    .findFirst();
+            course.setUnReadNum(course.getUnReadNum()+1);
+
+            realm.commitTransaction();
+            adapter.notifyDataSetChanged();
+        });
     }
 
     private void openDialog(View parent) {
-        Context context = getContext();
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_course, null);
         final PopupWindow popupWindow = PopupUtil.getPopupWindow(context,view, WindowManager.LayoutParams.WRAP_CONTENT,WindowManager.LayoutParams.WRAP_CONTENT);
         //设置点击事件
@@ -118,7 +140,6 @@ public class CourseListFragment extends LazyLoadFragment implements ICourseFgVie
         //显示PopupWindow
         Toast.makeText(getContext(),""+parent.getWidth(),Toast.LENGTH_SHORT).show();
         popupWindow.showAsDropDown(parent,parent.getWidth()/2,-parent.getHeight()/3);
-        //popupWindow.showAtLocation(parent,1,1,1);
     }
 
     @Override
@@ -154,6 +175,15 @@ public class CourseListFragment extends LazyLoadFragment implements ICourseFgVie
                 if(resultCode == ApiConstant.ADD_SUCCESS){
                     presenter.upDataList(false);
                 }
+            default:
+                adapter.notifyDataSetChanged();
+                break;
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        context.unregisterReceiver(receiver);
     }
 }

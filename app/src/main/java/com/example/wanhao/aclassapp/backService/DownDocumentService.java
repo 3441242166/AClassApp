@@ -1,4 +1,4 @@
-package com.example.wanhao.aclassapp.service;
+package com.example.wanhao.aclassapp.backService;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -54,7 +54,6 @@ import static com.example.wanhao.aclassapp.util.NotificationUtils.createNotifica
 public class DownDocumentService extends Service {
     private static final String TAG = "DownDocumentService";
 
-    private NotificationManager manager;
     private Intent broadcastIntent;
 
     @Nullable
@@ -67,7 +66,6 @@ public class DownDocumentService extends Service {
     public void onCreate() {
         super.onCreate();
         broadcastIntent = new Intent(ApiConstant.DOWNLOAD_ACTION);
-        manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
     @Override

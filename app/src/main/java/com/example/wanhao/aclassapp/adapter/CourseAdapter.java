@@ -1,8 +1,10 @@
 package com.example.wanhao.aclassapp.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,16 +37,21 @@ public class CourseAdapter extends BaseQuickAdapter<Course,BaseViewHolder> {
         this.context = context;
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void convert(BaseViewHolder helper, Course item) {
 
         helper.setText(R.id.item_course_name,item.getName());
         helper.setText(R.id.item_course_parent, item.getParent());
         helper.setText(R.id.item_course_number,"一共有 "+item.getNum()+" 人");
+        TextView worring = helper.getView(R.id.item_course_warring);
 
-//        GlideUrl cookie = new GlideUrl(item.getImgUrl()
-//                , new LazyHeaders.Builder().addHeader("Authorization", SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_TOKEN)).build());
-//        Glide.with(context).load(cookie).crossFade().into((ImageView) helper.getView(R.id.item_course_img));
+        if(item.getUnReadNum()>0){
+            worring.setVisibility(View.VISIBLE);
+            worring.setText(""+item.getUnReadNum());
+        }else {
+            worring.setVisibility(View.GONE);
+        }
 
         Glide.with(context).load(item.getImgUrl()).crossFade().into((ImageView) helper.getView(R.id.item_course_img));
     }

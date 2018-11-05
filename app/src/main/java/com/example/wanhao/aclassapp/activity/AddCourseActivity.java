@@ -2,7 +2,6 @@ package com.example.wanhao.aclassapp.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.widget.Button;
@@ -12,11 +11,9 @@ import android.widget.Toast;
 import com.acker.simplezxing.activity.CaptureActivity;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.wanhao.aclassapp.R;
-import com.example.wanhao.aclassapp.base.BaseApplication;
 import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.AddCoursePresenter;
-import com.example.wanhao.aclassapp.util.ActivityCollector;
 import com.example.wanhao.aclassapp.util.DialogUtil;
 import com.example.wanhao.aclassapp.view.IAddCourseView;
 
@@ -114,7 +111,7 @@ public class AddCourseActivity extends TopBarBaseActivity implements View.OnClic
 
     @Override
     public void tokenError(String msg) {
-        tokenAbate(msg);
+        showTokenErrorDialog(msg);
     }
 
 }

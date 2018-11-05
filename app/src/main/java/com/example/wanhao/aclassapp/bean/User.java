@@ -2,7 +2,13 @@ package com.example.wanhao.aclassapp.bean;
 
 import com.google.gson.annotations.SerializedName;
 
-public class User {
+import java.io.Serializable;
+
+import io.realm.RealmObject;
+
+public class User  extends RealmObject implements Serializable{
+    @SerializedName("user_name")
+    private String count;
     @SerializedName("nickname")
     private String nickName;
     @SerializedName("gender")
@@ -15,6 +21,8 @@ public class User {
     private Role role;
     @SerializedName("password")
     private String token;
+
+    private int roleID;
 
     public User(){
         role = new Role();
@@ -66,5 +74,13 @@ public class User {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getCount() {
+        return count;
+    }
+
+    public void setCount(String count) {
+        this.count = count;
     }
 }

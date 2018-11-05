@@ -90,7 +90,6 @@ public class UserMessagePresenter {
 
                     if(result.getCode().equals(RETURN_SUCCESS)){
                         view.loadDataSuccess(result.getData());
-                        SaveDataUtil.saveToSharedPreferences(context,ApiConstant.USER_NAME,result.getData().getNickName());
                     }else{
                         view.loadDataError(result.getMessage());
                         view.tokenError("token失效，请重新登陆");
@@ -154,12 +153,13 @@ public class UserMessagePresenter {
 
         GlideUrl cookie = new GlideUrl(BASE_URL+"avatar"
                 , new LazyHeaders.Builder().addHeader("Authorization", SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_TOKEN)).build());
+
         Glide.with(context)
                 .load(cookie)
                 .asBitmap()
                 .into(target);
     }
-    private SimpleTarget<Bitmap> target = new SimpleTarget<Bitmap>(50,50) {
+    private SimpleTarget<Bitmap> target = new SimpleTarget<Bitmap>(500,300) {
         @Override
         public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
             view.showImage(resource);

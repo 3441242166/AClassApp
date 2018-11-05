@@ -2,15 +2,11 @@ package com.example.wanhao.aclassapp.activity;
 
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.wanhao.aclassapp.R;
@@ -19,20 +15,10 @@ import com.example.wanhao.aclassapp.bean.Document;
 import com.example.wanhao.aclassapp.broadcast.DownloadReceiver;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.presenter.BrowseDocumentPresenter;
-import com.example.wanhao.aclassapp.service.DownDocumentService;
 import com.example.wanhao.aclassapp.util.FileConvertUtil;
-import com.example.wanhao.aclassapp.util.FileSizeUtil;
 import com.example.wanhao.aclassapp.view.IBrowseDocumentView;
-import com.liulishuo.filedownloader.BaseDownloadTask;
-
-import java.io.File;
 
 import butterknife.BindView;
-import cn.pedant.SweetAlert.SweetAlertDialog;
-
-import static com.example.wanhao.aclassapp.config.ApiConstant.DOWNED_BEGIN;
-import static com.example.wanhao.aclassapp.config.ApiConstant.DOWNED_FINISH;
-import static com.example.wanhao.aclassapp.config.ApiConstant.DOWNED_ING;
 
 public class BrowseDocumentActivity extends TopBarBaseActivity implements IBrowseDocumentView {
     private static final String TAG = "BrowseDocumentActivity";

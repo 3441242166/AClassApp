@@ -4,11 +4,15 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
 /**
  * Created by wanhao on 2018/3/7.
  */
 
-public class Document implements Serializable{
+public class Document extends RealmObject implements Serializable{
+    @PrimaryKey
     @SerializedName("file_id")
     private int id;
     @SerializedName("file_name")
@@ -25,6 +29,8 @@ public class Document implements Serializable{
     private String path;
 
     private String courseID;
+
+    private String userCount;
 
     public int getId() {
         return id;
@@ -88,5 +94,13 @@ public class Document implements Serializable{
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public String getUserCount() {
+        return userCount;
+    }
+
+    public void setUserCount(String userCount) {
+        this.userCount = userCount;
     }
 }

@@ -15,6 +15,7 @@ import com.example.wanhao.aclassapp.bean.HttpResult;
 import com.example.wanhao.aclassapp.bean.User;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.UserMessageService;
+import com.example.wanhao.aclassapp.util.DateUtil;
 import com.example.wanhao.aclassapp.util.RetrofitHelper;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.IUserMessageFgView;
@@ -37,7 +38,7 @@ public class UserMessageFgPresenter {
     public UserMessageFgPresenter(Context context, IUserMessageFgView view){
         this.context = context;
         this.view = view;
-        init();
+        //init();
     }
 
     @SuppressLint("CheckResult")
@@ -49,12 +50,12 @@ public class UserMessageFgPresenter {
         if(TextUtils.isEmpty(name)){
             user.setNickName("无名氏");
         }else {
-            user.setNickName(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_NAME));
+            user.setNickName(name);
         }
         if(TextUtils.isEmpty(signature)){
             user.setSignature("你若安好 便是晴天");
         }else {
-            user.setSignature(SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_SIGNATURE));
+            user.setSignature(signature);
         }
 
         view.setUserMessage(user);
@@ -91,4 +92,10 @@ public class UserMessageFgPresenter {
     }
 
 
+    public void logout() {
+        SaveDataUtil.saveToSharedPreferences(context, ApiConstant.USER_TOKEN, "");
+        SaveDataUtil.saveToSharedPreferences(context, ApiConstant.USER_ROLE, "");
+        SaveDataUtil.saveToSharedPreferences(context, ApiConstant.TOKEN_TIME,"");
+
+    }
 }

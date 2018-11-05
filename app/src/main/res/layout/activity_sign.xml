@@ -7,84 +7,91 @@
     tools:context=".activity.SignActivity">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/ac_sign_map"
         android:layout_width="0dp"
         android:layout_height="350dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/bg_input_cursor" />
+        app:srcCompat="@drawable/shape_input_cursor" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/ac_sign_sign"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="60dp"
+        android:background="@drawable/shape_button"
         android:text="签到"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/button2"
+        app:layout_constraintEnd_toStartOf="@+id/ac_sign_leave"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView2" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/ac_sign_leave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="60dp"
+        android:background="@drawable/shape_button"
         android:text="请假"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/button"
-        app:layout_constraintTop_toBottomOf="@+id/cardView2" />
+        app:layout_constraintStart_toEndOf="@+id/ac_sign_sign" />
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardView2"
-        android:layout_width="220dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView">
+        app:layout_constraintTop_toBottomOf="@+id/ac_sign_map">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/ac_sign_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:text="数据结构课签到"
+                android:textAlignment="center"
                 android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/ac_sign_initiator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:text="发布人:万浩老师"
-                app:layout_constraintStart_toStartOf="@+id/textView"
-                app:layout_constraintTop_toBottomOf="@+id/textView" />
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="@+id/ac_sign_title"
+                app:layout_constraintStart_toStartOf="@+id/ac_sign_title"
+                app:layout_constraintTop_toBottomOf="@+id/ac_sign_title" />
 
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/ac_sign_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:text="发表日期:2018-12-26 8:00"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="16dp"
+                android:text="发布日期:2018-12-26 8:00"
+                android:textAlignment="center"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/textView2"
-                app:layout_constraintTop_toBottomOf="@+id/textView2" />
+                app:layout_constraintEnd_toEndOf="@+id/ac_sign_initiator"
+                app:layout_constraintStart_toStartOf="@+id/ac_sign_initiator"
+                app:layout_constraintTop_toBottomOf="@+id/ac_sign_initiator" />
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
+
 </android.support.constraint.ConstraintLayout>

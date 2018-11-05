@@ -29,14 +29,16 @@
         app:layout_constraintTop_toTopOf="@+id/item_char_other_head" />
 
     <TextView
+        android:lineSpacingMultiplier="1.2"
         android:id="@+id/item_char_other_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="32dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/text_chat"
-        android:text="this it content , lalala"
+        android:background="@drawable/shape_chat_other"
+        android:maxEms="14"
+        android:text="this it contenaaaaaaaat , lalalathis it content , lalalathis it "
         android:textAlignment="viewStart"
         android:textColor="@color/colorBlack"
         android:textSize="16sp"

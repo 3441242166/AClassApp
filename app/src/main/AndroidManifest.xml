@@ -51,19 +51,13 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".activity.HomeWorkActivity" />
         <activity android:name=".activity.DoHomeworkActivity" />
-        <activity android:name=".activity.AssignmentActivity" />
         <activity android:name=".activity.MainActivity" />
         <activity
             android:name=".activity.CourseActivity"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <service
-            android:name=".service.DownDocumentService"
-            android:enabled="true"
-            android:exported="false" />
-
-        <receiver
-            android:name=".broadcast.DownloadReceiver"
+            android:name=".backService.DownDocumentService"
             android:enabled="true"
             android:exported="false" />
 
@@ -78,7 +72,39 @@
         </provider>
 
         <activity android:name=".activity.CourseMessageActivity" />
-        <activity android:name=".activity.SignActivity"></activity>
+        <activity android:name=".activity.SignActivity" />
+        <activity android:name=".activity.SearchActivity" />
+
+        <service
+            android:process="system"
+            android:name=".backService.CourseService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <!--<receiver-->
+            <!--android:name=".broadcast.MainReceiver"-->
+            <!--android:enabled="false"-->
+            <!--android:exported="false" >-->
+            <!--<intent-filter android:priority="888">-->
+                <!--<action android:name="com.example.wanhao.aclassapp.im" />-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
+
+        <!--<receiver-->
+            <!--android:name=".broadcast.CourseReceiver"-->
+            <!--android:enabled="false"-->
+            <!--android:exported="false" >-->
+            <!--<intent-filter android:priority="999">-->
+                <!--<action android:name="com.example.wanhao.aclassapp.im" />-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
+
+        <!--<receiver-->
+            <!--android:name=".broadcast.DownloadReceiver"-->
+            <!--android:enabled="false"-->
+            <!--android:exported="false" >-->
+        <!--</receiver>-->
+
     </application>
 
 </manifest>

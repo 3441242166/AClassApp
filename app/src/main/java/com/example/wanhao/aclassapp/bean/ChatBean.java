@@ -1,21 +1,25 @@
 package com.example.wanhao.aclassapp.bean;
 
+import android.content.Intent;
+
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.example.wanhao.aclassapp.bean.User;
 import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+
+import io.realm.RealmObject;
 
 /**
  * Created by wanhao on 2018/4/5.
  */
 
-public class ChatBean implements MultiItemEntity {
+public class ChatBean extends RealmObject implements MultiItemEntity ,Serializable{
     public static final int ME = 1;
     public static final int OTHER = 2;
 
-
-    int sqlID;
     @SerializedName("id")
-    String id;
+    int id;
     @SerializedName("content")
     String content;
     @SerializedName("date")
@@ -27,25 +31,18 @@ public class ChatBean implements MultiItemEntity {
     @SerializedName("user")
     User user;
 
+
     int type;
 
     public ChatBean(){
         user = new User();
     }
 
-    public int getSqlID() {
-        return sqlID;
-    }
-
-    public void setSqlID(int sqlID) {
-        this.sqlID = sqlID;
-    }
-
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

@@ -5,12 +5,15 @@ import android.graphics.Bitmap;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.activity.LodingActivity;
 import com.example.wanhao.aclassapp.activity.UserMessageActivity;
 import com.example.wanhao.aclassapp.adapter.GridAdapter;
 import com.example.wanhao.aclassapp.base.LazyLoadFragment;
@@ -34,8 +37,9 @@ public class UserMessageFragment extends LazyLoadFragment implements IUserMessag
     private static final String[] USUALLY_TITLE = {"文件", "通知", "作业", "我的收藏"};
     private static final int[] USUALLY_IMG = {R.mipmap.gv_animation, R.mipmap.gv_multipleltem, R.mipmap.gv_header_and_footer, R.mipmap.gv_pulltorefresh};
 
-    private static final String[] OTHER_TITLE = {"一", "一", "一", "一", "一", "设置", "退出登陆", "一", "一", "一", "一"};
-    private static final int[] OTHER_IMG = {R.mipmap.gv_animation, R.mipmap.gv_multipleltem, R.mipmap.gv_header_and_footer, R.mipmap.gv_pulltorefresh, R.mipmap.gv_section, R.mipmap.gv_empty, R.mipmap.gv_drag_and_swipe, R.mipmap.gv_item_click, R.mipmap.gv_expandable, R.mipmap.gv_databinding,R.mipmap.gv_multipleltem};
+    private static final String[] OTHER_TITLE = {"一", "一", "一", "一", "一", "设置", "退出登陆"};
+    private static final int[] OTHER_IMG = {R.mipmap.gv_animation, R.mipmap.gv_multipleltem, R.mipmap.gv_header_and_footer, R.mipmap.gv_pulltorefresh,
+            R.mipmap.gv_section, R.mipmap.gv_empty, R.mipmap.gv_drag_and_swipe};
     // 版本检查  退出登录  修改密码
 
     private ArrayList<GridBean> usuallyList;
@@ -66,10 +70,10 @@ public class UserMessageFragment extends LazyLoadFragment implements IUserMessag
 
     @Override
     protected void lazyLoad() {
-        //presenter = new UserMessageFgPresenter(getContext(),this);
-        //init();
-        //initEvent();
-        int main = 0;
+        presenter = new UserMessageFgPresenter(getContext(),this);
+        presenter.init();
+        init();
+        initEvent();
     }
 
     private void initData() {
@@ -89,7 +93,6 @@ public class UserMessageFragment extends LazyLoadFragment implements IUserMessag
 
     private void init() {
         initData();
-
         usuallyRecycler.setLayoutManager(new GridLayoutManager(getContext(), 4));
         otherRecycler.setLayoutManager(new GridLayoutManager(getContext(), 4));
 
@@ -97,10 +100,33 @@ public class UserMessageFragment extends LazyLoadFragment implements IUserMessag
         otherRecycler.setNestedScrollingEnabled(false);
 
         GridAdapter usuallyAdapter = new GridAdapter(usuallyList, getContext());
-        //GridAdapter otherAdapter = new GridAdapter(otherList, getContext());
+        GridAdapter otherAdapter = new GridAdapter(otherList, getContext());
 
         usuallyRecycler.setAdapter(usuallyAdapter);
-        //otherRecycler.setAdapter(otherAdapter);
+        otherRecycler.setAdapter(otherAdapter);
+
+        otherAdapter.setOnItemClickListener((adapter, view, position) -> {
+            switch (position){
+                case 0:
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    break;
+                case 6:
+                    presenter.logout();
+                    startActivity(new Intent(getContext(), LodingActivity.class));
+                    getActivity().finish();
+                    break;
+
+            }
+        });
     }
 
     private void initEvent() {

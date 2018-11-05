@@ -1,6 +1,5 @@
 package com.example.wanhao.aclassapp.activity;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -92,7 +91,7 @@ public class RemarkActivity extends TopBarBaseActivity implements IRemarkView {
 
     @Override
     public void tokenError(String msg) {
-        tokenAbate(msg);
+        showTokenErrorDialog(msg);
     }
 
     @Override

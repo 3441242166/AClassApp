@@ -2,19 +2,18 @@ package com.example.wanhao.aclassapp.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.adapter.DocumentAdapter;
 import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
 import com.example.wanhao.aclassapp.bean.Document;
 import com.example.wanhao.aclassapp.config.ApiConstant;
-import com.example.wanhao.aclassapp.dialog.DocumentDialog;
 import com.example.wanhao.aclassapp.presenter.DocumentPresenter;
-import com.example.wanhao.aclassapp.util.ActivityCollector;
 import com.example.wanhao.aclassapp.util.ColorDividerItemDecoration;
 import com.example.wanhao.aclassapp.view.IDocumentView;
 
@@ -28,6 +27,8 @@ public class DocumentActivity extends TopBarBaseActivity implements IDocumentVie
 
     @BindView(R.id.ac_document_recycler)
     RecyclerView recyclerView;
+    @BindView(R.id.ac_document_search)
+    TextView search;
 
     private DocumentAdapter adapter;
 
@@ -72,6 +73,8 @@ public class DocumentActivity extends TopBarBaseActivity implements IDocumentVie
             startActivity(intent);
         });
 
+        search.setOnClickListener(v ->
+                startActivity(new Intent(DocumentActivity.this,SearchActivity.class)));
     }
 
     @Override
@@ -96,6 +99,6 @@ public class DocumentActivity extends TopBarBaseActivity implements IDocumentVie
 
     @Override
     public void tokenError(String msg) {
-        tokenAbate(msg);
+        showTokenErrorDialog(msg);
     }
 }

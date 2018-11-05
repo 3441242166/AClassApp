@@ -45,7 +45,9 @@ public class UserMessageActivity extends BaseTokenActivity implements IUserMessa
     NestedScrollView scrollView;
 
     private static final String[] MAIN_TITLE = {"账号", "个性签名", "昵称", "身份"};
-    private static final String[] OTHER_TITLE = {"学号", "学校", "性别", "邮箱", "地区", "EmptyView", "DragAndSwipe", "ItemClick", "ExpandableItem", "DataBinding", "UpFetchData"};
+    private static final String[] OTHER_TITLE = {"学号", "学校", "性别", "邮箱",
+            "地区", "EmptyView", "DragAndSwipe", "ItemClick",
+            "ExpandableItem", "DataBinding", "UpFetchData"};
 
     private ArrayList<SettingAdapter.SettingBean> mainList;
     private ArrayList<SettingAdapter.SettingBean> otherList;
@@ -69,7 +71,7 @@ public class UserMessageActivity extends BaseTokenActivity implements IUserMessa
         initData();
         initView();
         initEvent();
-        //presenter.init();
+        presenter.init();
     }
 
     private void initData() {
@@ -112,9 +114,8 @@ public class UserMessageActivity extends BaseTokenActivity implements IUserMessa
 
         });
 
-
         head.setOnClickListener(view->{
-
+                presenter.openSelectAvatarDialog();
             }
         );
 
@@ -204,7 +205,7 @@ public class UserMessageActivity extends BaseTokenActivity implements IUserMessa
 
     @Override
     public void tokenError(String msg) {
-        tokenAbate(msg);
+        showTokenErrorDialog(msg);
     }
 
 }

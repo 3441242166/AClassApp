@@ -78,6 +78,7 @@ public class SplashPresenter {
 //                        view.goLoding();
 //                    });
 //        }
+
     }
 
 }

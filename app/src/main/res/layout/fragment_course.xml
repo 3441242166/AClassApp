@@ -7,12 +7,10 @@
     android:layout_height="match_parent">
 
     <android.support.v7.widget.Toolbar
+        android:background="#333333"
         android:id="@+id/toolbar"
         android:layout_width="0dp"
-        android:layout_height="74dp"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
+        android:layout_height="78dp"
         app:layout_constraintBottom_toTopOf="@+id/fg_course_refresh"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,6 +18,7 @@
         app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     <android.support.design.widget.FloatingActionButton
+        android:src="@drawable/icon_plus"
         android:id="@+id/fg_course_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -52,7 +52,7 @@
             app:layout_constraintStart_toEndOf="@+id/item_homework_date"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0"
-            app:srcCompat="@drawable/bt_download" />
+            app:srcCompat="@drawable/shape_download" />
 
     </android.support.constraint.ConstraintLayout>
 

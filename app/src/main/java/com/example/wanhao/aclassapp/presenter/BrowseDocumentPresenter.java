@@ -6,7 +6,7 @@ import android.content.Intent;
 
 import com.example.wanhao.aclassapp.bean.Document;
 import com.example.wanhao.aclassapp.config.ApiConstant;
-import com.example.wanhao.aclassapp.service.DownDocumentService;
+import com.example.wanhao.aclassapp.backService.DownDocumentService;
 import com.example.wanhao.aclassapp.util.FileConvertUtil;
 import com.example.wanhao.aclassapp.view.IBrowseDocumentView;
 
