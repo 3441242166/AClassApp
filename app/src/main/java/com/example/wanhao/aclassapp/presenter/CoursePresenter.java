@@ -129,7 +129,20 @@ public class CoursePresenter {
     }
 
     public void handleMessage(ChatBean bean){
-        view.getMessage(bean);
+        if((bean.getCourseID()+"").equals(courseID)){
+            view.getMessage(bean);
+        }else {
+            Realm realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+
+            Course course = realm.where(Course.class)
+                    .equalTo("id",bean.getCourseID()+"")
+                    .findFirst();
+            course.setUnReadNum(course.getUnReadNum()+1);
+
+            realm.commitTransaction();
+        }
+
     }
 
     private static final String[] OTHER_TITLE =
