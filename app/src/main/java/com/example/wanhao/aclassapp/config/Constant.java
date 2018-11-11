@@ -15,4 +15,7 @@ public class Constant {
 
     //请求码
     public static final int REGISTER_CODE = 10;
+
+    //TAG系列
+    public static final String TAG_EVENTBUS = "EventBus";
 }

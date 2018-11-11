@@ -11,12 +11,14 @@ import io.realm.annotations.PrimaryKey;
  * Created by wanhao on 2018/2/24.
  */
 
-public class Course extends RealmObject implements Serializable{
+public class Course implements Serializable{
     @PrimaryKey
     @SerializedName("course_id")
     private String id;
     @SerializedName("course_name")
     private String name;
+    @SerializedName("major")
+    private String major;
     @SerializedName("college")
     private String parent;
     @SerializedName("student_sum")
@@ -92,5 +94,13 @@ public class Course extends RealmObject implements Serializable{
 
     public void setUnReadNum(int unReadNum) {
         this.unReadNum = unReadNum;
+    }
+
+    public String getMajor() {
+        return major;
+    }
+
+    public void setMajor(String major) {
+        this.major = major;
     }
 }

@@ -8,13 +8,12 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.adapter.HomeworkAdapter;
 import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
-import com.example.wanhao.aclassapp.bean.ChatBean;
 import com.example.wanhao.aclassapp.bean.Homework;
 import com.example.wanhao.aclassapp.config.ApiConstant;
+import com.example.wanhao.aclassapp.db.CourseDB;
 import com.example.wanhao.aclassapp.presenter.HomeworkPresenter;
 import com.example.wanhao.aclassapp.view.IHomeworkView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;

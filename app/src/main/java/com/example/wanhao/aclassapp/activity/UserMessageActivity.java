@@ -19,6 +19,7 @@ import com.example.wanhao.aclassapp.adapter.SettingAdapter;
 import com.example.wanhao.aclassapp.base.BaseTokenActivity;
 import com.example.wanhao.aclassapp.bean.User;
 import com.example.wanhao.aclassapp.config.ApiConstant;
+import com.example.wanhao.aclassapp.db.CourseDB;
 import com.example.wanhao.aclassapp.presenter.UserMessagePresenter;
 import com.example.wanhao.aclassapp.util.ColorDividerItemDecoration;
 import com.example.wanhao.aclassapp.util.DialogUtil;
@@ -26,6 +27,7 @@ import com.example.wanhao.aclassapp.util.FileConvertUtil;
 import com.example.wanhao.aclassapp.view.IUserMessageView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

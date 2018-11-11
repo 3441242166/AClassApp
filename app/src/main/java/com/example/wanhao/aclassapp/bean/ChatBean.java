@@ -14,12 +14,12 @@ import io.realm.RealmObject;
  * Created by wanhao on 2018/4/5.
  */
 
-public class ChatBean extends RealmObject implements MultiItemEntity ,Serializable{
+public class ChatBean implements MultiItemEntity ,Serializable{
     public static final int ME = 1;
     public static final int OTHER = 2;
 
     @SerializedName("id")
-    int id;
+    String id;
     @SerializedName("content")
     String content;
     @SerializedName("date")
@@ -27,7 +27,7 @@ public class ChatBean extends RealmObject implements MultiItemEntity ,Serializab
     @SerializedName("messageType")
     String messageType;
     @SerializedName("courseId")
-    int courseID;
+    String courseID;
     @SerializedName("user")
     User user;
 
@@ -38,11 +38,11 @@ public class ChatBean extends RealmObject implements MultiItemEntity ,Serializab
         user = new User();
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -70,11 +70,11 @@ public class ChatBean extends RealmObject implements MultiItemEntity ,Serializab
         this.messageType = messageType;
     }
 
-    public int getCourseID() {
+    public String getCourseID() {
         return courseID;
     }
 
-    public void setCourseID(int courseID) {
+    public void setCourseID(String courseID) {
         this.courseID = courseID;
     }
 

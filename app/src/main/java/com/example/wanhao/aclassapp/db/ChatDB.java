@@ -1,29 +1,70 @@
 package com.example.wanhao.aclassapp.db;
 
+import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.example.wanhao.aclassapp.bean.ChatBean;
 import com.example.wanhao.aclassapp.util.DateUtil;
 
+import java.io.Serializable;
+
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
-public class ChatDB extends RealmObject {
+public class ChatDB extends RealmObject implements MultiItemEntity,Serializable {
+    public static final int USER_ME = 0;
+    public static final int USER_OTHER = 1;
+    public static final int USER_TEACHER = 2;
 
-    int chatID;
-    String content;
-    String date;
-    long dateNum;
-    String type;
-    int courseID;
-    String userName;
-    String userCount;
-    String avatar;
-    int roleID;
+    @PrimaryKey
+    private String chatID;
+    private String courseID;
+    private String userID;
+
+    private String content;
+    private String date;
+    private String messageType;
+
+    private  UserDB user;
+
+    private int itemType;
+
+    public ChatDB() {
+    }
+
+    public ChatDB(ChatBean bean) {
+        chatID = bean.getId();
+        courseID = bean.getCourseID();
+        userID = bean.getUser().getId();
+
+        content = bean.getContent();
+        date = bean.getDate();
+        messageType = bean.getMessageType();
+
+        user = new UserDB(bean.getUser());
+    }
 
 
-    public int getChatID() {
+    public String getChatID() {
         return chatID;
     }
 
-    public void setChatID(int chatID) {
+    public void setChatID(String chatID) {
         this.chatID = chatID;
+    }
+
+    public String getCourseID() {
+        return courseID;
+    }
+
+    public void setCourseID(String courseID) {
+        this.courseID = courseID;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 
     public String getContent() {
@@ -40,62 +81,30 @@ public class ChatDB extends RealmObject {
 
     public void setDate(String date) {
         this.date = date;
-        setDateNum(DateUtil.getTimeLongByString(date));
     }
 
-    public long getDateNum() {
-        return dateNum;
+    public String getMessageType() {
+        return messageType;
     }
 
-    public void setDateNum(long dateNum) {
-        this.dateNum = dateNum;
+    public void setMessageType(String messageType) {
+        this.messageType = messageType;
     }
 
-    public String getType() {
-        return type;
+    public UserDB getUser() {
+        return user;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setUser(UserDB user) {
+        this.user = user;
     }
 
-    public int getCourseID() {
-        return courseID;
+    @Override
+    public int getItemType() {
+        return itemType;
     }
 
-    public void setCourseID(int courseID) {
-        this.courseID = courseID;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getUserCount() {
-        return userCount;
-    }
-
-    public void setUserCount(String userCount) {
-        this.userCount = userCount;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public int getRoleID() {
-        return roleID;
-    }
-
-    public void setRoleID(int roleID) {
-        this.roleID = roleID;
+    public void setItemType(int itemType) {
+        this.itemType = itemType;
     }
 }

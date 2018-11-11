@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.LinearSnapHelper;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -13,6 +12,7 @@ import com.example.wanhao.aclassapp.adapter.QuestionAdapter;
 import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
 import com.example.wanhao.aclassapp.bean.Homework;
 import com.example.wanhao.aclassapp.bean.Question;
+import com.example.wanhao.aclassapp.db.CourseDB;
 import com.example.wanhao.aclassapp.presenter.DoHomeworkPresenter;
 import com.example.wanhao.aclassapp.util.PagingScrollHelper;
 import com.example.wanhao.aclassapp.view.DoHomeworkView;

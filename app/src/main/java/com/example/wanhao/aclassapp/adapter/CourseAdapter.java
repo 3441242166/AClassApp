@@ -20,6 +20,7 @@ import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.bean.Assignment;
 import com.example.wanhao.aclassapp.bean.Course;
 import com.example.wanhao.aclassapp.config.ApiConstant;
+import com.example.wanhao.aclassapp.db.CourseDB;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 
 import java.util.List;
@@ -28,31 +29,31 @@ import java.util.List;
  * Created by wanhao on 2018/2/24.
  */
 
-public class CourseAdapter extends BaseQuickAdapter<Course,BaseViewHolder> {
+public class CourseAdapter extends BaseQuickAdapter<CourseDB,BaseViewHolder> {
 
     private Context context;
 
-    public CourseAdapter(@Nullable List<Course> data,Context context) {
+    public CourseAdapter(@Nullable List<CourseDB> data,Context context) {
         super(R.layout.item_course, data);
         this.context = context;
     }
 
     @SuppressLint("SetTextI18n")
     @Override
-    protected void convert(BaseViewHolder helper, Course item) {
+    protected void convert(BaseViewHolder helper, CourseDB item) {
 
         helper.setText(R.id.item_course_name,item.getName());
-        helper.setText(R.id.item_course_parent, item.getParent());
-        helper.setText(R.id.item_course_number,"一共有 "+item.getNum()+" 人");
+        helper.setText(R.id.item_course_parent, item.getMajor());
+        helper.setText(R.id.item_course_number,"一共有 "+item.getStudentSum()+" 人");
         TextView worring = helper.getView(R.id.item_course_warring);
 
-        if(item.getUnReadNum()>0){
+        if(item.getUnRead()>0){
             worring.setVisibility(View.VISIBLE);
-            worring.setText(""+item.getUnReadNum());
+            worring.setText(""+item.getUnRead());
         }else {
             worring.setVisibility(View.GONE);
         }
 
-        Glide.with(context).load(item.getImgUrl()).crossFade().into((ImageView) helper.getView(R.id.item_course_img));
+        Glide.with(context).load(item.getPicture()).crossFade().into((ImageView) helper.getView(R.id.item_course_img));
     }
 }

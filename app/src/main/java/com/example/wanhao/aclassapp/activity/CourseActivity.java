@@ -17,8 +17,9 @@ import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.adapter.ChatAdapter;
 import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
 import com.example.wanhao.aclassapp.bean.ChatBean;
-import com.example.wanhao.aclassapp.broadcast.CourseReceiver;
 import com.example.wanhao.aclassapp.config.ApiConstant;
+import com.example.wanhao.aclassapp.db.ChatDB;
+import com.example.wanhao.aclassapp.db.CourseDB;
 import com.example.wanhao.aclassapp.presenter.CoursePresenter;
 import com.example.wanhao.aclassapp.view.CourseView;
 
@@ -34,7 +35,7 @@ import static com.example.wanhao.aclassapp.util.SaveDataUtil.getValueFromSharedP
 public class CourseActivity extends TopBarBaseActivity implements CourseView {
     private static final String TAG = "CourseActivity";
 
-    CoursePresenter presenter;
+    private CoursePresenter presenter;
 
     @BindView(R.id.ac_course_list)
     RecyclerView recyclerView;
@@ -47,12 +48,10 @@ public class CourseActivity extends TopBarBaseActivity implements CourseView {
     @BindView(R.id.ac_course_layout)
     ConstraintLayout layout;
 
-    List<ChatBean> chatList;
+    List<ChatDB> chatList;
 
     ChatAdapter adapter;
-    LinearLayoutManager manager ;
-    private CourseReceiver receiver;
-    String courseID ;
+    String courseID;
 
     boolean mIsSoftKeyboardShowing = false;
 
@@ -65,11 +64,6 @@ public class CourseActivity extends TopBarBaseActivity implements CourseView {
     protected void init(Bundle savedInstanceState) {
         courseID = getIntent().getStringExtra(ApiConstant.COURSE_ID);
         presenter = new CoursePresenter(this,this,courseID);
-
-        receiver = new CourseReceiver();
-        IntentFilter filter = new IntentFilter(ApiConstant.COURSE_ACTION);
-        filter.setPriority(999);
-        registerReceiver(receiver,filter);
 
         initView();
         initEvent();
@@ -107,18 +101,11 @@ public class CourseActivity extends TopBarBaseActivity implements CourseView {
             }
         });
 
-        receiver.setOnNewMessageListener(data -> {
-            Log.i(TAG, "onNewMessage: getMessage " + data.getContent());
-            presenter.handleMessage(data);
-        });
     }
 
     private void initView() {
-        String courseName = getIntent().getStringExtra(ApiConstant.COURSE_NAME);
-        setTitle(courseName);
-        manager = new LinearLayoutManager(this);
         adapter = new ChatAdapter(null,this);
-        recyclerView.setLayoutManager(manager);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         chatList = new ArrayList<>();
         adapter.setNewData(chatList);
         recyclerView.setAdapter(adapter);
@@ -147,17 +134,18 @@ public class CourseActivity extends TopBarBaseActivity implements CourseView {
     }
 
     @Override
-    public void getMessage(ChatBean message) {
+    public void getMessage(ChatDB message) {
+        Log.i(TAG, "getMessage");
         chatList.add(message);
         adapter.notifyDataSetChanged();
         recyclerView.smoothScrollToPosition(chatList.size()-1);
     }
 
     @Override
-    public void getHistoryMessage(List<ChatBean> list) {
+    public void getHistoryMessage(List<ChatDB> list) {
         chatList.addAll(list);
         adapter.notifyDataSetChanged();
-        Log.i(TAG, "getHistoryMessage: list size  = "+list.size());
+
         if(chatList.size()>0)
             recyclerView.smoothScrollToPosition(chatList.size()-1);
     }
@@ -172,11 +160,13 @@ public class CourseActivity extends TopBarBaseActivity implements CourseView {
         showTokenErrorDialog("异地登陆");
     }
 
-    /*----------------------------------------------------------------------------------------------*/
+    @Override
+    public void initView(CourseDB course) {
+        setTitle(course.getName());
+    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(receiver);
     }
 }

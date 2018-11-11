@@ -65,6 +65,14 @@ public class ApiConstant {
     public static final String DOWNED_ING = "ing";
     public static final String DOWNED_BEGIN = "begin";
     public static final String DOWNED_ID = "id";
+    /********************** IM 有关************************/
+    public static final String IM_ACTION = "im_action";
+    public static final int MESSAGE_CHAT = 1;
+    public static final int MESSAGE_HOMEWORK =2;
+    public static final int MESSAGE_NOTICE = 3;
+    public static final int MESSAGE_SIGN = 4;
+    public static final int MESSAGE_CONNECT = 5;
+    public static final int MESSAGE_DISCONNECT = 6;
 
     public enum DOWNLOAD_STATE{
         NONE,ING,STOP,FINISH

@@ -19,10 +19,12 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.config.ApiConstant;
+import com.example.wanhao.aclassapp.db.CourseDB;
 import com.example.wanhao.aclassapp.presenter.LodingPresenter;
 import com.example.wanhao.aclassapp.util.DialogUtil;
 import com.example.wanhao.aclassapp.view.ILodingView;
 
+import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;

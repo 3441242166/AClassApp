@@ -11,11 +11,15 @@ import android.widget.Toast;
 import com.acker.simplezxing.activity.CaptureActivity;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.base.IBaseTokenView;
 import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
 import com.example.wanhao.aclassapp.config.ApiConstant;
+import com.example.wanhao.aclassapp.db.CourseDB;
 import com.example.wanhao.aclassapp.presenter.AddCoursePresenter;
 import com.example.wanhao.aclassapp.util.DialogUtil;
 import com.example.wanhao.aclassapp.view.IAddCourseView;
+
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -33,6 +37,22 @@ public class AddCourseActivity extends TopBarBaseActivity implements View.OnClic
     EditText editText;
 
     MaterialDialog dialog;
+
+    @Override
+    protected int getContentView() {
+        return R.layout.activity_add_course;
+    }
+
+    @Override
+    protected void init(Bundle savedInstanceState) {
+        setTopLeftButton(this::finish);
+        setTitle("添加课程");
+        dialog = DialogUtil.waitDialog(this);
+        mPresenter = new AddCoursePresenter(this,this);
+
+        abtAdd.setOnClickListener(this);
+        floatingActionButton.setOnClickListener(this);
+    }
 
     @Override
     public void onClick(View view) {
@@ -70,22 +90,6 @@ public class AddCourseActivity extends TopBarBaseActivity implements View.OnClic
     }
 
     @Override
-    protected int getContentView() {
-        return R.layout.activity_add_course;
-    }
-
-    @Override
-    protected void init(Bundle savedInstanceState) {
-        setTopLeftButton(this::finish);
-        setTitle("添加课程");
-        dialog = DialogUtil.waitDialog(this);
-        mPresenter = new AddCoursePresenter(this,this);
-
-        abtAdd.setOnClickListener(this);
-        floatingActionButton.setOnClickListener(this);
-    }
-
-    @Override
     public void showProgress() {
         dialog.show();
     }
@@ -96,8 +100,9 @@ public class AddCourseActivity extends TopBarBaseActivity implements View.OnClic
     }
 
     @Override
-    public void loadDataSuccess(String tData) {
-        Toast.makeText(this,tData, Toast.LENGTH_SHORT).show();
+    public void loadDataSuccess(String data) {
+        Toast.makeText(this,data, Toast.LENGTH_SHORT).show();
+
         Intent intent = new Intent();
         intent.putExtra(RESULT_ADD, ApiConstant.ADD_SUCCESS);
         setResult(ApiConstant.ADD_SUCCESS, intent);

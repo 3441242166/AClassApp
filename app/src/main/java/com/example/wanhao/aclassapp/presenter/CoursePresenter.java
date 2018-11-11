@@ -31,11 +31,17 @@ import com.example.wanhao.aclassapp.bean.ChatResult;
 import com.example.wanhao.aclassapp.bean.Course;
 import com.example.wanhao.aclassapp.bean.GridBean;
 import com.example.wanhao.aclassapp.config.ApiConstant;
+import com.example.wanhao.aclassapp.config.Constant;
+import com.example.wanhao.aclassapp.db.ChatDB;
+import com.example.wanhao.aclassapp.db.CourseDB;
+import com.example.wanhao.aclassapp.util.GsonUtils;
 import com.example.wanhao.aclassapp.util.PopupUtil;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.CourseView;
 import com.google.gson.Gson;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.reactivestreams.Subscriber;
@@ -44,7 +50,9 @@ import org.reactivestreams.Subscription;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.realm.Realm;
@@ -67,13 +75,22 @@ public class CoursePresenter {
     private CourseView view;
     private Realm realm;
 
-    private String courseID;
+    private CourseDB course;
 
     public CoursePresenter(Context context, CourseView view,String courseId){
         this.context  = context;
         this.view = view;
-        this.courseID = courseId;
+
         realm = Realm.getDefaultInstance();
+        EventBus.getDefault().register(this);
+
+        realm.beginTransaction();
+        course = realm.where(CourseDB.class)
+                .equalTo("courseID",courseId)
+                .findFirst();
+        realm.commitTransaction();
+
+        view.initView(course);
     }
 
     public void init(){
@@ -83,30 +100,39 @@ public class CoursePresenter {
 
     private void getHistoryList(){
         realm.beginTransaction();
-        List<ChatBean> list = realm.where(ChatBean.class)
-                .equalTo("courseID",Integer.valueOf(courseID))
+
+        List<ChatDB> list = realm.where(ChatDB.class)
+                //.equalTo("courseID",course.getCourseID())
                 .findAllAsync();
         String count = SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_COUNT);
-        for(ChatBean bean:list){
+
+        if(list == null || list.size()==0){
+            Log.i(TAG, "getHistoryList: 无历史记录");
+            realm.commitTransaction();
+            return;
+        }
+
+        for(ChatDB bean:list){
             if(bean.getUser().getCount().equals(count)){
-                bean.setItemType(ME);
+                bean.setItemType(ChatDB.USER_ME);
             }else {
-                bean.setItemType(OTHER);
+                bean.setItemType(ChatDB.USER_OTHER);
             }
         }
+
         realm.commitTransaction();
-
-
+        Log.i(TAG, "getHistoryList: list.size = "+list.size());
         view.getHistoryMessage(list);
-
     }
 
     private void  clearUnReadMessage(){
         realm.beginTransaction();
-        Course course = realm.where(Course.class)
-                .equalTo("id",courseID)
+
+        CourseDB course = realm.where(CourseDB.class)
+                .equalTo("courseID",this.course.getCourseID())
                 .findFirst();
-        course.setUnReadNum(0);
+        course.setUnRead(0);
+
         realm.commitTransaction();
     }
 
@@ -114,35 +140,35 @@ public class CoursePresenter {
         if(TextUtils.isEmpty(message)){
             return;
         }
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("content", message);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        HashMap<String,String> map = new HashMap<>();
+        map.put("content", message);
+
+        String msg = GsonUtils.toJson(map);
 
         Intent intent = new Intent(context,CourseService.class);
-        intent.putExtra(ApiConstant.COURSE_ID,courseID);
-        intent.putExtra(ApiConstant.COURSE_MESSAGE,jsonObject.toString());
-        context.startService(intent);
+        intent.putExtra(ApiConstant.IM_ACTION ,ApiConstant.MESSAGE_CHAT);
+        intent.putExtra(ApiConstant.COURSE_ID ,course.getCourseID());
+        intent.putExtra(ApiConstant.COURSE_MESSAGE ,msg);
 
+        context.startService(intent);
     }
 
-    public void handleMessage(ChatBean bean){
-        if((bean.getCourseID()+"").equals(courseID)){
+    @Subscribe(priority = 999)
+    public void handleIMMessage(ChatDB bean) {
+        Log.i(Constant.TAG_EVENTBUS, "CoursePresenter: content = "+bean.getContent());
+
+        if((bean.getCourseID()).equals(course.getCourseID())){
             view.getMessage(bean);
         }else {
             Realm realm = Realm.getDefaultInstance();
             realm.beginTransaction();
 
-            Course course = realm.where(Course.class)
-                    .equalTo("id",bean.getCourseID()+"")
-                    .findFirst();
-            course.setUnReadNum(course.getUnReadNum()+1);
+            //设置未读消息
 
             realm.commitTransaction();
         }
 
+        EventBus.getDefault().cancelEventDelivery(bean);
     }
 
     private static final String[] OTHER_TITLE =

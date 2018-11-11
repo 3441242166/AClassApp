@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.activity.AddCourseActivity;
 import com.example.wanhao.aclassapp.bean.Course;
 import com.example.wanhao.aclassapp.bean.HttpResult;
 import com.example.wanhao.aclassapp.config.ApiConstant;
@@ -72,7 +73,6 @@ public class AddCoursePresenter{
 
                 });
     }
-
 
 }
 

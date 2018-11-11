@@ -16,7 +16,6 @@ public interface RegisterService {
 //    @POST("user/checkphoneisused")
 //    Call<HttpResult<String>> checkPhoneIsUsed(@Field(ApiConstant.TEL_NUM) String telNum);
 //
-//    //TODO 短信验证码
 //    @FormUrlEncoded
 //    @POST("sendcode.action")
 //    Call<SMSVerifyResponse> getVerifyCode(@HeaderMap Map<String, String> headers,

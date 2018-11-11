@@ -1,39 +1,25 @@
 package com.example.wanhao.aclassapp.backService;
 
 import android.annotation.SuppressLint;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.RequiresApi;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.TextureView;
 
-import com.example.wanhao.aclassapp.R;
-import com.example.wanhao.aclassapp.activity.BrowseDocumentActivity;
-import com.example.wanhao.aclassapp.activity.CourseActivity;
 import com.example.wanhao.aclassapp.bean.ChatBean;
 import com.example.wanhao.aclassapp.bean.ChatResult;
-import com.example.wanhao.aclassapp.bean.Course;
-import com.example.wanhao.aclassapp.broadcast.BackReceiver;
 import com.example.wanhao.aclassapp.config.ApiConstant;
+import com.example.wanhao.aclassapp.config.Constant;
+import com.example.wanhao.aclassapp.db.ChatDB;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.google.gson.Gson;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,27 +32,13 @@ import ua.naiksoftware.stomp.client.StompClient;
 import ua.naiksoftware.stomp.client.StompCommand;
 import ua.naiksoftware.stomp.client.StompMessage;
 
-import static com.chad.library.adapter.base.listener.SimpleClickListener.TAG;
-import static com.example.wanhao.aclassapp.config.ApiConstant.CHANNE_DOWNED_ID;
-import static com.example.wanhao.aclassapp.config.ApiConstant.CHANNE_DOWNED_NAME;
-import static com.example.wanhao.aclassapp.config.ApiConstant.CHANNE_IM_ID;
-import static com.example.wanhao.aclassapp.config.ApiConstant.CHANNE_IM_NAME;
 import static com.example.wanhao.aclassapp.config.ApiConstant.CHAT_URL;
-import static com.example.wanhao.aclassapp.util.NotificationUtils.createNotificationChanne;
 
 public class CourseService extends Service {
     private static final String TAG = "CourseService";
 
-    private static final String MESSAGE_CHAT = "chat";
-    private static final String MESSAGE_HOMEWORK = "homework";
-    private static final String MESSAGE_NOTICE = "notice";
-    private static final String MESSAGE_SIGN = "sign";
-    private static final String MESSAGE_CONNECT = "connect";
-
-    Map<String,ClientBean> clientMap = new HashMap<>();
-    private Intent broadcastIntent;
+    private Map<String,ClientBean> clientMap = new HashMap<>();
     private Realm realm;
-    private BackReceiver backReceiver;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -76,97 +48,68 @@ public class CourseService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        broadcastIntent = new Intent(ApiConstant.COURSE_ACTION);
-
+        EventBus.getDefault().register(this);
         realm = Realm.getDefaultInstance();
-        backReceiver = new BackReceiver();
-        IntentFilter filter = new IntentFilter(ApiConstant.COURSE_ACTION);
-        filter.setPriority(777);
-        registerReceiver(backReceiver,filter);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            backReceiver.setOnNewMessageListener(this::notificationMessage);
-        }else {
-
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void notificationMessage(ChatBean bean){
-        Log.i(TAG, "notificationMessage: message = "+bean.getContent());
-        Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-        Course course = realm.where(Course.class)
-                .equalTo("id",bean.getCourseID()+"")
-                .findFirst();
-        course.setUnReadNum(course.getUnReadNum()+1);
-        realm.commitTransaction();
-        //==========================================================================================
-        NotificationManager notificationManager= (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        createNotificationChanne(CHANNE_IM_ID, CHANNE_IM_NAME, NotificationManager.IMPORTANCE_HIGH,notificationManager);
-        Notification.Builder builder = new Notification.Builder(this,CHANNE_IM_ID);
-
-        Intent documentIntent = new Intent(this, CourseActivity.class);
-        documentIntent.putExtra(ApiConstant.COURSE_ID,bean.getCourseID());
-        PendingIntent mainPendingIntent = PendingIntent.getActivity(this, 0, documentIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-
-        builder.setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(bean.getUser().getNickName() + ": " +bean.getContent())
-                .setAutoCancel(true)
-                .setContentIntent(mainPendingIntent);
-
-        notificationManager.notify(bean.getId(),builder.build());
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if(intent==null){
-            return super.onStartCommand(intent, flags, startId);
-        }
-        String code = intent.getStringExtra("");
+        int code = intent.getIntExtra(ApiConstant.IM_ACTION,-1);
+        Log.i(TAG, "onStartCommand: code = "+ code);
         switch (code){
-            case MESSAGE_CHAT:
+            case ApiConstant.MESSAGE_CHAT:
+                sendMessage(intent);
+                break;
+            case ApiConstant.MESSAGE_HOMEWORK:
 
                 break;
+            case ApiConstant.MESSAGE_NOTICE:
 
+                break;
+            case ApiConstant.MESSAGE_SIGN:
+
+                break;
+            case ApiConstant.MESSAGE_CONNECT:
+                connect(intent);
+                break;
+            case ApiConstant.MESSAGE_DISCONNECT:
+
+                break;
         }
 
-        String id = intent.getStringExtra(ApiConstant.COURSE_ID);
-        String message  = intent.getStringExtra(ApiConstant.COURSE_MESSAGE);
-
-        if(!clientMap.containsKey(id)){
-
-            ClientBean bean = new ClientBean(id);
-            startConnect(bean);
-            clientMap.put(id,bean);
-
-            if(!TextUtils.isEmpty(message)){
-                sendMessage(message,id);
-            }
-        }else {
-            sendMessage(message,id);
-        }
         return super.onStartCommand(intent, flags, startId);
     }
 
+    void connect(Intent intent){
+        Log.i(TAG, "connect");
+        String id = intent.getStringExtra(ApiConstant.COURSE_ID);
+
+        //如果MAP包含此ID
+        if(clientMap.containsKey(id)){
+            ClientBean bean = clientMap.get(id);
+            bean.client.connect();
+        }else {
+            ClientBean bean = new ClientBean(id);
+            startConnect(bean);
+            clientMap.put(id,bean);
+        }
+    }
 
     @SuppressLint("CheckResult")
     void startConnect(ClientBean client){
+        Log.i(TAG, "startConnect");
         String groupUrl = "/app/group/"+ client.groupID;
         String responseUrl = "/g/"+ client.groupID;
 
-        Log.i(TAG, "init: groupUrl = " + groupUrl);
-        Log.i(TAG, "init: responseUrl = " + responseUrl);
+        Log.i(TAG, " init: groupUrl = " + groupUrl + "\n init: responseUrl = " + responseUrl);
 
         client.sendHeader = new StompHeader("destination", groupUrl);
         client.header = new StompHeader("Authorization", SaveDataUtil.getValueFromSharedPreferences(this, ApiConstant.USER_TOKEN));
 
-        if(!client.client.isConnected()) {
-            client.client = Stomp.over(WebSocket.class, CHAT_URL);
+        client.client = Stomp.over(WebSocket.class, CHAT_URL);
+        client.client.connect();
 
-            client.client.connect();
-
-            client.client.lifecycle().subscribe(lifecycleEvent -> {
+        client.client.lifecycle().subscribe(lifecycleEvent -> {
                 switch (lifecycleEvent.getType()) {
                     case OPENED:
                         Log.i(TAG, "Connect: stomp connection opened!");
@@ -175,70 +118,88 @@ public class CourseService extends Service {
                         Log.i(TAG, "Connect: Error occured!" + lifecycleEvent.getException());
                         break;
                     case CLOSED:
-                        Log.i(TAG + "dd", "Connect: stomp connection closed!");
+                        Log.i(TAG, "Connect: stomp connection closed!");
                         break;
                 }
             });
 
-            client.client.topic(responseUrl)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(stompMessage -> {
-                        String message = stompMessage.getPayload();
-                        Log.i(TAG, "init: message = " + message);
-                        ChatResult result = new Gson().fromJson(message, ChatResult.class);
-                        ChatBean bean = result.getMessage();
-                        if (!result.getStatus().equals(ApiConstant.RETURN_SUCCESS)) {
+        client.client.topic(responseUrl)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(stompMessage -> {
+                    String message = stompMessage.getPayload();
+                    Log.i(TAG, "message = " + message);
 
-                        } else {
-                            if (bean.getUser().getCount().equals(SaveDataUtil.getValueFromSharedPreferences(this, ApiConstant.USER_COUNT))) {
-                                bean.setItemType(ChatBean.ME);
-                            } else {
-                                bean.setItemType(ChatBean.OTHER);
-                            }
-                            addMessage(bean);
-                            broadcastIntent.putExtra(ApiConstant.COURSE_BEAN, bean);
-                            sendOrderedBroadcast(broadcastIntent, null);
-                        }
-                    });
-        }else {
+                    ChatResult result = new Gson().fromJson(message, ChatResult.class);
+                    ChatBean bean = result.getMessage();
 
-        }
+                    if (result.getStatus().equals(ApiConstant.RETURN_SUCCESS)) {
+                        ChatDB data = new ChatDB(bean);
+                        saveMessageDB(data);
+                        EventBus.getDefault().post(data);
+                    } else {
+                        Log.i(TAG, "startConnect: error = "+result.getStatus());
+                    }
+                });
+
     }
 
-    void sendMessage(String message,String courseID){
-        ClientBean bean = clientMap.get(courseID);
-
-        StompMessage stompMessage = new StompMessage(StompCommand.SEND, Arrays.asList(bean.sendHeader, bean.header) , message);
-
-        bean.client.send(stompMessage).subscribe(new Subscriber<Void>() {
-            @Override
-            public void onSubscribe(Subscription s) {
-                Log.i(TAG, "订阅成功");
-            }
-
-            @Override
-            public void onNext(Void aVoid) {
-
-            }
-
-            @Override
-            public void onError(Throwable t) {
-                t.printStackTrace();
-                Log.e(TAG, "发生错误：", t);
-            }
-
-            @Override
-            public void onComplete() {
-                Log.i(TAG, "发送消息成功！");
-            }
-        });
-    }
-
-
-    private void addMessage(ChatBean bean){
+    private void saveMessageDB(ChatDB bean){
+        Log.i(TAG, "saveMessageDB");
         realm.beginTransaction();
-        realm.copyToRealm(bean);
+
+        realm.copyToRealmOrUpdate(bean);
+
         realm.commitTransaction();
+    }
+
+    void sendMessage(Intent intent){
+        Log.i(TAG, "sendMessage");
+        String courseID = intent.getStringExtra(ApiConstant.COURSE_ID);
+        String message = intent.getStringExtra(ApiConstant.COURSE_MESSAGE);
+        ClientBean bean = clientMap.get(courseID);
+        StompMessage stompMessage = new StompMessage(StompCommand.SEND, Arrays.asList(bean.sendHeader, bean.header) , message);
+        bean.client.send(stompMessage).subscribe();
+    }
+
+    @Subscribe(priority = 777)
+    public void handleIMMessage(ChatBean chatBean) {
+        Log.i(TAG, "handleIMMessage");
+        Log.i(Constant.TAG_EVENTBUS, "CourseService: content = "+chatBean.getContent());
+        EventBus.getDefault().cancelEventDelivery(chatBean);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+//    private void notificationMessage(ChatDB bean){
+//        Log.i(TAG, "notificationMessage: message = "+bean.getContent());
+//        Realm realm = Realm.getDefaultInstance();
+//        realm.beginTransaction();
+//        Course course = realm.where(Course.class)
+//                .equalTo("id",bean.getCourseID()+"")
+//                .findFirst();
+//        course.setUnReadNum(course.getUnReadNum()+1);
+//        realm.commitTransaction();
+//        //==========================================================================================
+//        NotificationManager notificationManager= (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//        createNotificationChanne(CHANNE_IM_ID, CHANNE_IM_NAME, NotificationManager.IMPORTANCE_HIGH,notificationManager);
+//        Notification.Builder builder = new Notification.Builder(this,CHANNE_IM_ID);
+//
+//        Intent documentIntent = new Intent(this, CourseActivity.class);
+//        documentIntent.putExtra(ApiConstant.COURSE_ID,bean.getCourseID());
+//        PendingIntent mainPendingIntent = PendingIntent.getActivity(this, 0, documentIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+//
+//        builder.setSmallIcon(R.mipmap.ic_launcher)
+//                .setContentTitle(bean.getUser().getUserName() + ": " +bean.getContent())
+//                .setAutoCancel(true)
+//                .setContentIntent(mainPendingIntent);
+//
+//        notificationManager.notify(Integer.valueOf(bean.getChatID()),builder.build());
+//    }
+
+    @Override
+
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     static class ClientBean{
@@ -251,12 +212,5 @@ public class CourseService extends Service {
             this.groupID = groupID;
         }
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(backReceiver);
-    }
-
 }
 

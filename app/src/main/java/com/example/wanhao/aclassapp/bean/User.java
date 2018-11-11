@@ -6,7 +6,9 @@ import java.io.Serializable;
 
 import io.realm.RealmObject;
 
-public class User  extends RealmObject implements Serializable{
+public class User implements Serializable{
+    @SerializedName("user_id")
+    private String id;
     @SerializedName("user_name")
     private String count;
     @SerializedName("nickname")
@@ -26,6 +28,14 @@ public class User  extends RealmObject implements Serializable{
 
     public User(){
         role = new Role();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getNickName() {

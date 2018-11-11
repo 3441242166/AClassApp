@@ -10,7 +10,7 @@ import io.realm.RealmObject;
  * Created by wanhao on 2018/4/11.
  */
 
-public class Role extends RealmObject implements Serializable{
+public class Role implements Serializable{
     @SerializedName("role_id")
     private int roleID;
     @SerializedName("role")

@@ -1,7 +1,6 @@
 package com.example.wanhao.aclassapp.activity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.design.widget.FloatingActionButton;
@@ -17,15 +16,16 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.config.ApiConstant;
+import com.example.wanhao.aclassapp.db.CourseDB;
 import com.example.wanhao.aclassapp.presenter.RegisterPresenter;
 import com.example.wanhao.aclassapp.util.DialogUtil;
 import com.example.wanhao.aclassapp.view.IRegisterView;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import cn.pedant.SweetAlert.SweetAlertDialog;
 
-import static com.example.wanhao.aclassapp.config.ApiConstant.RESULT_ADD;
 import static com.example.wanhao.aclassapp.config.Constant.RESULT_SUCESS;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener,IRegisterView {

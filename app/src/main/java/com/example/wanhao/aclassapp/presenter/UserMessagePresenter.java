@@ -23,7 +23,6 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.example.wanhao.aclassapp.Model.CourseListModel;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.activity.UserMessageActivity;
 import com.example.wanhao.aclassapp.bean.HttpResult;
@@ -59,14 +58,12 @@ public class UserMessagePresenter {
 
     private Context context;
     private IUserMessageView view;
-    private CourseListModel model;
     private UserMessageService service;
 
 
     public UserMessagePresenter(Context context, IUserMessageView view){
         this.context = context;
         this.view = view;
-        model = new CourseListModel(context);
         service = RetrofitHelper.get(UserMessageService.class);
     }
 

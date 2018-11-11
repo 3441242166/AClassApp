@@ -76,10 +76,10 @@
         <activity android:name=".activity.SearchActivity" />
 
         <service
-            android:process="system"
             android:name=".backService.CourseService"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true" >
+        </service>
 
         <!--<receiver-->
             <!--android:name=".broadcast.MainReceiver"-->
