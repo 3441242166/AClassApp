@@ -157,4 +157,9 @@ public class CourseListFragment extends LazyLoadFragment implements ICourseFgVie
     public void onDestroy() {
         super.onDestroy();
     }
+
+    @Override
+    public void updateData(int index) {
+        adapter.notifyItemChanged(index);
+    }
 }

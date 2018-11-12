@@ -9,6 +9,9 @@ import java.util.List;
  */
 
 public interface IBaseView<T> {
+
+    //void setPresenter(IBasePresenter presenter);
+
     /**
      * @descriptoin  请求前加载progress
      * @date 2017/2/16 11:00

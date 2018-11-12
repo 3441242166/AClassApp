@@ -78,33 +78,36 @@
         <service
             android:name=".backService.CourseService"
             android:enabled="true"
-            android:exported="true" >
-        </service>
+            android:exported="true" />
 
-        <!--<receiver-->
-            <!--android:name=".broadcast.MainReceiver"-->
-            <!--android:enabled="false"-->
-            <!--android:exported="false" >-->
-            <!--<intent-filter android:priority="888">-->
-                <!--<action android:name="com.example.wanhao.aclassapp.im" />-->
-            <!--</intent-filter>-->
-        <!--</receiver>-->
+        <!-- <receiver -->
+        <!-- android:name=".broadcast.MainReceiver" -->
+        <!-- android:enabled="false" -->
+        <!-- android:exported="false" > -->
+        <!-- <intent-filter android:priority="888"> -->
+        <!-- <action android:name="com.example.wanhao.aclassapp.im" /> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
 
-        <!--<receiver-->
-            <!--android:name=".broadcast.CourseReceiver"-->
-            <!--android:enabled="false"-->
-            <!--android:exported="false" >-->
-            <!--<intent-filter android:priority="999">-->
-                <!--<action android:name="com.example.wanhao.aclassapp.im" />-->
-            <!--</intent-filter>-->
-        <!--</receiver>-->
 
-        <!--<receiver-->
-            <!--android:name=".broadcast.DownloadReceiver"-->
-            <!--android:enabled="false"-->
-            <!--android:exported="false" >-->
-        <!--</receiver>-->
+        <!-- <receiver -->
+        <!-- android:name=".broadcast.CourseReceiver" -->
+        <!-- android:enabled="false" -->
+        <!-- android:exported="false" > -->
+        <!-- <intent-filter android:priority="999"> -->
+        <!-- <action android:name="com.example.wanhao.aclassapp.im" /> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
 
+
+        <!-- <receiver -->
+        <!-- android:name=".broadcast.DownloadReceiver" -->
+        <!-- android:enabled="false" -->
+        <!-- android:exported="false" > -->
+        <!-- </receiver> -->
+
+        <activity android:name=".activity.ChatHistoryActivity" />
+        <activity android:name=".activity.NoticeActivity"></activity>
     </application>
 
 </manifest>

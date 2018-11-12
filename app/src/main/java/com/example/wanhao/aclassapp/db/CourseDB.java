@@ -20,9 +20,10 @@ public class CourseDB extends RealmObject {
     private int unRead;
 
     public CourseDB() {
+
     }
 
-    public CourseDB(Course course) {
+    public CourseDB(Course course,String count) {
         courseID = course.getId();
         name = course.getName();
         major = course.getMajor();
@@ -30,6 +31,7 @@ public class CourseDB extends RealmObject {
         code = course.getCode();
         studentSum = course.getNum();
         college = course.getParent();
+        userCount = count;
         priority = 0;
         unRead = 0;
     }

@@ -7,11 +7,15 @@ import com.example.wanhao.aclassapp.util.DateUtil;
 import java.io.Serializable;
 
 import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
 
 public class ChatDB extends RealmObject implements MultiItemEntity,Serializable {
+    @Ignore
     public static final int USER_ME = 0;
+    @Ignore
     public static final int USER_OTHER = 1;
+    @Ignore
     public static final int USER_TEACHER = 2;
 
     @PrimaryKey
@@ -39,7 +43,7 @@ public class ChatDB extends RealmObject implements MultiItemEntity,Serializable 
         date = bean.getDate();
         messageType = bean.getMessageType();
 
-        user = new UserDB(bean.getUser());
+        user = new UserDB(bean.getUser(),bean.getUser().getCount());
     }
 
 

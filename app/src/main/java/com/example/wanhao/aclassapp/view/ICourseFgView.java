@@ -11,5 +11,5 @@ import java.util.List;
  */
 
 public interface ICourseFgView extends IBaseTokenView<List<CourseDB>> {
-
+    void updateData(int index);
 }

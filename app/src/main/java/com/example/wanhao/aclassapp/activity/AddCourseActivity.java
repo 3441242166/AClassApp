@@ -62,7 +62,7 @@ public class AddCourseActivity extends TopBarBaseActivity implements View.OnClic
                 mPresenter.add(editText.getText().toString());
                 break;
             case R.id.ac_choose_fab:
-                startActivityForResult(new Intent(this, CaptureActivity.class), CaptureActivity.REQ_CODE);
+                //startActivityForResult(new Intent(this, CaptureActivity.class), CaptureActivity.REQ_CODE);
                 break;
         }
 

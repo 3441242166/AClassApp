@@ -69,7 +69,7 @@ public class DoHomeworkActivity extends TopBarBaseActivity implements DoHomework
 
         next.setOnClickListener(v -> {
             if(adapter.getData().size()>nowPos+1)
-                recyclerView.scrollToPosition(++nowPos);
+                recyclerView.smoothScrollToPosition(++nowPos);
         });
 
         finish.setOnClickListener(v -> {

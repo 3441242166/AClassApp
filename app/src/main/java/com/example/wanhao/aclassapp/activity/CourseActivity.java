@@ -167,6 +167,7 @@ public class CourseActivity extends TopBarBaseActivity implements CourseView {
 
     @Override
     protected void onDestroy() {
+        presenter.activityDestory();
         super.onDestroy();
     }
 }

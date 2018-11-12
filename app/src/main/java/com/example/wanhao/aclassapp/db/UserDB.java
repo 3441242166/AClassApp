@@ -19,12 +19,13 @@ public class UserDB extends RealmObject {
 
     }
 
-    public UserDB(User user){
+    public UserDB(User user,String phone){
         userID = user.getId();
         userName = user.getNickName();
         avatar = user.getAvatar();
         role = user.getRole().getRole();
         gender = user.getGender();
+        count = phone;
     }
 
     public String getGender() {

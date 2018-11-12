@@ -102,8 +102,8 @@ public class CoursePresenter {
         realm.beginTransaction();
 
         List<ChatDB> list = realm.where(ChatDB.class)
-                //.equalTo("courseID",course.getCourseID())
-                .findAllAsync();
+                .equalTo("courseID",course.getCourseID())
+                .findAll();
         String count = SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_COUNT);
 
         if(list == null || list.size()==0){
@@ -169,6 +169,10 @@ public class CoursePresenter {
         }
 
         EventBus.getDefault().cancelEventDelivery(bean);
+    }
+
+    public void activityDestory(){
+        EventBus.getDefault().unregister(this);
     }
 
     private static final String[] OTHER_TITLE =

@@ -67,9 +67,11 @@ public class DocumentActivity extends TopBarBaseActivity implements IDocumentVie
         adapter.setOnItemClickListener((adapter, view, position) -> {
             Log.i(TAG, "onItemClick: ");
             presenter.checkDocument(this.adapter.getData().get(position));
+
             Intent intent = new Intent(DocumentActivity.this,BrowseDocumentActivity.class);
             intent.putExtra(ApiConstant.DOCUMENT,this.adapter.getData().get(position));
             intent.putExtra(ApiConstant.COURSE_ID,courseID);
+            
             startActivity(intent);
         });
 

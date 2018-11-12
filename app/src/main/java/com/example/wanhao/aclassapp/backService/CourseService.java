@@ -54,6 +54,10 @@ public class CourseService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if(intent == null){
+            return super.onStartCommand(null, flags, startId);
+        }
+
         int code = intent.getIntExtra(ApiConstant.IM_ACTION,-1);
         Log.i(TAG, "onStartCommand: code = "+ code);
         switch (code){
@@ -78,6 +82,26 @@ public class CourseService extends Service {
         }
 
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    boolean isConnect(String id){
+
+        if(!clientMap.containsKey(id)){
+            return false;
+        }
+
+        ClientBean bean = clientMap.get(id);
+        if(bean.client == null){
+            return false;
+        }
+        if(bean.sendHeader == null){
+            return false;
+        }
+        if(bean.header == null){
+            return false;
+        }
+
+        return true;
     }
 
     void connect(Intent intent){
@@ -131,9 +155,16 @@ public class CourseService extends Service {
 
                     ChatResult result = new Gson().fromJson(message, ChatResult.class);
                     ChatBean bean = result.getMessage();
-
+                    String count = SaveDataUtil.getValueFromSharedPreferences(this,ApiConstant.USER_COUNT);
                     if (result.getStatus().equals(ApiConstant.RETURN_SUCCESS)) {
                         ChatDB data = new ChatDB(bean);
+
+                        if(count.equals(data.getUser().getCount())){
+                            data.setItemType(ChatDB.USER_ME);
+                        }else {
+                            data.setItemType(ChatDB.USER_OTHER);
+                        }
+
                         saveMessageDB(data);
                         EventBus.getDefault().post(data);
                     } else {
@@ -146,7 +177,6 @@ public class CourseService extends Service {
     private void saveMessageDB(ChatDB bean){
         Log.i(TAG, "saveMessageDB");
         realm.beginTransaction();
-
         realm.copyToRealmOrUpdate(bean);
 
         realm.commitTransaction();
@@ -156,9 +186,19 @@ public class CourseService extends Service {
         Log.i(TAG, "sendMessage");
         String courseID = intent.getStringExtra(ApiConstant.COURSE_ID);
         String message = intent.getStringExtra(ApiConstant.COURSE_MESSAGE);
-        ClientBean bean = clientMap.get(courseID);
-        StompMessage stompMessage = new StompMessage(StompCommand.SEND, Arrays.asList(bean.sendHeader, bean.header) , message);
-        bean.client.send(stompMessage).subscribe();
+
+        if(clientMap.get(courseID) ==null){
+            ClientBean bean = new ClientBean(courseID);
+            startConnect(bean);
+            clientMap.put(courseID,bean);
+            StompMessage stompMessage = new StompMessage(StompCommand.SEND, Arrays.asList(bean.sendHeader, bean.header) , message);
+            bean.client.send(stompMessage).subscribe();
+        }else {
+            ClientBean bean = clientMap.get(courseID);
+            StompMessage stompMessage = new StompMessage(StompCommand.SEND, Arrays.asList(bean.sendHeader, bean.header) , message);
+            bean.client.send(stompMessage).subscribe();
+        }
+
     }
 
     @Subscribe(priority = 777)
@@ -198,6 +238,7 @@ public class CourseService extends Service {
     @Override
 
     public void onDestroy() {
+        Log.i(TAG+"aaaaa", "onDestroy");
         super.onDestroy();
         EventBus.getDefault().unregister(this);
     }

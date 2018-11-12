@@ -20,6 +20,7 @@ import com.google.gson.reflect.TypeToken;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -38,6 +39,8 @@ public class CourseListPresenter {
     private Context context;
     private ICourseFgView view;
     private Realm realm;
+
+    private List<CourseDB> dataList;
 
     public CourseListPresenter(Context context, ICourseFgView view){
         this.context = context;
@@ -58,10 +61,11 @@ public class CourseListPresenter {
 
         // 如果本地数据库为空 则从网络获取数据
         if(list == null || list.size() == 0){
+            Log.i(TAG, "getListDataByDB: 本地数据库为空");
             getListDataByInternet();
             return;
         }
-
+        dataList = list;
         startService(list);
         view.loadDataSuccess(list);
     }
@@ -83,6 +87,7 @@ public class CourseListPresenter {
                     if(result.getCode().equals(ApiConstant.RETURN_SUCCESS)){
                         List<Course> list = result.getData().courses;
                         List<CourseDB> data = saveData(list);
+                        dataList = data;
                         startService(data);
                         view.loadDataSuccess(data);
                     }else{
@@ -105,30 +110,44 @@ public class CourseListPresenter {
     }
 
     private List<CourseDB> saveData(List<Course> list){
+        String count = SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_COUNT);
         List<CourseDB> data = new LinkedList<>();
         for(Course course:list){
-            data.add(new CourseDB(course));
+            data.add(new CourseDB(course,count));
         }
 
         realm.beginTransaction();
+
         realm.copyToRealmOrUpdate(data);
+
         realm.commitTransaction();
 
         return data;
     }
 
-    @Subscribe(priority = 888)
+    @Subscribe(priority = 888,threadMode = ThreadMode.MAIN)
     public void handleIMMessage(ChatDB bean) {
         Log.i(Constant.TAG_EVENTBUS, "ListPresenter: content = "+bean.getContent());
+
+        String count = SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_COUNT);
+
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
 
-        CourseDB course = realm.where(CourseDB.class)
-                .equalTo("courseID",bean.getCourseID())
-                .findFirst();
-        course.setUnRead(course.getUnRead()+1);
+        List<CourseDB> list = realm.where(CourseDB.class)
+                .equalTo("userCount",count)
+                .findAll();
+
+        for(CourseDB courseDB:list){
+            if(courseDB.getCourseID().equals(bean.getCourseID())){
+                courseDB.setUnRead(courseDB.getUnRead()+1);
+                break;
+            }
+        }
 
         realm.commitTransaction();
+
+        view.loadDataSuccess(list);
     }
 
     static class CourseListData {
