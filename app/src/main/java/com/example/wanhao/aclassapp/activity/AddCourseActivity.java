@@ -11,23 +11,17 @@ import android.widget.Toast;
 import com.acker.simplezxing.activity.CaptureActivity;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.wanhao.aclassapp.R;
-import com.example.wanhao.aclassapp.base.IBaseTokenView;
 import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
 import com.example.wanhao.aclassapp.config.ApiConstant;
-import com.example.wanhao.aclassapp.db.CourseDB;
 import com.example.wanhao.aclassapp.presenter.AddCoursePresenter;
 import com.example.wanhao.aclassapp.util.DialogUtil;
 import com.example.wanhao.aclassapp.view.IAddCourseView;
-
-import java.util.List;
 
 import butterknife.BindView;
 
 import static com.example.wanhao.aclassapp.config.ApiConstant.RESULT_ADD;
 
-public class AddCourseActivity extends TopBarBaseActivity implements View.OnClickListener, IAddCourseView {
-
-    AddCoursePresenter mPresenter;
+public class AddCourseActivity extends TopBarBaseActivity<AddCoursePresenter> implements View.OnClickListener, IAddCourseView {
 
     @BindView(R.id.ac_choose_fab)
     FloatingActionButton floatingActionButton;
@@ -48,7 +42,7 @@ public class AddCourseActivity extends TopBarBaseActivity implements View.OnClic
         setTopLeftButton(this::finish);
         setTitle("添加课程");
         dialog = DialogUtil.waitDialog(this);
-        mPresenter = new AddCoursePresenter(this,this);
+
 
         abtAdd.setOnClickListener(this);
         floatingActionButton.setOnClickListener(this);
@@ -59,7 +53,7 @@ public class AddCourseActivity extends TopBarBaseActivity implements View.OnClic
 
         switch (view.getId()) {
             case R.id.ac_choose_add:
-                mPresenter.add(editText.getText().toString());
+                presenter.add(editText.getText().toString());
                 break;
             case R.id.ac_choose_fab:
                 //startActivityForResult(new Intent(this, CaptureActivity.class), CaptureActivity.REQ_CODE);
@@ -76,12 +70,12 @@ public class AddCourseActivity extends TopBarBaseActivity implements View.OnClic
                 switch (resultCode) {
                     case RESULT_OK:
                         editText.setText(data.getStringExtra(CaptureActivity.EXTRA_SCAN_RESULT));
-                        mPresenter.add(data.getStringExtra(CaptureActivity.EXTRA_SCAN_RESULT));
+                        presenter.add(data.getStringExtra(CaptureActivity.EXTRA_SCAN_RESULT));
                         break;
                     case RESULT_CANCELED:
                         if (data != null) {
                             editText.setText(data.getStringExtra(CaptureActivity.EXTRA_SCAN_RESULT));
-                            mPresenter.add(data.getStringExtra(CaptureActivity.EXTRA_SCAN_RESULT));
+                            presenter.add(data.getStringExtra(CaptureActivity.EXTRA_SCAN_RESULT));
                         }
                         break;
                 }
@@ -110,7 +104,7 @@ public class AddCourseActivity extends TopBarBaseActivity implements View.OnClic
     }
 
     @Override
-    public void loadDataError(String throwable) {
+    public void errorMessage(String throwable) {
         Toast.makeText(this,throwable, Toast.LENGTH_SHORT).show();
     }
 
@@ -119,4 +113,8 @@ public class AddCourseActivity extends TopBarBaseActivity implements View.OnClic
         showTokenErrorDialog(msg);
     }
 
+    @Override
+    protected AddCoursePresenter setPresenter() {
+        return new AddCoursePresenter(this,this);
+    }
 }

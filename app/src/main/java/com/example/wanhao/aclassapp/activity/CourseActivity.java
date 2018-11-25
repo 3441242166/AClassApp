@@ -1,8 +1,7 @@
 package com.example.wanhao.aclassapp.activity;
 
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Rect;
+import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
@@ -12,30 +11,26 @@ import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.adapter.ChatAdapter;
 import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
-import com.example.wanhao.aclassapp.bean.ChatBean;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.db.ChatDB;
 import com.example.wanhao.aclassapp.db.CourseDB;
 import com.example.wanhao.aclassapp.presenter.CoursePresenter;
 import com.example.wanhao.aclassapp.view.CourseView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 
-import static com.example.wanhao.aclassapp.config.ApiConstant.COURSE_ID;
 import static com.example.wanhao.aclassapp.config.Constant.SCREEN_HEIGHT;
 import static com.example.wanhao.aclassapp.util.SaveDataUtil.getValueFromSharedPreferences;
 
-public class CourseActivity extends TopBarBaseActivity implements CourseView {
+public class CourseActivity extends TopBarBaseActivity<CoursePresenter> implements CourseView {
     private static final String TAG = "CourseActivity";
-
-    private CoursePresenter presenter;
 
     @BindView(R.id.ac_course_list)
     RecyclerView recyclerView;
@@ -48,10 +43,7 @@ public class CourseActivity extends TopBarBaseActivity implements CourseView {
     @BindView(R.id.ac_course_layout)
     ConstraintLayout layout;
 
-    List<ChatDB> chatList;
-
     ChatAdapter adapter;
-    String courseID;
 
     boolean mIsSoftKeyboardShowing = false;
 
@@ -62,28 +54,45 @@ public class CourseActivity extends TopBarBaseActivity implements CourseView {
 
     @Override
     protected void init(Bundle savedInstanceState) {
-        courseID = getIntent().getStringExtra(ApiConstant.COURSE_ID);
-        presenter = new CoursePresenter(this,this,courseID);
-
         initView();
         initEvent();
-        presenter.init();
+
+        String courseID = getIntent().getStringExtra(ApiConstant.COURSE_ID);
+        presenter.init(courseID);
+
+        new Handler().postDelayed(() -> recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (!recyclerView.canScrollVertically(-1)) {        //canScrollVertically
+                    //onScrolledToTop();
+                    Log.i(TAG, "UpFetch: tttttttttttttttttttttop");
+                    presenter.loadMore();
+                } else if (!recyclerView.canScrollVertically(1)) {
+                    //onScrolledToBottom();
+                    Log.i(TAG, "UpFetch: bbbbbbbbbbbbbbbbbbbottm");
+                }
+            }
+        }),1000);
+    }
+
+    private void initView() {
+        adapter = new ChatAdapter(null,this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
     }
 
     private void initEvent() {
-        btMore.setOnClickListener(v ->
-                presenter.openSelectAvatarDialog());
+        setTopLeftButton(this::finish);
+
+        btMore.setOnClickListener(v -> presenter.openSelectAvatarDialog());
 
         btSend.setOnClickListener(v -> {
             presenter.sendMessage(input.getText().toString());
             input.setText("");
         });
 
-        setTopLeftButton(this::finish);
-
         int screenHeight = Integer.valueOf(getValueFromSharedPreferences(this,SCREEN_HEIGHT));
         mIsSoftKeyboardShowing = false;
-        //注册布局变化监听
         getWindow().getDecorView().getViewTreeObserver().addOnGlobalLayoutListener(() -> {
             //判断窗口可见区域大小
             Rect r = new Rect();
@@ -103,14 +112,6 @@ public class CourseActivity extends TopBarBaseActivity implements CourseView {
 
     }
 
-    private void initView() {
-        adapter = new ChatAdapter(null,this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        chatList = new ArrayList<>();
-        adapter.setNewData(chatList);
-        recyclerView.setAdapter(adapter);
-    }
-
     int keyboardHeight = 0;
     private void showKeyboard(int keyboardHeight){
         Log.i(TAG, "showKeyboard: keyboardHeight height = "+keyboardHeight);
@@ -127,32 +128,33 @@ public class CourseActivity extends TopBarBaseActivity implements CourseView {
     }
 
     @Override
-    public void startActivity(Class activity,String data) {
-        Intent intent = new Intent(this,activity);
-        intent.putExtra(COURSE_ID,courseID);
-        startActivity(intent);
+    public void showProgress() {
+
     }
 
     @Override
-    public void getMessage(ChatDB message) {
-        Log.i(TAG, "getMessage");
-        chatList.add(message);
-        adapter.notifyDataSetChanged();
-        recyclerView.smoothScrollToPosition(chatList.size()-1);
+    public void dismissProgress() {
+
     }
 
     @Override
-    public void getHistoryMessage(List<ChatDB> list) {
-        chatList.addAll(list);
-        adapter.notifyDataSetChanged();
-
-        if(chatList.size()>0)
-            recyclerView.smoothScrollToPosition(chatList.size()-1);
+    public void loadDataSuccess(List<ChatDB> data) {
+        adapter.setNewData(data);
+        if(data.size()>0)
+            recyclerView.smoothScrollToPosition(adapter.getData().size()-1);
     }
 
     @Override
     public void errorMessage(String error) {
+        adapter.setUpFetching(false);
+    }
 
+    @Override
+    public void notifyDataChange(boolean isMove) {
+        adapter.notifyDataSetChanged();
+        if(isMove){
+            recyclerView.smoothScrollToPosition(adapter.getData().size()-1);
+        }
     }
 
     @Override
@@ -166,8 +168,9 @@ public class CourseActivity extends TopBarBaseActivity implements CourseView {
     }
 
     @Override
-    protected void onDestroy() {
-        presenter.activityDestory();
-        super.onDestroy();
+    protected CoursePresenter setPresenter() {
+        return new CoursePresenter(this,this);
     }
+
+
 }

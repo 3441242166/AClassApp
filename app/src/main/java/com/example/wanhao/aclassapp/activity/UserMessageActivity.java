@@ -19,7 +19,6 @@ import com.example.wanhao.aclassapp.adapter.SettingAdapter;
 import com.example.wanhao.aclassapp.base.BaseTokenActivity;
 import com.example.wanhao.aclassapp.bean.User;
 import com.example.wanhao.aclassapp.config.ApiConstant;
-import com.example.wanhao.aclassapp.db.CourseDB;
 import com.example.wanhao.aclassapp.presenter.UserMessagePresenter;
 import com.example.wanhao.aclassapp.util.ColorDividerItemDecoration;
 import com.example.wanhao.aclassapp.util.DialogUtil;
@@ -27,12 +26,11 @@ import com.example.wanhao.aclassapp.util.FileConvertUtil;
 import com.example.wanhao.aclassapp.view.IUserMessageView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class UserMessageActivity extends BaseTokenActivity implements IUserMessageView{
+public class UserMessageActivity extends BaseTokenActivity<UserMessagePresenter> implements IUserMessageView{
     @BindView(R.id.ac_usermessage_head)
     ImageView head;
     @BindView(R.id.ac_usermessage_name)
@@ -56,17 +54,20 @@ public class UserMessageActivity extends BaseTokenActivity implements IUserMessa
     private SettingAdapter mainAdapter;
     private SettingAdapter otherAdapter;
 
-    private UserMessagePresenter presenter;
 
     MaterialDialog dialog;
 
+
+    @Override
+    protected UserMessagePresenter setPresenter() {
+        return new UserMessagePresenter(this, this);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_usermessage);
         ButterKnife.bind(this);
-        presenter = new UserMessagePresenter(this, this);
 
         dialog = DialogUtil.waitDialog(this);
 
@@ -159,7 +160,7 @@ public class UserMessageActivity extends BaseTokenActivity implements IUserMessa
     }
 
     @Override
-    public void loadDataError(String throwable) {
+    public void errorMessage(String throwable) {
 
     }
 

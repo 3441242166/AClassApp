@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -20,13 +18,17 @@ import butterknife.ButterKnife;
  * Created by wanhao on 2017/10/3.
  */
 
-public abstract class TopBarBaseActivity extends BaseTokenActivity {
+public abstract class TopBarBaseActivity<T extends IBasePresenter> extends BaseTokenActivity<T> {
 
     private ConstraintLayout toolbar;
     private FrameLayout viewContent;
     private TextView tvTitle;
     private Button btLeft;
     private Button btRight;
+
+    protected abstract int getContentView();
+
+    protected abstract void init(Bundle savedInstanceState);
 
     public interface OnClickListener{
         void onClick();
@@ -72,10 +74,6 @@ public abstract class TopBarBaseActivity extends BaseTokenActivity {
         btRight.setBackgroundResource(iconResId);
         btRight.setOnClickListener(v -> onClickListener.onClick());
     }
-
-    protected abstract int getContentView();
-
-    protected abstract void init(Bundle savedInstanceState);
 
     @Override
     protected void onDestroy() {

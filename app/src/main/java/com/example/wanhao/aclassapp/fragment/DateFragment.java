@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.adapter.GridAdapter;
+import com.example.wanhao.aclassapp.base.IBasePresenter;
 import com.example.wanhao.aclassapp.base.LazyLoadFragment;
 import com.example.wanhao.aclassapp.bean.GridBean;
 
@@ -25,6 +26,11 @@ public class DateFragment extends LazyLoadFragment{
     private static final String[] OTHER_TITLE = {"Animation", "MultipleItem", "Header/Footer", "PullToRefresh", "Section", "设置", "退出登陆", "ItemClick"};
     private static final int[] OTHER_IMG = {R.mipmap.gv_animation, R.mipmap.gv_multipleltem, R.mipmap.gv_header_and_footer, R.mipmap.gv_pulltorefresh, R.mipmap.gv_section, R.mipmap.gv_empty, R.mipmap.gv_drag_and_swipe, R.mipmap.gv_item_click};
 
+
+    @Override
+    protected IBasePresenter setPresenter() {
+        return null;
+    }
 
     @Override
     protected int setContentView() {

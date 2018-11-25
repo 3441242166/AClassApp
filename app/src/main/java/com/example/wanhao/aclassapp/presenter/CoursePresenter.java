@@ -1,10 +1,7 @@
 package com.example.wanhao.aclassapp.presenter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -12,23 +9,18 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.PopupWindow;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.activity.ChatHistoryActivity;
 import com.example.wanhao.aclassapp.activity.DocumentActivity;
 import com.example.wanhao.aclassapp.activity.HomeWorkActivity;
 import com.example.wanhao.aclassapp.activity.RemarkActivity;
 import com.example.wanhao.aclassapp.activity.SignActivity;
 import com.example.wanhao.aclassapp.adapter.GridAdapter;
 import com.example.wanhao.aclassapp.backService.CourseService;
-import com.example.wanhao.aclassapp.backService.DownDocumentService;
-import com.example.wanhao.aclassapp.bean.ChatBean;
-import com.example.wanhao.aclassapp.bean.ChatResult;
-import com.example.wanhao.aclassapp.bean.Course;
+import com.example.wanhao.aclassapp.base.IBasePresenter;
 import com.example.wanhao.aclassapp.bean.GridBean;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.config.Constant;
@@ -38,49 +30,38 @@ import com.example.wanhao.aclassapp.util.GsonUtils;
 import com.example.wanhao.aclassapp.util.PopupUtil;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.CourseView;
-import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.realm.Realm;
-import okhttp3.WebSocket;
-import ua.naiksoftware.stomp.Stomp;
-import ua.naiksoftware.stomp.StompHeader;
-import ua.naiksoftware.stomp.client.StompClient;
-import ua.naiksoftware.stomp.client.StompCommand;
-import ua.naiksoftware.stomp.client.StompMessage;
 
-import static com.example.wanhao.aclassapp.bean.ChatBean.ME;
-import static com.example.wanhao.aclassapp.bean.ChatBean.OTHER;
-import static com.example.wanhao.aclassapp.config.ApiConstant.BASE_URL;
-import static com.example.wanhao.aclassapp.config.ApiConstant.CHAT_URL;
+import static com.example.wanhao.aclassapp.config.ApiConstant.COURSE_ID;
 
-public class CoursePresenter {
+public class CoursePresenter implements IBasePresenter {
     private static final String TAG = "CoursePresenter";
+    private static int LOAD_NUM = 15;
 
     private Context context;
     private CourseView view;
     private Realm realm;
 
     private CourseDB course;
+    private List<ChatDB> chatAllList;
+    private LinkedList<ChatDB> showList;
+    int chatSum = 0;
 
-    public CoursePresenter(Context context, CourseView view,String courseId){
+    public CoursePresenter(Context context, CourseView view){
         this.context  = context;
         this.view = view;
+    }
 
+    public void init(String courseId){
         realm = Realm.getDefaultInstance();
         EventBus.getDefault().register(this);
 
@@ -88,31 +69,33 @@ public class CoursePresenter {
         course = realm.where(CourseDB.class)
                 .equalTo("courseID",courseId)
                 .findFirst();
+        //未读消息设为0
+        course.setUnRead(0);
+
         realm.commitTransaction();
 
         view.initView(course);
-    }
 
-    public void init(){
         getHistoryList();
-        clearUnReadMessage();
+
     }
 
     private void getHistoryList(){
+        showList = new LinkedList<>();
+
         realm.beginTransaction();
 
-        List<ChatDB> list = realm.where(ChatDB.class)
+        chatAllList = realm.where(ChatDB.class)
                 .equalTo("courseID",course.getCourseID())
                 .findAll();
+
         String count = SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_COUNT);
-
-        if(list == null || list.size()==0){
-            Log.i(TAG, "getHistoryList: 无历史记录");
-            realm.commitTransaction();
-            return;
-        }
-
-        for(ChatDB bean:list){
+//        if(list == null || list.size()==0){
+//            Log.i(TAG, "getHistoryList: 无历史记录");
+//            realm.commitTransaction();
+//            return;
+//        }
+        for(ChatDB bean:chatAllList){
             if(bean.getUser().getCount().equals(count)){
                 bean.setItemType(ChatDB.USER_ME);
             }else {
@@ -121,19 +104,28 @@ public class CoursePresenter {
         }
 
         realm.commitTransaction();
-        Log.i(TAG, "getHistoryList: list.size = "+list.size());
-        view.getHistoryMessage(list);
+
+        Log.i(TAG, "getHistoryList: list.size = "+chatAllList.size());
+
+        loadMore();
+        view.loadDataSuccess(showList);
     }
 
-    private void  clearUnReadMessage(){
-        realm.beginTransaction();
+    public void loadMore(){
+        Log.i(TAG, "loadMore");
 
-        CourseDB course = realm.where(CourseDB.class)
-                .equalTo("courseID",this.course.getCourseID())
-                .findFirst();
-        course.setUnRead(0);
+        int startPos = chatAllList.size() - chatSum - 1;
+        if(startPos < 0){
+            view.errorMessage("没有更多咯");
+            return;
+        }
 
-        realm.commitTransaction();
+        for(int x = 0;x<LOAD_NUM && startPos >=0 ;x++,startPos--){
+            showList.addFirst(chatAllList.get(startPos));
+        }
+        chatSum +=LOAD_NUM;
+
+        view.notifyDataChange(false);
     }
 
     public void sendMessage(String message){
@@ -158,12 +150,17 @@ public class CoursePresenter {
         Log.i(Constant.TAG_EVENTBUS, "CoursePresenter: content = "+bean.getContent());
 
         if((bean.getCourseID()).equals(course.getCourseID())){
-            view.getMessage(bean);
-        }else {
-            Realm realm = Realm.getDefaultInstance();
-            realm.beginTransaction();
 
+            showList.add(bean);
+            view.notifyDataChange(true);
+
+        }else {
+            realm.beginTransaction();
             //设置未读消息
+            CourseDB course = realm.where(CourseDB.class)
+                    .equalTo("courseID",bean.getCourseID())
+                    .findFirst();
+            course.setUnRead(course.getUnRead()+1);
 
             realm.commitTransaction();
         }
@@ -171,7 +168,8 @@ public class CoursePresenter {
         EventBus.getDefault().cancelEventDelivery(bean);
     }
 
-    public void activityDestory(){
+    @Override
+    public void destroy() {
         EventBus.getDefault().unregister(this);
     }
 
@@ -183,7 +181,7 @@ public class CoursePresenter {
                     R.mipmap.gv_section, R.mipmap.gv_empty, R.mipmap.gv_drag_and_swipe};
     private static final Class[] CLASSES =
             {RemarkActivity.class,HomeWorkActivity.class,DocumentActivity.class,RemarkActivity.class,
-                    RemarkActivity.class,RemarkActivity.class,SignActivity.class};
+                    RemarkActivity.class,ChatHistoryActivity.class,SignActivity.class};
 
     public void openSelectAvatarDialog(){
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_course_more, null);
@@ -199,7 +197,10 @@ public class CoursePresenter {
         GridAdapter adapter = new GridAdapter(otherList,context);
         adapter.setOnItemClickListener((adapter1, view1, position) -> {
             Toast.makeText(context,""+position,Toast.LENGTH_SHORT).show();
-            this.view.startActivity(CLASSES[position],null);
+            //this.view.startActivity(CLASSES[position],null);
+            Intent intent = new Intent(context ,CLASSES[position]);
+            intent.putExtra(COURSE_ID ,course.getCourseID());
+            context.startActivity(intent);
             popupWindow.dismiss();
         });
         recyclerView.setAdapter(adapter);
@@ -208,4 +209,6 @@ public class CoursePresenter {
         popupWindow.setAnimationStyle(R.style.animTranslate);
         popupWindow.showAtLocation(parent, Gravity.BOTTOM, 0, 0);
     }
+
+
 }

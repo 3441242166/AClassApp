@@ -23,7 +23,7 @@ import butterknife.Unbinder;
 /**
  * 懒加载的Fragment
  */
-public abstract class LazyLoadFragment extends Fragment {
+public abstract class LazyLoadFragment<T extends IBasePresenter> extends Fragment {
     /**
      * 视图是否已经初初始化
      */
@@ -33,14 +33,18 @@ public abstract class LazyLoadFragment extends Fragment {
     private View view;
     private Unbinder mUnbinder;
 
+    public T presenter;
+
+    protected abstract T setPresenter();
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(setContentView(), container, false);
         mUnbinder = ButterKnife.bind(this, view);
+        presenter = setPresenter();
         isInit = true;
         /**初始化的时候去加载数据**/
-        Log.i(TAG, "onCreateView: "+ "  class: "+getClass().getName());
         isCanLoadData();
         return view;
     }
@@ -129,6 +133,9 @@ public abstract class LazyLoadFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         mUnbinder.unbind();
+        if(presenter!=null){
+            presenter.destroy();
+        }
     }
 
     protected void tokenError(String msg){

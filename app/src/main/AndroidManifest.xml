@@ -107,7 +107,8 @@
         <!-- </receiver> -->
 
         <activity android:name=".activity.ChatHistoryActivity" />
-        <activity android:name=".activity.NoticeActivity"></activity>
+        <activity android:name=".activity.NoticeActivity" />
+        <activity android:name=".activity.TestActivity"></activity>
     </application>
 
 </manifest>

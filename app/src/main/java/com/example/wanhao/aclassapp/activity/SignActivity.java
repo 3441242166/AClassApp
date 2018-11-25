@@ -1,15 +1,13 @@
 package com.example.wanhao.aclassapp.activity;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.base.IBasePresenter;
 import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
-
-import javax.security.auth.login.LoginException;
 
 import butterknife.BindView;
 
@@ -44,5 +42,10 @@ public class SignActivity extends TopBarBaseActivity {
         setTitle("签到");
         setTopLeftButton(this::finish);
 
+    }
+
+    @Override
+    protected IBasePresenter setPresenter() {
+        return null;
     }
 }

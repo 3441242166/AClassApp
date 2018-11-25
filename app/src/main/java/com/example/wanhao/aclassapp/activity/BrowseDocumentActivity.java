@@ -20,7 +20,7 @@ import com.example.wanhao.aclassapp.view.IBrowseDocumentView;
 
 import butterknife.BindView;
 
-public class BrowseDocumentActivity extends TopBarBaseActivity implements IBrowseDocumentView {
+public class BrowseDocumentActivity extends TopBarBaseActivity<BrowseDocumentPresenter> implements IBrowseDocumentView {
     private static final String TAG = "BrowseDocumentActivity";
 
     @BindView(R.id.ac_browse_button)
@@ -30,10 +30,8 @@ public class BrowseDocumentActivity extends TopBarBaseActivity implements IBrows
     @BindView(R.id.ac_browse_text)
     TextView textView;
 
-    private BrowseDocumentPresenter presenter;
     private DownloadReceiver receiver;
     private Document document;
-    private int downloadID;
 
 
 
@@ -46,7 +44,6 @@ public class BrowseDocumentActivity extends TopBarBaseActivity implements IBrows
 
     @Override
     protected void init(Bundle savedInstanceState) {
-        presenter = new BrowseDocumentPresenter(this,this);
         Intent intent = getIntent();
         document = (Document) intent.getSerializableExtra(ApiConstant.DOCUMENT);
         //获取权限
@@ -77,7 +74,7 @@ public class BrowseDocumentActivity extends TopBarBaseActivity implements IBrows
                     break;
                 case ING:
                     //暂停文件
-                    presenter.stopDownload(downloadID);
+                    presenter.stopDownload();
                     break;
                 case STOP:
                     //暂停文件
@@ -93,7 +90,7 @@ public class BrowseDocumentActivity extends TopBarBaseActivity implements IBrows
         receiver.setDownloadStateChangeListener(data -> {
             if (data.documentID == document.getId()) {
                 nowState = data.state;
-                downloadID = data.taskID;
+                presenter.setDownloadID(data.taskID);
                 button.setText(data.message);
             }
         });
@@ -108,7 +105,10 @@ public class BrowseDocumentActivity extends TopBarBaseActivity implements IBrows
     @Override
     protected void onStop() {
         super.onStop();
-        //销毁在onResume()方法中的广播
-        //unregisterReceiver(receiver);
+    }
+
+    @Override
+    protected BrowseDocumentPresenter setPresenter() {
+        return new BrowseDocumentPresenter(this,this);
     }
 }

@@ -5,7 +5,5 @@ package com.example.wanhao.aclassapp.view;
  */
 
 public interface ISplashView {
-    void goLoding();
-
-    void goCourse();
+    void finishActivity();
 }

@@ -25,6 +25,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.activity.UserMessageActivity;
+import com.example.wanhao.aclassapp.base.IBasePresenter;
 import com.example.wanhao.aclassapp.bean.HttpResult;
 import com.example.wanhao.aclassapp.bean.Role;
 import com.example.wanhao.aclassapp.bean.User;
@@ -53,7 +54,7 @@ import static com.example.wanhao.aclassapp.config.ApiConstant.RETURN_SUCCESS;
  * Created by wanhao on 2018/2/25.
  */
 
-public class UserMessagePresenter {
+public class UserMessagePresenter implements IBasePresenter {
     private static final String TAG = "UserMessagePresenter";
 
     private Context context;
@@ -88,12 +89,12 @@ public class UserMessagePresenter {
                     if(result.getCode().equals(RETURN_SUCCESS)){
                         view.loadDataSuccess(result.getData());
                     }else{
-                        view.loadDataError(result.getMessage());
+                        view.errorMessage(result.getMessage());
                         view.tokenError("token失效，请重新登陆");
                     }
                     view.dismissProgress();
                 }, throwable -> {
-                    view.loadDataError("获取个人信息失败");
+                    view.errorMessage("获取个人信息失败");
                     view.dismissProgress();
                     Log.i(TAG, "accept: "+throwable);
                 });
@@ -119,11 +120,11 @@ public class UserMessagePresenter {
                     if(result.getCode().equals(ApiConstant.RETURN_SUCCESS)){
                         view.changeUserSuccess();
                     }else{
-                        view.loadDataError(result.getMessage());
+                        view.errorMessage(result.getMessage());
                     }
                 }, throwable -> {
                     Log.i(TAG, "sentUserMessage: "+throwable);
-                    view.loadDataError(context.getResources().getString(R.string.error_internet));
+                    view.errorMessage(context.getResources().getString(R.string.error_internet));
                 });
         view.dismissProgress();
     }
@@ -140,7 +141,7 @@ public class UserMessagePresenter {
                     view.changeUserSuccess();
                     view.dismissProgress();
                 }, throwable -> {
-                    view.loadDataError(context.getResources().getString(R.string.error_internet));
+                    view.errorMessage(context.getResources().getString(R.string.error_internet));
                     view.dismissProgress();
                 });
     }
@@ -247,5 +248,10 @@ public class UserMessagePresenter {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void destroy() {
+
     }
 }

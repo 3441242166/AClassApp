@@ -2,31 +2,39 @@ package com.example.wanhao.aclassapp.presenter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.example.wanhao.aclassapp.bean.Course;
+import com.example.wanhao.aclassapp.activity.BrowseDocumentActivity;
+import com.example.wanhao.aclassapp.base.IBasePresenter;
 import com.example.wanhao.aclassapp.bean.Document;
 import com.example.wanhao.aclassapp.bean.HttpResult;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.DocumentService;
+import com.example.wanhao.aclassapp.util.FileConvertUtil;
+import com.example.wanhao.aclassapp.util.FileSizeUtil;
 import com.example.wanhao.aclassapp.util.RetrofitHelper;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.IDocumentView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.File;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
 
+import static com.example.wanhao.aclassapp.util.FileConvertUtil.getUriForFile;
+import static com.example.wanhao.aclassapp.util.FileSizeUtil.SIZETYPE_KB;
+
 /**
  * Created by wanhao on 2018/3/22.
  */
 
-public class DocumentPresenter {
+public class DocumentPresenter implements IBasePresenter {
     private static final String TAG = "DocumentPresenter";
 
     private IDocumentView view;
@@ -72,12 +80,12 @@ public class DocumentPresenter {
 
                         view.loadDataSuccess(temp);
                     }else{
-                        view.loadDataError(result.getMessage());
+                        view.errorMessage(result.getMessage());
                         getListByDB(courseID);
                     }
                 }, throwable -> {
                     getListByDB(courseID);
-                    view.loadDataError("网络异常");
+                    view.errorMessage("网络异常");
                 });
 
     }
@@ -103,6 +111,35 @@ public class DocumentPresenter {
     }
 
     public void checkDocument(Document document){
+
+        double size = FileSizeUtil.getFileOrFilesSize(FileConvertUtil.getFileDocumentPath()+document.getTitle(),SIZETYPE_KB);
+        Log.i(TAG, "checkDocument: documentSize = "+size + "documentSize = "+document.getSize());
+
+        if(size == Double.valueOf(document.getSize())){
+            openDocument(document);
+        }else {
+            Intent intent = new Intent(context,BrowseDocumentActivity.class);
+
+            intent.putExtra(ApiConstant.DOCUMENT,document);
+            intent.putExtra(ApiConstant.COURSE_ID,document.getCourseID());
+
+            context.startActivity(intent);
+        }
+
+    }
+
+    private void openDocument(Document document){
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        File file = new File(FileConvertUtil.getFileDocumentPath()+document.getTitle());
+        intent.addCategory("android.intent.category.DEFAULT");
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.setDataAndType(getUriForFile(context,file), FileConvertUtil.getMIMEType(file));//设置类型
+        context.startActivity(intent);
+    }
+
+    @Override
+    public void destroy() {
 
     }
 

@@ -5,11 +5,11 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.base.IBasePresenter;
 import com.example.wanhao.aclassapp.bean.Homework;
 import com.example.wanhao.aclassapp.bean.HttpResult;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.HomeworkService;
-import com.example.wanhao.aclassapp.util.DateUtil;
 import com.example.wanhao.aclassapp.util.ResourcesUtil;
 import com.example.wanhao.aclassapp.util.RetrofitHelper;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
@@ -18,7 +18,6 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -26,7 +25,7 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.example.wanhao.aclassapp.config.ApiConstant.RETURN_SUCCESS;
 
-public class HomeworkPresenter {
+public class HomeworkPresenter implements IBasePresenter {
     private static final String TAG = "HomeworkPresenter";
 
     Context context;
@@ -54,12 +53,17 @@ public class HomeworkPresenter {
                     if(result.getCode().equals(RETURN_SUCCESS)){
                         view.loadDataSuccess(result.getData().list);
                     }else{
-                        view.loadDataError(result.getMessage());
+                        view.errorMessage(result.getMessage());
                     }
                 }, throwable -> {
-                    view.loadDataError(ResourcesUtil.getString(R.string.error_internet));
+                    view.errorMessage(ResourcesUtil.getString(R.string.error_internet));
                     Log.i(TAG, "accept: "+throwable);
                 });
+
+    }
+
+    @Override
+    public void destroy() {
 
     }
 

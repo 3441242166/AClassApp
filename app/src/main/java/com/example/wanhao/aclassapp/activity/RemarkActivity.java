@@ -14,7 +14,6 @@ import com.example.wanhao.aclassapp.adapter.RemarkAdapter;
 import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
 import com.example.wanhao.aclassapp.bean.Remark;
 import com.example.wanhao.aclassapp.config.ApiConstant;
-import com.example.wanhao.aclassapp.db.CourseDB;
 import com.example.wanhao.aclassapp.presenter.RemarkPresenter;
 import com.example.wanhao.aclassapp.util.ColorDividerItemDecoration;
 import com.example.wanhao.aclassapp.view.IRemarkView;
@@ -24,7 +23,7 @@ import java.util.List;
 
 import butterknife.BindView;
 
-public class RemarkActivity extends TopBarBaseActivity implements IRemarkView {
+public class RemarkActivity extends TopBarBaseActivity<RemarkPresenter> implements IRemarkView {
     private static final String TAG = "RemarkActivity";
 
     @BindView(R.id.ac_remark_recycler)
@@ -32,7 +31,6 @@ public class RemarkActivity extends TopBarBaseActivity implements IRemarkView {
     @BindView(R.id.ac_remark_write)
     TextView write;
 
-    private RemarkPresenter presenter;
     private String courseID;
 
     private List<Remark> list = new ArrayList<>();
@@ -47,7 +45,6 @@ public class RemarkActivity extends TopBarBaseActivity implements IRemarkView {
     protected void init(Bundle savedInstanceState) {
         courseID = getIntent().getStringExtra(ApiConstant.COURSE_ID);
         Log.i(TAG, "init: courseID "+courseID);
-        presenter = new RemarkPresenter(this,this);
         initView();
         initEvent();
         presenter.getRemark(courseID);
@@ -112,7 +109,7 @@ public class RemarkActivity extends TopBarBaseActivity implements IRemarkView {
     }
 
     @Override
-    public void loadDataError(String throwable) {
+    public void errorMessage(String throwable) {
         Toast.makeText(this,throwable,Toast.LENGTH_SHORT).show();
     }
 
@@ -124,5 +121,10 @@ public class RemarkActivity extends TopBarBaseActivity implements IRemarkView {
     @Override
     public void sendRemarkError(String msg) {
         Toast.makeText(this,msg,Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected RemarkPresenter setPresenter() {
+        return new RemarkPresenter(this,this);
     }
 }

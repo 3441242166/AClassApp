@@ -4,7 +4,7 @@ import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.base.IBasePresenter;
 import com.example.wanhao.aclassapp.base.LazyLoadFragment;
 
-public class TipFragment extends LazyLoadFragment{
+public class TestFragment extends LazyLoadFragment {
     @Override
     protected IBasePresenter setPresenter() {
         return null;
@@ -12,7 +12,7 @@ public class TipFragment extends LazyLoadFragment{
 
     @Override
     protected int setContentView() {
-        return R.layout.fragment_tip;
+        return R.layout.fragment_test;
     }
 
     @Override

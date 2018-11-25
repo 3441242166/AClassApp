@@ -8,14 +8,19 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.activity.DocumentActivity;
 import com.example.wanhao.aclassapp.activity.LodingActivity;
+import com.example.wanhao.aclassapp.activity.TestActivity;
 import com.example.wanhao.aclassapp.activity.UserMessageActivity;
 import com.example.wanhao.aclassapp.adapter.GridAdapter;
+import com.example.wanhao.aclassapp.base.BaseTokenActivity;
+import com.example.wanhao.aclassapp.base.IBasePresenter;
 import com.example.wanhao.aclassapp.base.LazyLoadFragment;
 import com.example.wanhao.aclassapp.bean.GridBean;
 import com.example.wanhao.aclassapp.bean.User;
@@ -31,11 +36,12 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class UserMessageFragment extends LazyLoadFragment implements IUserMessageFgView{
+public class UserMessageFragment extends LazyLoadFragment<UserMessageFgPresenter> implements IUserMessageFgView{
     private static final String TAG = "UserMessageFragment";
 
     private static final String[] USUALLY_TITLE = {"文件", "通知", "作业", "我的收藏"};
     private static final int[] USUALLY_IMG = {R.mipmap.gv_animation, R.mipmap.gv_multipleltem, R.mipmap.gv_header_and_footer, R.mipmap.gv_pulltorefresh};
+    private static final Class[] USUALLY_CLASS = {DocumentActivity.class, TestActivity.class, DocumentActivity.class, DocumentActivity.class};
 
     private static final String[] OTHER_TITLE = {"一", "一", "一", "一", "一", "设置", "退出登陆"};
     private static final int[] OTHER_IMG = {R.mipmap.gv_animation, R.mipmap.gv_multipleltem, R.mipmap.gv_header_and_footer, R.mipmap.gv_pulltorefresh,
@@ -62,6 +68,11 @@ public class UserMessageFragment extends LazyLoadFragment implements IUserMessag
     ConstraintLayout headLayout;
 
     private UserMessageFgPresenter presenter;
+
+    @Override
+    protected UserMessageFgPresenter setPresenter() {
+        return new UserMessageFgPresenter(getContext(),this);
+    }
 
     @Override
     protected int setContentView() {
@@ -105,27 +116,10 @@ public class UserMessageFragment extends LazyLoadFragment implements IUserMessag
         usuallyRecycler.setAdapter(usuallyAdapter);
         otherRecycler.setAdapter(otherAdapter);
 
-        otherAdapter.setOnItemClickListener((adapter, view, position) -> {
-            switch (position){
-                case 0:
-                    break;
-                case 1:
-                    break;
-                case 2:
-                    break;
-                case 3:
-                    break;
-                case 4:
-                    break;
-                case 5:
-                    break;
-                case 6:
-                    presenter.logout();
-                    startActivity(new Intent(getContext(), LodingActivity.class));
-                    getActivity().finish();
-                    break;
+        usuallyAdapter.setOnItemClickListener((adapter, view, position) -> startActivity(new Intent(getContext(),USUALLY_CLASS[position])));
 
-            }
+        otherAdapter.setOnItemClickListener((adapter, view, position) -> {
+            presenter.logout();
         });
     }
 
@@ -136,16 +130,36 @@ public class UserMessageFragment extends LazyLoadFragment implements IUserMessag
     }
 
     @Override
-    public void setUserMessage(User userMessage) {
-        name.setText(userMessage.getNickName());
-        signature.setText(userMessage.getSignature());
-    }
-
-    @Override
     public void setUserHead(GlideUrl bitmap) {
         Glide.with(this)
                 .load(bitmap)
                 .into(head);
     }
 
+    @Override
+    public void showProgress() {
+
+    }
+
+    @Override
+    public void dismissProgress() {
+
+    }
+
+    @Override
+    public void loadDataSuccess(User data) {
+        name.setText(data.getNickName());
+        signature.setText(data.getSignature());
+    }
+
+    @Override
+    public void errorMessage(String throwable) {
+        Toast.makeText(getContext(),throwable,Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void tokenError(String msg) {
+        if(getActivity()!=null)
+            ((BaseTokenActivity)getActivity()).showTokenErrorDialog(msg);
+    }
 }

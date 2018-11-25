@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.base.IBasePresenter;
 import com.example.wanhao.aclassapp.bean.HttpResult;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.LodingService;
@@ -31,7 +32,7 @@ import static com.example.wanhao.aclassapp.config.ApiConstant.RETURN_SUCCESS;
  * Created by wanhao on 2017/11/22.
  */
 
-public class LodingPresenter{
+public class LodingPresenter implements IBasePresenter {
     private static final String TAG = "LodingPresenter";
 
     private ILodingView iLoginView;
@@ -45,11 +46,11 @@ public class LodingPresenter{
     @SuppressLint("CheckResult")
     public void login(final String phoneNum, final String password) {
         if (TextUtils.isEmpty(phoneNum)){
-            iLoginView.loadDataError("账号不能为空");
+            iLoginView.errorMessage("账号不能为空");
             return;
         }
         if (TextUtils.isEmpty(password)){
-            iLoginView.loadDataError("密码不能为空");
+            iLoginView.errorMessage("密码不能为空");
             return;
         }
         //开始向服务器请求
@@ -77,13 +78,13 @@ public class LodingPresenter{
                         SaveDataUtil.saveToSharedPreferences(mContext, ApiConstant.TOKEN_TIME, DateUtil.getNowDateString());
                         iLoginView.loadDataSuccess("登陆成功");
                     }else{
-                        iLoginView.loadDataError(result.getMessage());
+                        iLoginView.errorMessage(result.getMessage());
                     }
                     iLoginView.dismissProgress();
                 }, throwable -> {
                     Log.i(TAG, "accept: "+throwable.toString());
                     iLoginView.dismissProgress();
-                    iLoginView.loadDataError(ResourcesUtil.getString(R.string.error_internet));
+                    iLoginView.errorMessage(ResourcesUtil.getString(R.string.error_internet));
                 });
     }
 
@@ -91,6 +92,11 @@ public class LodingPresenter{
         String count = SaveDataUtil.getValueFromSharedPreferences(mContext,ApiConstant.USER_COUNT);
         String password = SaveDataUtil.getValueFromSharedPreferences(mContext,ApiConstant.USER_PASSWORD);
         iLoginView.initData(count,password);
+    }
+
+    @Override
+    public void destroy() {
+
     }
 
     class lodingResult{

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.example.wanhao.myview.slidelayout.SlideLayout
+
+        android:id="@+id/slideLayout"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="match_parent"
+
+            android:layout_height="match_parent"
+            android:background="#ff0000"
+            android:gravity="center"
+            android:text="content"
+            tools:layout_editor_absoluteX="71dp"
+            tools:layout_editor_absoluteY="35dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+
+            android:layout_height="match_parent"
+            android:background="#005eff"
+            android:gravity="center"
+            android:text="menu1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+
+            android:layout_height="match_parent"
+            android:background="#3ffc00"
+            android:gravity="center"
+            android:text="menu2" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="menu3" />
+
+    </com.example.wanhao.myview.slidelayout.SlideLayout>
+
+    <FrameLayout
+
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/slideLayout">
+
+        <TextView
+            android:layout_width="match_parent"
+
+            android:layout_height="match_parent"
+            android:background="#ff0000"
+            android:gravity="center"
+            android:text="content"
+            tools:layout_editor_absoluteX="71dp"
+            tools:layout_editor_absoluteY="35dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+
+            android:layout_height="match_parent"
+            android:background="#005eff"
+            android:gravity="center"
+            android:text="menu1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+
+            android:layout_height="match_parent"
+            android:background="#3ffc00"
+            android:gravity="center"
+            android:text="menu2" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="menu3" />
+
+    </FrameLayout>
+
+</android.support.constraint.ConstraintLayout>

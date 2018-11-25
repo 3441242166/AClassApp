@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.wanhao.aclassapp.R;
-import com.example.wanhao.aclassapp.activity.AddCourseActivity;
+import com.example.wanhao.aclassapp.base.IBasePresenter;
 import com.example.wanhao.aclassapp.bean.Course;
 import com.example.wanhao.aclassapp.bean.HttpResult;
 import com.example.wanhao.aclassapp.config.ApiConstant;
@@ -18,8 +18,13 @@ import com.example.wanhao.aclassapp.util.SaveDataUtil;
 import com.example.wanhao.aclassapp.view.IAddCourseView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
+import retrofit2.Response;
 
 import static com.example.wanhao.aclassapp.config.ApiConstant.RETURN_SUCCESS;
 
@@ -27,7 +32,7 @@ import static com.example.wanhao.aclassapp.config.ApiConstant.RETURN_SUCCESS;
  * Created by wanhao on 2018/2/24.
  */
 
-public class AddCoursePresenter{
+public class AddCoursePresenter implements IBasePresenter {
     private static final String TAG = "AddCoursePresenter";
 
     private Context context;
@@ -42,7 +47,7 @@ public class AddCoursePresenter{
     public void add(String code) {
 
         if (TextUtils.isEmpty(code)) {
-            view.loadDataError(ResourcesUtil.getString(R.string.error_courseid_empty));
+            view.errorMessage(ResourcesUtil.getString(R.string.error_courseid_empty));
             return;
         }
         view.showProgress();
@@ -63,16 +68,20 @@ public class AddCoursePresenter{
                     if(result.getCode().equals(RETURN_SUCCESS)){
                         view.loadDataSuccess(result.getMessage());
                     }else{
-                        view.loadDataError(result.getMessage());
+                        view.errorMessage(result.getMessage());
                     }
                     view.dismissProgress();
                 }, throwable -> {
-                    view.loadDataError(ResourcesUtil.getString(R.string.error_internet));
+                    view.errorMessage(ResourcesUtil.getString(R.string.error_internet));
                     Log.i(TAG, "accept: "+throwable);
                     view.dismissProgress();
 
                 });
     }
 
+    @Override
+    public void destroy() {
+
+    }
 }
 

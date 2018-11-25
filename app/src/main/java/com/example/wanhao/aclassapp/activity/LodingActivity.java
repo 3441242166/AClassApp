@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.base.BaseMvpActivity;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.db.CourseDB;
 import com.example.wanhao.aclassapp.presenter.LodingPresenter;
@@ -33,7 +34,7 @@ import butterknife.ButterKnife;
 import static com.example.wanhao.aclassapp.config.Constant.REGISTER_CODE;
 import static com.example.wanhao.aclassapp.config.Constant.RESULT_SUCESS;
 
-public class LodingActivity extends AppCompatActivity implements View.OnClickListener,ILodingView {
+public class LodingActivity extends BaseMvpActivity<LodingPresenter> implements View.OnClickListener,ILodingView {
     private static final String TAG = "LodingActivity";
 
     @BindView(R.id.ac_loding_forget) TextView forget;
@@ -45,7 +46,10 @@ public class LodingActivity extends AppCompatActivity implements View.OnClickLis
 
     private MaterialDialog dialog;
 
-    private LodingPresenter presenter = new LodingPresenter(this,this);
+    @Override
+    protected LodingPresenter setPresenter() {
+        return new LodingPresenter(this,this);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +109,7 @@ public class LodingActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     @Override
-    public void loadDataError(String throwable) {
+    public void errorMessage(String throwable) {
         Toast.makeText(this,throwable, Toast.LENGTH_SHORT).show();
     }
 

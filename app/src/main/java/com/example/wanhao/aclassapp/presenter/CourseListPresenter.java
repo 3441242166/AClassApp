@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.example.wanhao.aclassapp.backService.CourseService;
+import com.example.wanhao.aclassapp.base.IBasePresenter;
 import com.example.wanhao.aclassapp.bean.Course;
 import com.example.wanhao.aclassapp.bean.HttpResult;
 import com.example.wanhao.aclassapp.config.ApiConstant;
@@ -28,12 +29,13 @@ import java.util.List;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
+import io.realm.Sort;
 
 /**
  * Created by wanhao on 2018/2/23.
  */
 
-public class CourseListPresenter {
+public class CourseListPresenter implements IBasePresenter{
     private static final String TAG = "CourseListPresenter";
 
     private Context context;
@@ -55,7 +57,7 @@ public class CourseListPresenter {
         String count = SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.USER_COUNT);
         List<CourseDB> list = realm.where(CourseDB.class)
                 .equalTo("userCount",count)
-                .findAll();
+                .findAllSorted("priority", Sort.DESCENDING);
 
         realm.commitTransaction();
 
@@ -65,6 +67,7 @@ public class CourseListPresenter {
             getListDataByInternet();
             return;
         }
+
         dataList = list;
         startService(list);
         view.loadDataSuccess(list);
@@ -91,10 +94,10 @@ public class CourseListPresenter {
                         startService(data);
                         view.loadDataSuccess(data);
                     }else{
-                        view.loadDataError(result.getMessage());
+                        view.errorMessage(result.getMessage());
                     }
                 }, throwable -> {
-                    view.loadDataError("网络异常");
+                    view.errorMessage("网络异常");
                     Log.i(TAG, "accept: "+throwable);
                 });
     }
@@ -148,6 +151,11 @@ public class CourseListPresenter {
         realm.commitTransaction();
 
         view.loadDataSuccess(list);
+    }
+
+    @Override
+    public void destroy() {
+        EventBus.getDefault().unregister(this);
     }
 
     static class CourseListData {

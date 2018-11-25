@@ -12,7 +12,6 @@ import com.example.wanhao.aclassapp.adapter.QuestionAdapter;
 import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
 import com.example.wanhao.aclassapp.bean.Homework;
 import com.example.wanhao.aclassapp.bean.Question;
-import com.example.wanhao.aclassapp.db.CourseDB;
 import com.example.wanhao.aclassapp.presenter.DoHomeworkPresenter;
 import com.example.wanhao.aclassapp.util.PagingScrollHelper;
 import com.example.wanhao.aclassapp.view.DoHomeworkView;
@@ -21,10 +20,8 @@ import java.util.List;
 
 import butterknife.BindView;
 
-public class DoHomeworkActivity extends TopBarBaseActivity implements DoHomeworkView {
+public class DoHomeworkActivity extends TopBarBaseActivity<DoHomeworkPresenter> implements DoHomeworkView {
     private static final String TAG = "DoHomeworkActivity";
-
-    private DoHomeworkPresenter presenter = new DoHomeworkPresenter(this,this);
 
     @BindView(R.id.ac_dohomework_recycler)
     RecyclerView recyclerView;
@@ -37,7 +34,6 @@ public class DoHomeworkActivity extends TopBarBaseActivity implements DoHomework
 
     private QuestionAdapter adapter = new QuestionAdapter(null,this);
     private PagingScrollHelper scrollHelper = new PagingScrollHelper();
-
 
     Homework homework;
     String courseID;
@@ -105,7 +101,12 @@ public class DoHomeworkActivity extends TopBarBaseActivity implements DoHomework
     }
 
     @Override
-    public void loadDataError(String throwable) {
+    public void errorMessage(String throwable) {
 
+    }
+
+    @Override
+    protected DoHomeworkPresenter setPresenter() {
+        return new DoHomeworkPresenter(this,this);
     }
 }

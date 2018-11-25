@@ -11,10 +11,12 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.example.wanhao.aclassapp.base.IBasePresenter;
 import com.example.wanhao.aclassapp.bean.HttpResult;
 import com.example.wanhao.aclassapp.bean.User;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.UserMessageService;
+import com.example.wanhao.aclassapp.util.ActivityCollector;
 import com.example.wanhao.aclassapp.util.DateUtil;
 import com.example.wanhao.aclassapp.util.RetrofitHelper;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
@@ -29,7 +31,7 @@ import static com.example.wanhao.aclassapp.config.ApiConstant.BASE_URL;
 import static com.example.wanhao.aclassapp.config.ApiConstant.HEAD_URL;
 import static com.example.wanhao.aclassapp.config.ApiConstant.RETURN_SUCCESS;
 
-public class UserMessageFgPresenter {
+public class UserMessageFgPresenter implements IBasePresenter {
     private static final String TAG = "UserMessageFgPresenter";
 
     Context context;
@@ -58,7 +60,7 @@ public class UserMessageFgPresenter {
             user.setSignature(signature);
         }
 
-        view.setUserMessage(user);
+        view.loadDataSuccess(user);
 
         UserMessageService service  = RetrofitHelper.get(UserMessageService.class);
         service.getProfile(SaveDataUtil.getValueFromSharedPreferences(context, ApiConstant.USER_TOKEN))
@@ -70,7 +72,7 @@ public class UserMessageFgPresenter {
 
                     HttpResult<User> result = new Gson().fromJson(body,new TypeToken<HttpResult<User>>(){}.getType());
                     if(result.getCode().equals(RETURN_SUCCESS)){
-                        view.setUserMessage(result.getData());
+                        view.loadDataSuccess(result.getData());
                         SaveDataUtil.saveToSharedPreferences(context,ApiConstant.USER_NAME,result.getData().getNickName());
                         SaveDataUtil.saveToSharedPreferences(context,ApiConstant.USER_SIGNATURE,result.getData().getSignature());
                     }else{
@@ -96,6 +98,11 @@ public class UserMessageFgPresenter {
         SaveDataUtil.saveToSharedPreferences(context, ApiConstant.USER_TOKEN, "");
         SaveDataUtil.saveToSharedPreferences(context, ApiConstant.USER_ROLE, "");
         SaveDataUtil.saveToSharedPreferences(context, ApiConstant.TOKEN_TIME,"");
+        ActivityCollector.finishAll();
+    }
+
+    @Override
+    public void destroy() {
 
     }
 }

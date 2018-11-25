@@ -18,9 +18,6 @@ import com.example.wanhao.aclassapp.util.RetrofitHelper;
 import com.example.wanhao.aclassapp.view.IRegisterView;
 import com.google.gson.Gson;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -42,7 +39,7 @@ public class RegisterPresenter {
     //获取手机验证码
     public void getVerificationCode(final String phoneNum, final TextView getCodeTv, final CountDownTimer timer) {
         if (TextUtils.isEmpty(phoneNum)) {
-            iRegisterView.loadDataError("手机号不能为空");
+            iRegisterView.errorMessage("手机号不能为空");
             return;
         }
         getCodeTv.setClickable(false);
@@ -53,15 +50,15 @@ public class RegisterPresenter {
     @SuppressLint("CheckResult")
     public void register(String phoneNum, String password, String code){
         if (TextUtils.isEmpty(phoneNum)){
-            iRegisterView.loadDataError("手机号不能为空");
+            iRegisterView.errorMessage("手机号不能为空");
             return;
         }
         if (TextUtils.isEmpty(code)){
-            iRegisterView.loadDataError("验证码不能为空");
+            iRegisterView.errorMessage("验证码不能为空");
             return;
         }
         if (TextUtils.isEmpty(password)){
-            iRegisterView.loadDataError("密码不能为空");
+            iRegisterView.errorMessage("密码不能为空");
             return;
         }
         //发送请求进行注册
@@ -86,12 +83,12 @@ public class RegisterPresenter {
                     if(result.getCode().equals(ApiConstant.RETURN_SUCCESS)){
                         iRegisterView.loadDataSuccess("成功注册！");
                     }else{
-                        iRegisterView.loadDataError(result.getMessage());
+                        iRegisterView.errorMessage(result.getMessage());
                     }
                     iRegisterView.dismissProgress();
                 }, throwable -> {
                     Log.i(TAG, "accept: "+throwable);
-                    iRegisterView.loadDataError(ResourcesUtil.getString(R.string.error_internet));
+                    iRegisterView.errorMessage(ResourcesUtil.getString(R.string.error_internet));
                     iRegisterView.dismissProgress();
                 });
 

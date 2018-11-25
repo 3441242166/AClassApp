@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.wanhao.aclassapp.base.IBasePresenter;
 import com.example.wanhao.aclassapp.bean.HttpResult;
 import com.example.wanhao.aclassapp.bean.Remark;
 import com.example.wanhao.aclassapp.config.ApiConstant;
@@ -26,7 +27,7 @@ import okhttp3.RequestBody;
  * Created by wanhao on 2018/3/28.
  */
 
-public class RemarkPresenter {
+public class RemarkPresenter implements IBasePresenter {
     private static final String TAG = "RemarkPresenter";
 
     private IRemarkView iRemarkView;
@@ -62,11 +63,11 @@ public class RemarkPresenter {
                         iRemarkView.loadDataSuccess(temp);
 
                     }else{
-                        iRemarkView.loadDataError(result.getMessage());
+                        iRemarkView.errorMessage(result.getMessage());
                     }
 
                 }, throwable -> {
-                    iRemarkView.loadDataError("网络错误");
+                    iRemarkView.errorMessage("网络错误");
                     Log.i(TAG, "getRemark: "+throwable);
                 });
 
@@ -102,6 +103,11 @@ public class RemarkPresenter {
                     iRemarkView.sendRemarkError("网络错误");
                     Log.i(TAG, "getRemark: "+throwable);
                 });
+
+    }
+
+    @Override
+    public void destroy() {
 
     }
 

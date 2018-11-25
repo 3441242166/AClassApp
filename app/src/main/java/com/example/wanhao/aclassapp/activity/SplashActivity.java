@@ -19,14 +19,8 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
     }
 
     @Override
-    public void goLoding() {
-        startActivity(new Intent(this,LodingActivity.class));
+    public void finishActivity() {
         finish();
     }
 
-    @Override
-    public void goCourse() {
-        startActivity(new Intent(this,MainActivity.class));
-        finish();
-    }
 }

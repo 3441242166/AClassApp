@@ -2,10 +2,13 @@ package com.example.wanhao.aclassapp.presenter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.activity.LodingActivity;
+import com.example.wanhao.aclassapp.activity.MainActivity;
 import com.example.wanhao.aclassapp.bean.HttpResult;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.TokenService;
@@ -51,34 +54,13 @@ public class SplashPresenter {
         String time = SaveDataUtil.getValueFromSharedPreferences(context,ApiConstant.TOKEN_TIME);
         //  token 为空
         if(TextUtils.isEmpty(token)||TextUtils.isEmpty(time)){
-            view.goLoding();
+            context.startActivity(new Intent(context,LodingActivity.class));
+            view.finishActivity();
             return;
         }
-        view.goCourse();
+        context.startActivity(new Intent(context,MainActivity.class));
 
-        //   token离线时间5天以上 从新验证
-//        if(DateUtil.differentDay(DateUtil.getNowDateString(),time) > 4){
-//
-//            TokenService service = RetrofitHelper.get(TokenService.class);
-//            service.check(token)
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(responseBodyResponse -> {
-//                        String body = responseBodyResponse.body().string();
-//                        Log.i(TAG, "accept: "+body);
-//
-//                        HttpResult<String> result = new Gson().fromJson(body,new TypeToken<HttpResult<String>>(){}.getType());
-//
-//                        if(result.getCode().equals(RETURN_SUCCESS)){
-//                            view.goCourse();
-//                        }else{
-//                            view.goLoding();
-//                        }
-//                    }, throwable -> {
-//                        view.goLoding();
-//                    });
-//        }
-
+        view.finishActivity();
     }
 
 }

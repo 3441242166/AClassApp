@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -16,6 +17,8 @@ import com.example.wanhao.aclassapp.R;
 import com.example.wanhao.aclassapp.activity.AddCourseActivity;
 import com.example.wanhao.aclassapp.activity.CourseActivity;
 import com.example.wanhao.aclassapp.adapter.CourseAdapter;
+import com.example.wanhao.aclassapp.base.BaseTokenActivity;
+import com.example.wanhao.aclassapp.base.IBasePresenter;
 import com.example.wanhao.aclassapp.base.LazyLoadFragment;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.db.CourseDB;
@@ -32,7 +35,7 @@ import butterknife.BindView;
  * Created by wanhao on 2018/2/23.
  */
 
-public class CourseListFragment extends LazyLoadFragment implements ICourseFgView {
+public class CourseListFragment extends LazyLoadFragment<CourseListPresenter> implements ICourseFgView {
     private static final String TAG = "CourseListFragment";
 
     @BindView(R.id.fg_course_recycler)
@@ -42,14 +45,15 @@ public class CourseListFragment extends LazyLoadFragment implements ICourseFgVie
     @BindView(R.id.fg_course_add)
     FloatingActionButton fab;
 
-    private CourseListPresenter presenter;
     private CourseAdapter adapter;
 
-    private Context context;
+    @Override
+    protected CourseListPresenter setPresenter() {
+        return new CourseListPresenter(getContext(),this);
+    }
 
     @Override
     protected int setContentView() {
-        context = getContext();
         return R.layout.fragment_course;
     }
 
@@ -75,43 +79,14 @@ public class CourseListFragment extends LazyLoadFragment implements ICourseFgVie
             Intent intent = new Intent(getActivity(), CourseActivity.class);
 
             intent.putExtra(ApiConstant.COURSE_ID ,this.adapter.getData().get(position).getCourseID());
-            //intent.putExtra(ApiConstant.COURSE_NAME ,this.adapter.getData().get(position).getName());
             startActivityForResult(intent,0);
 
-        });
-
-        adapter.setOnItemLongClickListener((adapter, view, position) -> {
-            openDialog(view);
-            return true;
         });
 
         fab.setOnClickListener(v -> startActivityForResult(new Intent(getContext(), AddCourseActivity.class),ApiConstant.ADD_COURSE));
 
         refreshView.setOnRefreshListener(() -> refreshView.postDelayed(() -> presenter.getListDataByInternet(), 500));
 
-    }
-
-    private void openDialog(View parent) {
-        View view = LayoutInflater.from(context).inflate(R.layout.dialog_course, null);
-        final PopupWindow popupWindow = PopupUtil.getPopupWindow(context,view, WindowManager.LayoutParams.WRAP_CONTENT,WindowManager.LayoutParams.WRAP_CONTENT);
-        //设置点击事件
-        Button btTop = view.findViewById(R.id.dialog_course_top);
-        Button btMessage = view.findViewById(R.id.dialog_course_message);
-        Button btDelete = view.findViewById(R.id.dialog_course_delete);
-
-        btTop.setOnClickListener(v -> {
-
-        });
-        btMessage.setOnClickListener(v -> {
-
-        });
-        btDelete.setOnClickListener(v -> {
-
-        });
-
-        //显示PopupWindow
-        Toast.makeText(getContext(),""+parent.getWidth(),Toast.LENGTH_SHORT).show();
-        popupWindow.showAsDropDown(parent,parent.getWidth()/2,-parent.getHeight()/3);
     }
 
     @Override
@@ -130,13 +105,14 @@ public class CourseListFragment extends LazyLoadFragment implements ICourseFgVie
     }
 
     @Override
-    public void loadDataError(String throwable) {
+    public void errorMessage(String throwable) {
         Toast.makeText(getActivity(), throwable, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void tokenError(String msg) {
-
+        if(getActivity()!=null)
+            ((BaseTokenActivity)getActivity()).showTokenErrorDialog(msg);
     }
 
     @Override
@@ -162,4 +138,5 @@ public class CourseListFragment extends LazyLoadFragment implements ICourseFgVie
     public void updateData(int index) {
         adapter.notifyItemChanged(index);
     }
+
 }

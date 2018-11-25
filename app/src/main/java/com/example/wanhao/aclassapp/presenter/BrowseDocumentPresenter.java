@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 
+import com.example.wanhao.aclassapp.base.IBasePresenter;
 import com.example.wanhao.aclassapp.bean.Document;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.backService.DownDocumentService;
@@ -18,16 +19,20 @@ import static com.example.wanhao.aclassapp.util.FileConvertUtil.getUriForFile;
  * Created by wanhao on 2018/3/26.
  */
 
-public class BrowseDocumentPresenter {
+public class BrowseDocumentPresenter implements IBasePresenter {
     private static final String TAG = "BrowseDocumentPresenter";
 
     private Context context;
     private IBrowseDocumentView view;
 
+    private int downloadID;
+
     public BrowseDocumentPresenter(Context context,IBrowseDocumentView IBrowseDocumentView){
         this.context = context;
         this.view = IBrowseDocumentView;
     }
+
+
 
     public void startDownload(Document document){
         Intent intent = new Intent(context,DownDocumentService.class);
@@ -52,9 +57,18 @@ public class BrowseDocumentPresenter {
         context.startService(intent);
     }
 
-    public void stopDownload(int id) {
+    public void stopDownload() {
         Intent intent = new Intent(context, DownDocumentService.class);
-        intent.putExtra(ApiConstant.DOWNLOAD_ID,id);
+        intent.putExtra(ApiConstant.DOWNLOAD_ID,downloadID);
         context.startService(intent);
+    }
+
+    @Override
+    public void destroy() {
+
+    }
+
+    public void setDownloadID(int downloadID) {
+        this.downloadID = downloadID;
     }
 }

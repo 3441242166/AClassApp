@@ -113,7 +113,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
-    public void loadDataError(String throwable) {
+    public void errorMessage(String throwable) {
         Toast.makeText(this,throwable, Toast.LENGTH_SHORT).show();
     }
 

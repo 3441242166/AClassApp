@@ -5,16 +5,18 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
 
 import com.example.wanhao.aclassapp.R;
+import com.example.wanhao.aclassapp.base.BaseMvpActivity;
+import com.example.wanhao.aclassapp.base.IBasePresenter;
 import com.example.wanhao.aclassapp.customizeview.NoScrollViewPager;
 import com.example.wanhao.aclassapp.fragment.CourseListFragment;
 import com.example.wanhao.aclassapp.fragment.DateFragment;
+import com.example.wanhao.aclassapp.fragment.TestFragment;
 import com.example.wanhao.aclassapp.fragment.TipFragment;
 import com.example.wanhao.aclassapp.fragment.UserMessageFragment;
 import com.example.wanhao.aclassapp.util.ActivityCollector;
@@ -25,7 +27,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseMvpActivity {
     private static final String TAG = "MainActivity";
 
     @BindView(R.id.ac_main_bottom)
@@ -39,7 +41,11 @@ public class MainActivity extends AppCompatActivity {
     UserMessageFragment userMessageFragment;
 
     private List<Fragment> fragmentList;
-    private FragmentPagerAdapter adapter;
+
+    @Override
+    protected IBasePresenter setPresenter() {
+        return null;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,17 +120,19 @@ public class MainActivity extends AppCompatActivity {
         dateFragment = new DateFragment();
 
         fragmentList.add(courseFragment);
-        fragmentList.add(dateFragment);
+        //fragmentList.add(dateFragment);
+        fragmentList.add(new TestFragment());
         fragmentList.add(tipFragment);
         fragmentList.add(userMessageFragment);
 
         BottomNavigationViewHelper.disableShiftMode(navigation);
 
-        adapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
+        FragmentPagerAdapter adapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
                 return fragmentList.get(position);
             }
+
             @Override
             public int getCount() {
                 return fragmentList.size();
@@ -159,4 +167,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
 }

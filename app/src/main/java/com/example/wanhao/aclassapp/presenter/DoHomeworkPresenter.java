@@ -5,12 +5,11 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.wanhao.aclassapp.R;
-import com.example.wanhao.aclassapp.bean.Homework;
+import com.example.wanhao.aclassapp.base.IBasePresenter;
 import com.example.wanhao.aclassapp.bean.HttpResult;
 import com.example.wanhao.aclassapp.bean.Question;
 import com.example.wanhao.aclassapp.config.ApiConstant;
 import com.example.wanhao.aclassapp.service.HomeworkService;
-import com.example.wanhao.aclassapp.util.GsonUtils;
 import com.example.wanhao.aclassapp.util.ResourcesUtil;
 import com.example.wanhao.aclassapp.util.RetrofitHelper;
 import com.example.wanhao.aclassapp.util.SaveDataUtil;
@@ -18,21 +17,16 @@ import com.example.wanhao.aclassapp.view.DoHomeworkView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.function.Consumer;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
-import retrofit2.Response;
 
 import static com.example.wanhao.aclassapp.config.ApiConstant.RETURN_SUCCESS;
 
-public class DoHomeworkPresenter {
+public class DoHomeworkPresenter implements IBasePresenter {
     private static final String TAG = "DoHomeworkPresenter";
 
     Context context;
@@ -64,10 +58,10 @@ public class DoHomeworkPresenter {
                         }
                         view.loadDataSuccess(homeworks);
                     }else{
-                        view.loadDataError(result.getMessage());
+                        view.errorMessage(result.getMessage());
                     }
                 }, throwable -> {
-                    view.loadDataError(ResourcesUtil.getString(R.string.error_internet));
+                    view.errorMessage(ResourcesUtil.getString(R.string.error_internet));
                     Log.i(TAG, "accept: "+throwable);
                 });
     }
@@ -90,7 +84,7 @@ public class DoHomeworkPresenter {
                     String response = responseBodyResponse.body().string();
                     Log.i(TAG, "postAnswer: "+response);
 
-                    view.loadDataError("提交成功");
+                    view.errorMessage("提交成功");
                 }, throwable -> {
                     Log.i(TAG, "postAnswer: "+throwable.toString());
                 });
@@ -121,12 +115,13 @@ public class DoHomeworkPresenter {
         return builder.toString();
     }
 
-    static class QusetionData{
-        List<Question> homeworks;
+    @Override
+    public void destroy() {
+
     }
 
-    static class QuestionSend{
-        String errorList;
+    static class QusetionData{
+        List<Question> homeworks;
     }
 
 }

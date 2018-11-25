@@ -10,7 +10,6 @@ import com.example.wanhao.aclassapp.adapter.HomeworkAdapter;
 import com.example.wanhao.aclassapp.base.TopBarBaseActivity;
 import com.example.wanhao.aclassapp.bean.Homework;
 import com.example.wanhao.aclassapp.config.ApiConstant;
-import com.example.wanhao.aclassapp.db.CourseDB;
 import com.example.wanhao.aclassapp.presenter.HomeworkPresenter;
 import com.example.wanhao.aclassapp.view.IHomeworkView;
 
@@ -18,12 +17,10 @@ import java.util.List;
 
 import butterknife.BindView;
 
-public class HomeWorkActivity extends TopBarBaseActivity implements IHomeworkView{
+public class HomeWorkActivity extends TopBarBaseActivity<HomeworkPresenter> implements IHomeworkView{
 
     @BindView(R.id.ac_homeword_recycler)
     RecyclerView recyclerView;
-
-    HomeworkPresenter presenter = new HomeworkPresenter(this,this);
 
     HomeworkAdapter adapter = new HomeworkAdapter(null);
 
@@ -85,7 +82,12 @@ public class HomeWorkActivity extends TopBarBaseActivity implements IHomeworkVie
     }
 
     @Override
-    public void loadDataError(String throwable) {
+    public void errorMessage(String throwable) {
 
+    }
+
+    @Override
+    protected HomeworkPresenter setPresenter() {
+        return new HomeworkPresenter(this,this);
     }
 }
